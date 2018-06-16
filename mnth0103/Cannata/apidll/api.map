@@ -1,0 +1,232 @@
+
+ API
+
+ Start         Length     Name                   Class
+ 0001:00000000 000002E59H CODE32                 CODE 32-bit
+ 0001:00002E5C 000000030H _MSGSEG32              CODE 32-bit
+ 0002:00000000 000000050H DDE4_DATA32            DATA 32-bit
+ 0003:00000000 000000190H DATA32                 DATA 32-bit
+ 0003:00000190 0000000B0H CONST32                CONST 32-bit
+ 0003:00000240 000000000H BSS32                  BSS 32-bit
+ 0003:00000240 00000000AH c_common               BSS 32-bit
+
+ Origin   Group
+ 0003:0   DGROUP
+ 0000:0   FLAT
+
+ Address       Export                  Alias
+
+ 0001:00000000 NewStdApp               NewStdApp
+ 0001:00001A18 UtlDisplayDebug         UtlDisplayDebug
+ 0001:00001668 UtlDisplayError         UtlDisplayError
+ 0001:00001854 UtlLoadMessage          UtlLoadMessage
+ 0001:000017EC UtlLoadString           UtlLoadString
+ 0001:0000192C UtlMsgBox               UtlMsgBox
+
+  Address         Publics by Name
+
+ 0003:00000240       @BSSSTDAPP.C
+ 0001:00001A88       calloc
+ 0001:00000A80       CommandStdApp
+ 0001:00000704       DeleteStdApp
+ 0000:00000000  Imp  DevQueryCaps         (PMGPI.606)
+ 0000:00000000  Imp  DOS32FLATTOSEL       (DOSCALLS.425)
+ 0001:00002E6E       DOS32GETMESSAGE
+ 0000:00000000  Imp  DOS32IQUERYMESSAGECP (MSG.8)
+ 0000:00000000  Imp  DOS32SELTOFLAT       (DOSCALLS.426)
+ 0000:00000000  Imp  DOS32TRUEGETMESSAGE  (MSG.6)
+ 0000:00000000  Imp  DosAllocMem          (DOSCALLS.299)
+ 0000:00000000  Imp  DosFreeMem           (DOSCALLS.304)
+ 0001:00002E6E       DosGetMessage
+ 0000:00000000  Imp  DosLoadModule        (DOSCALLS.318)
+ 0000:00000000  Imp  DosQueryModuleHandle (DOSCALLS.319)
+ 0000:00000000  Imp  DosWrite             (DOSCALLS.282)
+ 0001:00000C1C       EnableMenuItemStdApp
+ 0001:00001ACC       free
+ 0000:00000000  Imp  GpiCreateLogColorTable (PMGPI.592)
+ 0000:00000000  Imp  GpiCreatePS          (PMGPI.369)
+ 0001:00001634       HlpDestroyHelpInstance
+ 0001:000015E0       HlpDisplayHelpPanel
+ 0001:000014FC       HlpGeneral
+ 0001:00001594       HlpIndex
+ 0001:000012A0       HlpInitHelp
+ 0001:00001548       HlpKeys
+ 0001:000014B0       HlpUsingHelp
+ 0001:000009A8       InitMenuStdApp
+ 0001:00002904       malloc
+ 0001:00000694       MsgLoopStdApp
+ 0001:00000000       NewStdApp
+ 0001:00000550       ProcStdApp
+ 0001:00000860       QueryClientStdApp
+ 0001:00000908       QueryDevColorStdApp
+ 0001:000008AC       QueryDevResStdApp
+ 0001:0000095C       QueryFrameStdApp
+ 0001:000007C8       QueryHabStdApp
+ 0001:00000814       QueryHpsStdApp
+ 0001:00002E5C       sig32
+ 0001:00001B4C       strcat
+ 0001:00001B80       strcpy
+ 0001:00001A18       UtlDisplayDebug
+ 0001:00001668       UtlDisplayError
+ 0001:00001854       UtlLoadMessage
+ 0001:000017EC       UtlLoadString
+ 0001:0000192C       UtlMsgBox
+ 0001:000018BC       UtlSubsitiuteStrings
+ 0001:000019C8       UtlUserMsgBox
+ 0001:00000E38       ValidateMenuExitStdApp
+ 0001:00001030       ValidateMenuHelpStdApp
+ 0001:00000C74       ValidateMenuServiceStdApp
+ 0001:00000D28       ValidateMenuStdApp
+ 0000:00000000  Imp  WinAlarm             (PMWIN.701)
+ 0000:00000000  Imp  WinAssociateHelpInstance (HELPMGR.54)
+ 0000:00000000  Imp  WinCreateHelpInstance (HELPMGR.51)
+ 0000:00000000  Imp  WinCreateMenu        (PMWIN.907)
+ 0000:00000000  Imp  WinCreateMsgQueue    (PMWIN.716)
+ 0000:00000000  Imp  WinCreateWindow      (PMWIN.909)
+ 0000:00000000  Imp  WinDefWindowProc     (PMWIN.911)
+ 0000:00000000  Imp  WinDestroyHelpInstance (HELPMGR.52)
+ 0000:00000000  Imp  WinDestroyMsgQueue   (PMWIN.726)
+ 0000:00000000  Imp  WinDestroyWindow     (PMWIN.728)
+ 0000:00000000  Imp  WinDispatchMsg       (PMWIN.912)
+ 0000:00000000  Imp  WinFreeErrorInfo     (PMWIN.748)
+ 0000:00000000  Imp  WinGetErrorInfo      (PMWIN.751)
+ 0000:00000000  Imp  WinGetLastError      (PMWIN.753)
+ 0000:00000000  Imp  WinGetMsg            (PMWIN.915)
+ 0000:00000000  Imp  WinInitialize        (PMWIN.763)
+ 0000:00000000  Imp  WinIsWindow          (PMWIN.772)
+ 0000:00000000  Imp  WinLoadMessage       (PMWIN.779)
+ 0000:00000000  Imp  WinLoadString        (PMWIN.781)
+ 0000:00000000  Imp  WinMessageBox        (PMWIN.789)
+ 0000:00000000  Imp  WinOpenWindowDC      (PMWIN.794)
+ 0000:00000000  Imp  WinPostMsg           (PMWIN.919)
+ 0000:00000000  Imp  WinQueryTaskSizePos  (PMSHAPI.127)
+ 0000:00000000  Imp  WinQueryWindowPtr    (PMWIN.839)
+ 0000:00000000  Imp  WinRegisterClass     (PMWIN.926)
+ 0000:00000000  Imp  WinSendMsg           (PMWIN.920)
+ 0000:00000000  Imp  WinSetWindowPtr      (PMWIN.876)
+ 0000:00000000  Imp  WinShowWindow        (PMWIN.883)
+ 0000:00000000  Imp  WinTerminate         (PMWIN.888)
+ 0000:00000000  Imp  WinWindowFromID      (PMWIN.899)
+ 0001:00002AC8       _bufprint
+ 0002:00000000       _dllentry
+ 0001:00002AC0       _DLL_InitTerm
+ 0001:00001B44       _DosFlatToSel
+ 0001:00001B3C       _DosSelToFlat
+ 0003:00000240       _edata
+ 0001:00002E38       _edcGetMessage
+ 0003:0000024A       _end
+ 0001:00002BE0       _ilog2
+ 0001:00002C1C       _MesgServ
+ 0002:00000004       _pBucketArr
+ 0001:00002DEC       _PrintErrMsg
+ 0001:00002818       _split_chunk
+ 0001:00001A68       _sprintfieee
+ 0001:00001A48       _sprintf_ansi
+ 0001:00002C04       _wfloatfmt
+ 0001:00001BAC       __dofmto
+ 0001:00002BE8       __isdigit
+
+  Address         Publics by Value
+
+ 0000:00000000  Imp  WinCreateWindow      (PMWIN.909)
+ 0000:00000000  Imp  WinQueryWindowPtr    (PMWIN.839)
+ 0000:00000000  Imp  DosLoadModule        (DOSCALLS.318)
+ 0000:00000000  Imp  WinCreateMsgQueue    (PMWIN.716)
+ 0000:00000000  Imp  WinPostMsg           (PMWIN.919)
+ 0000:00000000  Imp  WinInitialize        (PMWIN.763)
+ 0000:00000000  Imp  DOS32IQUERYMESSAGECP (MSG.8)
+ 0000:00000000  Imp  WinLoadString        (PMWIN.781)
+ 0000:00000000  Imp  WinSendMsg           (PMWIN.920)
+ 0000:00000000  Imp  WinGetMsg            (PMWIN.915)
+ 0000:00000000  Imp  DOS32TRUEGETMESSAGE  (MSG.6)
+ 0000:00000000  Imp  DosFreeMem           (DOSCALLS.304)
+ 0000:00000000  Imp  DOS32SELTOFLAT       (DOSCALLS.426)
+ 0000:00000000  Imp  WinAssociateHelpInstance (HELPMGR.54)
+ 0000:00000000  Imp  WinDispatchMsg       (PMWIN.912)
+ 0000:00000000  Imp  DosWrite             (DOSCALLS.282)
+ 0000:00000000  Imp  WinIsWindow          (PMWIN.772)
+ 0000:00000000  Imp  DosQueryModuleHandle (DOSCALLS.319)
+ 0000:00000000  Imp  WinGetErrorInfo      (PMWIN.751)
+ 0000:00000000  Imp  WinOpenWindowDC      (PMWIN.794)
+ 0000:00000000  Imp  DOS32FLATTOSEL       (DOSCALLS.425)
+ 0000:00000000  Imp  WinFreeErrorInfo     (PMWIN.748)
+ 0000:00000000  Imp  WinCreateHelpInstance (HELPMGR.51)
+ 0000:00000000  Imp  DosAllocMem          (DOSCALLS.299)
+ 0000:00000000  Imp  WinMessageBox        (PMWIN.789)
+ 0000:00000000  Imp  WinAlarm             (PMWIN.701)
+ 0000:00000000  Imp  WinShowWindow        (PMWIN.883)
+ 0000:00000000  Imp  WinTerminate         (PMWIN.888)
+ 0000:00000000  Imp  WinSetWindowPtr      (PMWIN.876)
+ 0000:00000000  Imp  DevQueryCaps         (PMGPI.606)
+ 0000:00000000  Imp  WinGetLastError      (PMWIN.753)
+ 0000:00000000  Imp  GpiCreatePS          (PMGPI.369)
+ 0000:00000000  Imp  WinLoadMessage       (PMWIN.779)
+ 0000:00000000  Imp  WinDestroyWindow     (PMWIN.728)
+ 0000:00000000  Imp  WinWindowFromID      (PMWIN.899)
+ 0000:00000000  Imp  WinDestroyMsgQueue   (PMWIN.726)
+ 0000:00000000  Imp  WinDestroyHelpInstance (HELPMGR.52)
+ 0000:00000000  Imp  WinCreateMenu        (PMWIN.907)
+ 0000:00000000  Imp  GpiCreateLogColorTable (PMGPI.592)
+ 0000:00000000  Imp  WinDefWindowProc     (PMWIN.911)
+ 0000:00000000  Imp  WinRegisterClass     (PMWIN.926)
+ 0000:00000000  Imp  WinQueryTaskSizePos  (PMSHAPI.127)
+ 0001:00000000       NewStdApp
+ 0001:00000550       ProcStdApp
+ 0001:00000694       MsgLoopStdApp
+ 0001:00000704       DeleteStdApp
+ 0001:000007C8       QueryHabStdApp
+ 0001:00000814       QueryHpsStdApp
+ 0001:00000860       QueryClientStdApp
+ 0001:000008AC       QueryDevResStdApp
+ 0001:00000908       QueryDevColorStdApp
+ 0001:0000095C       QueryFrameStdApp
+ 0001:000009A8       InitMenuStdApp
+ 0001:00000A80       CommandStdApp
+ 0001:00000C1C       EnableMenuItemStdApp
+ 0001:00000C74       ValidateMenuServiceStdApp
+ 0001:00000D28       ValidateMenuStdApp
+ 0001:00000E38       ValidateMenuExitStdApp
+ 0001:00001030       ValidateMenuHelpStdApp
+ 0001:000012A0       HlpInitHelp
+ 0001:000014B0       HlpUsingHelp
+ 0001:000014FC       HlpGeneral
+ 0001:00001548       HlpKeys
+ 0001:00001594       HlpIndex
+ 0001:000015E0       HlpDisplayHelpPanel
+ 0001:00001634       HlpDestroyHelpInstance
+ 0001:00001668       UtlDisplayError
+ 0001:000017EC       UtlLoadString
+ 0001:00001854       UtlLoadMessage
+ 0001:000018BC       UtlSubsitiuteStrings
+ 0001:0000192C       UtlMsgBox
+ 0001:000019C8       UtlUserMsgBox
+ 0001:00001A18       UtlDisplayDebug
+ 0001:00001A48       _sprintf_ansi
+ 0001:00001A68       _sprintfieee
+ 0001:00001A88       calloc
+ 0001:00001ACC       free
+ 0001:00001B3C       _DosSelToFlat
+ 0001:00001B44       _DosFlatToSel
+ 0001:00001B4C       strcat
+ 0001:00001B80       strcpy
+ 0001:00001BAC       __dofmto
+ 0001:00002818       _split_chunk
+ 0001:00002904       malloc
+ 0001:00002AC0       _DLL_InitTerm
+ 0001:00002AC8       _bufprint
+ 0001:00002BE0       _ilog2
+ 0001:00002BE8       __isdigit
+ 0001:00002C04       _wfloatfmt
+ 0001:00002C1C       _MesgServ
+ 0001:00002DEC       _PrintErrMsg
+ 0001:00002E38       _edcGetMessage
+ 0001:00002E5C       sig32
+ 0001:00002E6E       DosGetMessage
+ 0001:00002E6E       DOS32GETMESSAGE
+ 0002:00000000       _dllentry
+ 0002:00000004       _pBucketArr
+ 0003:00000240       @BSSSTDAPP.C
+ 0003:00000240       _edata
+ 0003:0000024A       _end
+
+Program entry point at 0001:2AC0

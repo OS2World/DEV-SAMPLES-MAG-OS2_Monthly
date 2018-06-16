@@ -1,0 +1,711 @@
+An OS/2-PM Editor using MLE
+
+by Brian R. Anderson
+
+
+	MLE is a powerful control window which is available to OS/2-PM
+programmers (pushbuttons, radio buttons, and list boxes are also control
+windows); the initials stand for Multi Line Edit.  In a very real sense, an MLE
+is an object that "knows" how to edit text.  This article describes how I used
+an MLE as the basis for building a simple yet functional programmer's editor. 
+
+
+Background
+
+	You would be well justified in asking: why does the world need another
+editor?  This project "happened" due to a unique set of circumstances.  I was
+teaching a course on OS/2 programming where the students were (rightfully)
+complaining about the OS/2 System Editor because it did not display line
+numbers (they needed line numbers to interpret compiler diagnostics which list
+syntax errors by line).  Just as the course got under way, a labour dispute
+kept me away from my teaching duties for nearly a week; I decided to use the
+time productively and thereby give the students a more useful editing tool and
+an extended example of OS/2-PM programming.
+
+	While you might never wish to write an editor, per se, you might want to
+include some minimal editing capability in a larger project -- the MLE provides
+a perfect mechanism for doing so with very little effort.  Although this article
+describes using the MLE in the client window, I have also used the MLE in a
+dialog box to give limited text editing functions for purposes specific to the
+application.
+
+
+Object Oriented Programming?
+
+	I previously referred to the MLE as an object.  This is not really an
+article on OOPS, but many of the characteristics that make OOPS attractive
+also apply to the MLE.  First of all, the Multi Line Edit control window is
+very high level (as are many of the objects in a good class library).  Secondly,
+the MLE uses a message based paradigm: you send the MLE messages when you
+want it to do something, and it sends you messages when it wants to advise
+you of something.  And finally, the MLE can be easily extended (through
+subclassing) to enhance functionality.
+
+	What I mean by the Multi Line Edit control window being very high
+level is that this object itself already knows how to interact with the user for
+text entry and insertion, cursor movement, scrolling, search and replace,
+cut/copy and paste, and probably a few more that I've forgotten.  For some of
+these features, no extra programming is required at all.  For the other
+features, all that is necessary is to send the MLE an appropriate message
+indicating what you want it to do.  Some MLE features require multiple
+messages and/or a small amount of additional programming.
+Article Scope
+
+	There have been many good articles published about the basic structure
+of an OS/2-PM program (creating standard windows, the message loop, the
+window procedure, resources, etc.).  This article assumes that you are already
+somewhat familiar with those areas of GUI programming and therefore glosses
+over them.  The two main areas of emphasis for the article are: programming
+with the MLE (including subclassing), and programming for the OS/2 help
+system (Information Presentation Facility).  
+
+
+Design Criteria
+
+	I wanted the editor to be easy to use, but not overly constraining.  I
+also wanted the code to be simple and understandable so that I could use it as
+an example in the classroom.  Finally, I wanted good compliance to the IBM
+Common User Access guidelines.
+
+	I decided to limit the size of edit files to 64K -- partly to keep the code
+simple, and partly to ensure that my students coded their projects in a
+modular fashion (no single C source file should be larger than this).  I also
+decided not to support custom colours or fonts -- after all, this is a
+programmer's editor, not a word processor or a paint program.  Since with
+OS/2, it is possible to start multiple copies of the program and then
+cut/copy/paste among them, I saw no need for implementing the MDI (Multiple
+Document Interface).
+
+	Although I had access to both CASE:PM and Gpf (Presentation Manager
+code generation tools), I elected to develop the project from scratch -- mostly
+for the practice using the raw API and the SDK.
+
+	After several weeks of use, I have found that all of my students prefer
+the new editor to anything else (previous classes "got by" using DOS editors
+and/or the OS/2 System Editor).  Many students have commented that the
+OS/2 environment is much superior to anything that they have experienced
+before (prerequisite programming courses have used everything from a 370-style
+mainframe to Borland's Turbo C++).  What they like best about OS/2 is being
+able to start compiling in one session, and then immediately go back to editing
+in another session.
+
+
+Production Files
+
+	Presentation Manager programs require many types of source files.  Of
+course, there are the C source code files and header files.  In keeping with
+my dictum of modular decomposition, I have divided the project into three
+separately compiled modules: EDIT.C (contains main, the client window
+procedure, and the subclassing procedure); EDLG.C (contains the dialog box
+window procedures and supporting code); and EFILE.C (contains the file
+input/output functions).  Each C source code file has a matching header file. 
+Concerning my self-imposed 64K limit: even if all six of these source code files
+were concatenated, they would not total 64K!
+
+	In addition to the C source code, there is the resource file: EDIT.RC
+(contains the menu, keyboard accelerators, help tables, and dialog templates);
+the module definition file: EDIT.DEF (contains instructions to the linker); the
+help text: EDIT.IPF (contains the tag-language help source code); the icon file:
+EDIT.ICO (contains a bitmap); and the makefile (contains instructions for
+compiling and linking the entire project).
+
+	The total lines of code for the project is about 2500 (including all files
+mentioned above, except for the icon file).  The EDIT.EXE file (executable) is
+about 25K; the help file (after compiling EDIT.IPF to EDIT.HLP) is about 15K. 
+Installation is accomplished by copying the executable file to C:\OS2, and the
+help file to C:\OS2\HELP.
+
+
+Credits
+
+	Most of the work for this project is original -- however, I am not one to
+"reinvent the wheel".  The open file dialog box (and associated support code)
+was lifted verbatim from Charles Petzold's very good book: Programming the
+OS/2 Presentation Manager.  I derived the save as dialog box from the open
+file dialog box.
+
+
+How Edit Works
+
+	I will begin by describing the overall structure of the program, including
+a brief description of each function.  Since most of the action occurs in the
+window procedure and through its message interaction with the MLE, I will
+also describe the purpose of some of the message exchanges.  In many
+instances, standard messages sent by PM to the client window procedure result
+in messages being sent to the MLE.  When the user makes a menu selection
+(e.g., selects Paste from the Edit menu) or uses one of the dialog boxes (e.g.,
+to initiate a text search), a considerable amount of MLE message traffic is
+also generated -- these will likewise be described.  To gain the most from this
+discussion, I suggest that you follow along in the code as each issue is
+discussed (reading the code of Petzold, Duncan, and other pioneering OS/2
+authors has helped me immensely).
+
+
+Functions
+
+main()
+As in all PM programs, this function contains three things:
+initialization code, the message loop, and termination code.  
+
+During initialization, an anchor block (whatever that is) is obtained,
+a message queue is created, a window class is registered, and a
+standard window is created -- this is all the usual "stuff".  For IPF
+(help), a HELPINIT structure if filled with information and a help
+instance is created.  Finally, a PM timer is created -- this will post
+a message to the client window procedure every 200 milliseconds to
+tell the editor it is time to update the cursor position display.
+
+The message loop is nested inside an "infinite" for loop -- the
+purpose of which is to give the user the chance to abort an exit, or
+to save the current contents of the edit window to a file before
+exit.
+
+During termination, everything that was previously created is
+destroyed -- including the help instance and the timer.
+
+
+ClientWndProc()
+A window procedure is what gives a window its behaviourial
+characteristics -- i.e., it is what makes one window behave
+differently from another (e.g., a pushbutton control window has a
+different window procedure than a list box control window).  The
+client window procedure (of this or any PM application) is what
+mainly determines how the application looks, feels, and acts.  A
+client window procedure is a massive switch/case statement, with
+one case to handle each of the messages that the window must
+respond to.  In the case of the WM_COMMAND message, a further
+(nested) switch/case handles each type of WM_COMMAND message. 
+Later, I will explain how many of these messages are handled, and
+how they affects the MLE.
+
+SetPtrArrow() & SetPtrWait()
+These two functions are used to alter the appearance of the mouse
+pointer.  If a long operation (such as a text search) is initiated, a
+call to SetPtrWait changes the mouse pointer to a timer symbol (an
+hourglass or a clock).  After the time consuming operation is
+finished, a call to SetPtrArrow changes the mouse pointer back to
+normal.
+
+TabWndProc()
+This function is used for subclassing.  The MLE window procedure is
+supplied by PM, and determines how the MLE behaves.  Since I
+didn't like the way that the MLE handled tabs, I used subclassing to
+alter the normal behaviour.  With subclassing, all messages destined
+for the MLE are sent first to the TabWndProc, which traps only
+WM_CHAR messages consisting of the Tab key so that it can
+convert the Tab to an appropriate number of spaces (all other
+messages are sent on to the regular MLE window procedure).
+
+AboutDlgProc()
+A dialog box is just a specific kind of window -- it therefore needs
+a window procedure to handle all the messages that PM sends to it
+when the window is displayed.  The about box only needs to handle
+one type of message -- so that it can dismiss itself when the user
+activates the OK pushbutton.
+
+OpenDlgProc()
+This dialog box does much more than the about box, therefore its
+window procedure must handle many more types of messages (hence
+a switch/case statement).  The open file dialog box allows the user
+to select a drive/directory and a file (which will be read into
+memory and displayed in the edit window).  As I mentioned earlier,
+this is Charles Petzold's code: refer to his book for an explanation
+of how it works (Chapter 14, starting on Page 654).
+
+SaveasDlgProc()
+This dialog box is a subset of the open file dialog.  It allows the
+user to enter a file name.  The user may optionally select a
+different drive/directory into which the file is saved, otherwise the
+current drive and directory are used.
+
+ParseFileName()
+This is a helper function used by OpenDlgProc and SaveasDlgProc. 
+Its purpose is to validate the drive, directory, and filename
+information entered by the user.  Refer to Petzold's book for a
+complete explanation of this code.
+
+FillDirListBox()
+This is a also helper function used by OpenDlgProc and
+SaveasDlgProc.  The function name pretty well describes its purpose.
+Refer to Petzold's book for a complete explanation of this code.
+
+FileFileListBox()
+This is also a helper function, but is used only by OpenDlgProc
+(SaveasDlgProc does not display a list of files).  The function name
+pretty well describes its purpose.  Refer to Petzold's book for a
+complete explanation of this code.
+
+FindDlgProc()
+This dialog box prompts the user for a text string to search for. 
+When the user selects OK, the search proceeds.  To facilitate
+repeated searches, any previous search string is "suggested" as a
+starting point.  The string is placed in a global variable -- code in
+the client window procedure does the actual searching (via messages
+to the MLE).
+
+ReplaceDlgProc()
+Similar to above, this dialog box first prompts the user for a search
+string, then a replacement string.  Options are provided to allow the
+user to continue the search without replacing the current
+occurrence, to replace just the current occurrence, or to replace all
+occurrences.  As above, the actual work (search/replace) is carried
+out by code in the client window procedure (this will be covered
+later when messages are discussed).
+
+GoLnDlgProc()
+Prompts the user for a line number.  When the user selects OK, that
+line number is displayed at the top of the edit window.  Again, the
+dialog box procedure just collects user input -- the client window
+procedure does the real work.
+
+ReadFile()
+Using a filename provided by OpenDlgProc, this function reads a file
+of up to 64K into a dynamically allocated buffer.  Returns file size
+(or a negative code indicating an error); passes a pointer to the
+buffer back to the client window procedure, which transfers the
+data to the edit window (MLE).
+
+MakeWriteBuffer() & WriteFile()
+These two functions together are the mirror image of ReadFile --
+allocation of buffer space and the actual writing to the file must be
+split due to the requirements of the MLE.  The sequence of events
+is roughly: 1) ask MLE how much data it has; 2) allocate enough
+space for that data (that is what MakeWriteBuffer does); 3) transfer
+the data from the MLE to the buffer; and 4) create the file and
+write to it (that is what WriteFile does).
+
+Release()
+This function will release (i.e., free) the dynamically allocated
+storage used to read or write files.
+
+
+Message Traffic
+
+	Traditional applications are procedure based: they use a programmed
+sequence of operations.  The programmer of such traditional applications
+determine what the pattern of user interaction will be via hard coding.  OS/2
+Presentation Manager applications are very different -- the user is more in
+control and may perform operations in any order.  This focus on the user
+requires a different programming paradigm -- the application must be ready to
+accept any command from the user at almost any time.  This is accomplished
+by way of messages -- when the user requests an operation, the application is
+advised by message.  The application must be programmed to respond to any
+message that the user can generate.  Specific messages are generated any time
+the user moves the mouse, strikes a key on the keyboard, or selects a menu
+entry (among other actions).
+
+	Most messages are dispatched to the client window procedure; when a
+dialog box is being displayed, the messages go to the dialog window procedure. 
+Each of the messages that the Edit client window procedure is programmed to
+respond to is described below.  In many cases, an incomming message (from
+the user) results in other messages being sent to the MLE -- these also are
+described.
+
+WM_CREATE
+The first message received by the client window procedure is
+WM_CREATE, which is sent during processing of the
+WinCreateStdWindow function.  The purpose of this message is to
+allow the window procedure to do any initialization prior to it being
+displayed.  In the case of Edit, there is much to be done.  The
+single most important job is to create the MLE window by calling
+WinCreateWindow with the window class set to WC_MLE -- which
+causes the built-in (PM supplied) MLE window procedure to control
+this window.  The MLE window is immediately subclassed to allow
+for special handling of tabs.  To subclass a window, you must
+provide a new window procedure for this window.  A pointer to the
+original window procedure is returned as a result of the subclassing
+operation -- this function pointer is used (by TabWndProc) to call
+the original window procedure from within the new window
+procedure to allow the original window procedure to still do most of
+its work in the usual way (e.g., in Edit, subclassing affects only the
+way that the MLE handles tabs).  Other important actions taken
+during WM_CREATE message processing are setting of various MLE
+options (font -- set to monospace; maximum size -- set to 64K;
+tabstops -- set to 64 pels).  Also, a few minor jobs are done during
+WM_CREATE processing: getting handles to various windows
+(required for later message processing); determining the menu height
+(used for the height of the status line that displays the cursor
+position).
+
+WM_SIZE
+When the MLE is created, its position and size are not specified. 
+However, during the WM_SIZE message the MLE is positioned and
+sized to just about fill the entire client area -- less a strip along
+the top of the window (just below the menu) where cursor position
+(line and column) will be displayed.  The WM_SIZE message is sent
+by PM every time the main (client) window changes size.
+
+WM_TIMER
+When the client window procedure receives a WM_TIMER message
+(about every 200 milliseconds), it sends a couple of messages to the
+MLE, and does a few calculations to determine the position (line and
+column) of the cursor.  If the cursor position has changed, the
+client window is invalidated to cause PM to send a WM_PAINT
+message (so that the new cursor information is displayed).
+
+WM_PAINT
+During processing of a WM_PAINT message, the current cursor
+position (line and column) are displayed along the top of the client
+area just above the MLE window.  No other client area drawing is
+needed because the MLE window procedure takes care of keeping
+the text properly displayed as the user enters or deletes text, or
+scrolls through the text, etc..
+
+WM_MINMAXFRAME
+When Edit has a file loaded into the MLE, the filename is displayed
+in the program's title bar.  When the program is minimized (i.e.,
+displayed as an icon) the title bar text is usually displayed under
+the icon.  Unfortunately, PM limits the amount of text that can be
+displayed under an icon -- a full filename (especially if the path is
+included) will likely be cut off.  Each time the program is changed
+to or from an icon, PM sends a WM_MINMAXFRAME message --
+Edit uses this message to change the title bar text to just the
+program name when the program is minimized and back to the
+program name + the filename otherwise.
+
+WM_INITMENU
+Several of the program's features are not always available -- for
+instance Cut, Copy, and Delete are not available unless some text
+has been selected (highlighted) in the edit window; similarly Paste is
+not available unless the clipboard contains text.  Each time PM is
+about to display a menu, it sends the program a WM_INITMENU
+message -- when this message is received, Edit asks the clipboard if
+there is any text present, and asks the MLE if any text has been
+highlighted.  If not, the appropriate menu item is disabled (greyed
+out) so that the user cannot select an operation that is not
+currently valid.
+
+WM_CONTROL
+There are several messages that the MLE can send to the client
+window procedure -- all are sent via notification codes as part of a
+WM_CONTROL message.  Edit handles only two of these:
+MLN_OVERFLOW (the MLE has exceeded its 64K limit), and
+MLN_CHANGE (the text in the MLE has changed).  The first of
+these is used to warn the user (who should then split the file before
+continuing).  The second message (MLN_CHANGE) helps to determine
+if the file should be saved before exit, and also helps to determine
+whether an undo operation has occurred (and can thus be redone by
+invoking undo again).
+
+WM_COMMAND
+Whenever the user selects a menu entry (whether by mouse or by
+keyboard), PM generates a WM_COMMAND message.  Along with the
+WM_COMMAND message comes a parameter that indicates the nature
+of the command (i.e., which menu was selected).  Just as the many
+messages themselves are handled by a large switch/case statement,
+the many menu commands are similarly handled by a (now nested)
+switch/case statement with one case for each menu selection.  The
+following commands are processed:
+
+	IDM_NEW
+The IDM_NEW command is the result of the user choosing New
+from the File menu (clears the edit window).  If the edit
+window has changed, the user is given a chance to save to a
+file before this command is acted upon.  The New operation is
+performed by first asking the MLE how much text it has, and
+then deleting it all.
+
+	IDM_OPEN
+The IDM_OPEN command is the result of the user choosing
+Open from the File menu (allows the user to open a new file). 
+Edit first sends itself a WM_COMMAND:IDM_NEW message to
+clear the edit window in preparation.  Next, the OpenDlgProc
+is invoked indirectly by calling WinDlgBox -- if the user
+selects OK with a valid filename chosen, this procedure return
+TRUE and the file is read by calling ReadFile, the buffer filled
+up by ReadFile is displayed in the edit window by sending the
+MLE several messages (after checking to be sure ReadFile was
+successful).  The technique of "sending yourself messages", as
+in the case of sending the WM_COMMAND:IDM_NEW message
+above, is a powerful alternative to using subroutines to get
+work done inside a window procedure.
+
+	IDM_SAVE
+The IDM_SAVE command is the result of the user choosing
+Save from the File menu -- using the technique just described,
+an IDM_SAVE command can also result (indirectly) from the
+user choosing Save as from the File menu.  Processing the save
+command consists of asking the MLE how much text it has,
+making a write buffer for the text, transferring the text from
+the MLE to the buffer, and finally writing the buffer to a file. 
+In what almost seems like mutual recursion, the
+WM_COMMAND:IDM_SAVEAS message is sent if the edit
+window does not already have a name.
+
+	IDM_SAVEAS
+The IDM_SAVEAS command is the result of the user choosing
+Save as from the File menu.  The SaveasDlgProc is invoked
+(indirectly, by WinDlgBox) to allow the user to choose a
+filename.  Once a filename is chosen, a boolean (hasName) is
+set to TRUE, and the WM_COMMAND:IDM_SAVE message is
+sent.  It is this boolean which prevents any recursion resulting
+from IDM_SAVE invoking IDM_SAVEAS and vice versa.
+
+	IDM_EXIT
+The IDM_EXIT command is the result of the user choosing Exit
+from the File menu.  In turn, Edit sends a WM_CLOSE message
+which eventually results in a WM_QUIT message being sent by
+PM.  When the message loop receives a WM_QUIT message, the
+loop terminates.  There are (at least) two other ways that the
+WM_CLOSE/WM_QUIT sequence can occur: as a result of the
+user choosing Close from the system menu, or End task from
+the PM Task List.  In all cases the "infinite" for loop in main
+(described earlier) gives the user a chance to save the contents
+of the edit window to a file before the program actually exits
+or of cancelling the shutdown.
+
+	IDM_UNDO
+The IDM_UNDO command is the result of the user choosing
+Undo from the Edit menu.  The MLE knows how to undo the
+last operation, so all that Edit has to do is send the MLE an
+MLM_UNDO message.  If the last action was undo, the undo is
+undone (i.e., redo).  The undone flag is set to TRUE to allow
+redo (whether undo is enabled is controlled by the action of
+the WM_INITMENU command processing, explained above).
+
+	IDM_CUT, IDM_COPY, & IDM_DELETE
+The IDM_CUT, IDM_COPY, and IDM_DELETE messages are all
+handled similarly.  They are the result of the user choosing
+Cut, Copy, or Delete from the Edit menu.  Since the MLE
+"knows how" to do all of these operations, all that is necessary
+is to send the appropriate message (MLM_CUT, MLM_COPY, or
+MLM_CLEAR) to the MLE -- it does the rest.  As mentioned
+above, these commands would have been disabled during
+WM_INITMENU processing if the user has not previously
+selected any text.  The copy command places the selected text
+on the system clipboard; the delete command erases the
+selected text; the cut command does both (copys text to the
+clipboard, and then erases it).
+
+
+	IDM_PASTE
+The IDM_PASTE command results from the user choosing Paste
+from the Edit menu.  The MLE also "know how" to paste from
+the clipboard (all we have to do is send it an MLM_PASTE
+message).  Similar to the case with cut, copy, and delete, the
+Paste menu selection would have been disabled during the
+WM_INITMENU processing if there was no text on the
+clipboard.
+
+	IDM_FIND
+The IDM_FIND command results from the user choosing Find
+from the Edit menu.  First, the FindDlgProc is invoked via a
+call to WinDlgBox -- if the user does not select Cancel,
+WinDlgBox returns DID_OK and the search begins.  Although
+the MLE "knows how" to search, a little more work is required:
+a structure must be filled with information before the
+MLM_SEARCH message is sent to the MLE.  If the target
+string is found, the MLE highlights it.  If the target is not
+found, the MLE does nothing visible, but it returns FALSE,
+which Edit uses to display a "not found" message box.
+
+	IDM_REPLACE
+The IDM_REPLACE command results from the user choosing
+Replace from the Edit menu.  The processing is somewhat
+similar to Find, except that two strings are involved (a target
+and a replacement), and there is a loop to allow repeated
+find/replace cycles.  There is also options to replace either a
+single instance or all instances of the target with the
+replacement string.  The first time the ReplaceDlgProc is called
+(via WinDlgBox), a parameter passed to the dialog box
+procedure causes the Replace and Replace All buttons to be
+disabled.  For successive iterations, these buttons are enabled
+by altering the parameter mentioned earlier (i.e., setting "first"
+to FALSE).  If, after the target is found, the user then
+chooses replace, an MLM_INSERT message is used to replace
+the single instance; if the user chooses replace all,
+MLM_INSERT replaces the first instance (the one that was
+already found), and an MLM_SEARCH message with a parameter
+of MLFSEARCH_CHANGEALL is sent to find and replace the
+rest.
+
+	IDM_GO
+The IDM_GO command results from the user choosing Go to
+line from the Edit menu.  The processing is more complicated
+than is should be because the MLE offers no way to go
+directly to a specific line number -- you must go through two
+steps: first convert the line number to an absolute character
+position, and then cause the MLE to display that character on
+the first line of the edit window.  Matters are complicated
+even further because if the user then depresses a cursor
+movement key, the MLE will "snap back" to where it was prior
+to repositioning.  The "trick" to avoiding this "snapping back"
+is to simulate a mouse button hit, which "locks" the MLE in its
+new position.
+
+	IDM_HELPFORHELP, IDM_EXTENDEDHELP, IDM_KEYSHELP, & IDM_HELPINDEX
+The way that I handle processing of the help menu messages is
+contrary to the method recommended by IBM -- however, my
+method gives me greater flexibility and is somewhat simpler and
+more consistent.  In the resource file (EDIT.RC), IBM
+recommends that the help menu items (except for Help for
+help) generate predefined messages types by sending a
+WM_SYSCOMMAND message with a specific parameter (which is
+unlike other menus, and prevents the context sensitive help
+that is available for other menus).  Instead, I set up the help
+menu in the resource file in a manner that is consistent with
+other menus, and then send the WM_SYSCOMMAND messages
+from the client window procedure (for extended help, keys
+help, and the help index), which allows for context sensitive
+help within the help menu.  I also simplify the help table and
+help subtable by using the same constants for help as for the
+menus (e.g., HELPSUBITEM   IDM_FILE, IDM_FILE) -- this is
+much simpler than the recommended method (of relating the
+menu ID to some new ID), and causes no limitations or other
+problems.  Most of the effort in putting together on-line help
+involves the IPF file, which is discussed below.
+
+	IDM_ABOUT
+The IDM_ABOUT command results from the user choosing
+About from the Help command.  To display the about box, we
+invoke the AboutDlgProc via WinDlgProc.
+
+WM_ARGS & WM_CLEANFILE
+Edit also uses two so-called user messages -- these are messages
+defined by the application instead of by PM.  All messages are
+identified by a unique number; any message defined by the
+application should be numbered starting at WM_USER (a pre-defined
+constant guaranteed to be above the message numbers used by PM). 
+The first user message is WM_ARGS, which is actually sent from
+main (just before the message loop is entered) as a result of the
+user entering a filename on the command line when Edit is started. 
+When the client window procedure receives this message, it opens up
+a file and reads it into the edit window (of the MLE).  The other
+user message, WM_CLEANFILE, is sent whenever the editor is in a
+condition where it is safe to exit without saving the current edit
+window to a file.  This message also causes the MLE undo-state to
+be reset.  Edit sends itself the WM_CLEANFILE message whenever a
+new file is read, and whenever the edit window is saved to a file
+(these operations cannot be undone, but no need to save before
+exit).
+
+HM_ERROR & HM_QUERY_KEYS_HELP
+The application receives two messages related directly to the help
+manager; these are HM_ERROR (which results in the display of a message
+box informing the user that help is not available), and
+HM_QUERY_KEYS_HELP (which is merely passed back to PM for
+processing).
+
+WM_DESTROY
+After the user has terminated the application, PM sends a WM_DESTROY
+message -- the only thing left to be done by Edit is to destroy the MLE
+(which was created during the WM_CREATE message).
+
+
+The Information Presentation Facility (IPF)
+
+	IPF is the on-line help facility that was introduced with OS/2 v1.2, and
+replaced and/or supplemented help hooks (depending upon your point of view -
+- although applications programmers no longer work with help hooks, IPF still
+uses them internally).  IPF is quite flexible and powerful (but has not been
+well documented, except for a short and incomplete section in Volume 4 of the
+Microsoft OS/2 Programmer's Reference and a few articles in the IBM Personal
+Systems Developer).  IPF allows for context sensitive help, a two-level index,
+a table-of-contents, hypertext links, multiple viewports, and graphics (including
+animation).  This article (and accompanying code) illustrates the basic features,
+omitting viewports, graphics, and certain types of links.
+
+	Implementing IPF requires minor changes to the C source (discussed above
+under messages), additions to the resource script (HELPTABLE and
+HELPSUBTABLE(s)), and creation of the IPF help file (source help text).  A
+special compiler (IPFC) is required to convert the IPF file to a HLP file.
+
+	IPF help files are mainly plain text (which is what the user reads when
+requesting help); however, IPF uses a tag language to describe certain features
+of the help system.  The IPF source file is compiled by IPFC (the IPF
+Compiler) to produce the HLP files that are used at run time.  I have managed
+to "figure out" enough of the help system to "get by" based upon scant
+examples and write-ups in the sources mentioned above.  I have had to "fill
+in" a few holes by guess and experimentation.  Not a very satisfactory state of
+affairs -- however, in the end I am able to generate fairly good help files. 
+The IPF tag language uses rather verbose multi-character symbols to delimit
+the various sections of the help source file.  Some of these tags are explained
+below.
+
+	The IPF source code is divided into help panels.  Each panel has a
+number (which is used by the Help Manager to find the correct panel when
+the user requests help, and may also be used as a reference for hypertext
+links within IPF) and a title (which is displayed in the help window title bar). 
+If the help panel is for a menu item, its reference number must match the
+IDM_????? constant defined in the applications header file.  Each help panel
+can be divided into paragraphs (:p. tag); within each paragraph, word wrap is
+automatic.  If you wish to disable word wrap, it is possible to set up simple
+lists (:sl. :li. :esl. tags) of items (which are double spaced unless they are
+declared compact).
+
+	One of the most powerful features of IPF is the hypertext links.  Links
+are set up with a tag statement as follows:
+	:link.res=### reftype=hd.?????:elink.
+The ### refers to a numbered help panel; the ????? is the text that is
+displayed as the hypertext link (shown in contrasting colour -- usually light
+green).  If the user double-clicks on the link, the referenced help panel is
+displayed.  The Edit program uses hypertext links only in compact lists, but
+they can be embedded anywhere in the help text.  Another type of line
+(reftype=inform) sends an HM_INFORM message to the application; that type is
+not illustrated here.
+
+	To set up an index of available help topics, the second line of each help
+panel must be one of the following:
+	:i1 id=xx.?????
+	:i2 refid=xx.??????
+The :i1 is used for top level index entries, :i2 for sub-entries (the index is
+only two level).  In the case of the =xx., the xx can be any word (sequence of
+letters), which specifies which second level index entries go with which first
+level entry (there must be only one first level entry for each xx value.  The
+????? can be anything, and is what appears in the index.  Incidently, index
+entries are also hypertext links (i.e., double-click on them to display the
+associated help panel).  You do not have to add anything additional to also get
+a table of contents (IPF does that for you).
+
+	To highlight a word or phrase, there are 10 styles of text available:
+highlighted phrases 1 through 9, plus the default (which is dark blue).  Here is
+an example of a highlighted phrase:
+	:hp8.This would be red text!:ehp8.
+
+The following list indicates what the highlighted phrases mean:
+	hp1 = italics
+	hp2 = bold
+	hp3 = italics+bold
+	hp4 = light blue
+	hp5 = underlined
+	hp6 = italics+underlined
+	hp7 = bold+underlined
+	hp8 = red
+	hp9 = magenta
+
+	The Edit help system uses (or perhaps over uses) a variety of highlighted
+phrases for emphasis of certain words and phrases.
+
+	Another feature of IPF (not illustrated here) is the ability to give
+context sensitive help in dialog boxes (Edit doesn't have any complicated
+dialog boxes where such help would be warranted).  Adding dialog box help is
+quite simple and requires the following steps: 1) add a help button with button
+styles BS_NOPOINTERFOCUS and BS_HELP; 2) add an entry to the
+HELPTABLE in the resource file for each dialog box; 3) add a HELPSUBTABLE
+for each dialog box with an entry for each element of the dialog box, keyed
+by ID; 4) add a panel to the IPF file for each element of the dialog box,
+again, keyed by the ID of the element.  When the user selects the help button
+(or depresses the F1 key), help will be provided for whatever element of the
+dialog box currently has focus (although it is also possible to have the same
+help displayed regardless of which element has focus by using the same help
+ID -- the second constant in a help subtable item -- for all IDs in the dialog
+box).
+
+
+Conclusion
+
+	Many people have lamented the long, steep learning curve that must be
+climbed to become productive programming in a GUI environment such as OS/2
+Presentation Manager.  This project illustrates that the powerful features
+provided by the GUI can make an otherwise very challenging project almost a
+snap.  Without the MLE (Multi Line Edit predefined control window), the
+editor presented here would have taken considerably longer to develop, and
+would have resulted in a considerably greater number of total lines of code.  I
+submit that once mastered, a GUI such as the OS/2 Presentation Manager
+actually makes a programmer more productive and results in more functional
+and useful applications.  These advantages far outweigh the disadvantage of
+any initial difficulty in learning the GUI paradigm.
+
+
+*   *   *
+

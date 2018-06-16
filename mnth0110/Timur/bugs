@@ -1,0 +1,7 @@
+During targetting, the routine which generates the targetting path may
+enter an infite loop.  This happens when the targetting path circles back
+on itself.  Since the routine is called from the message processing routine,
+the loop causes the system message queue to block.  Your only recourse is
+to press Ctrl-Esc and terminate btech2.exe.
+
+This error has been fixed in the current beta.

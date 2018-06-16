@@ -1,0 +1,601 @@
+            Listing for edit.ipf                                        Page 37
+
+         1748|   .*********************************************************************
+         1749|   .*                                                                   *
+         1750|   .*        Help System for Edit (Simple Programmer's Editor)          *
+         1751|   .*                                                                   *
+         1752|   .*        Brian R. Anderson                                          *
+         1753|   .*        January 25, 1992                                           *
+         1754|   .*********************************************************************
+         1755|   :userdoc.
+         1756|   :title.Help for Edit Application
+         1757|   :body.
+         1758|   :h1 res=10.Extended Help
+         1759|   :i1 id=ed.Editor
+         1760|   .*
+         1761|   :p.
+         1762|   :hp2.Edit:ehp2. is a simple programmer's editor.  Its only advantage
+         1763|   over the standard OS/2 System Editor is that :hp2.Edit:ehp2.
+         1764|   displays line and column numbers -- something that is essential when
+         1765|   attempting to interpret compiler diagnostics.
+         1766|   :p.
+         1767|   All standard editing features are supported, including :hp4.undo/redo:ehp4.,
+         1768|   :hp4.cut:ehp4., :hp4.copy:ehp4., :hp4.paste:ehp4. (using the system
+         1769|   clipboard), :hp4.search/replace:ehp4., and :hp4.Go to line:ehp4..
+         1770|   :p.
+         1771|   Standard cursor control keys are available when editing.  CUA standards
+         1772|   are followed for :hp1.most:ehp1.  functions.
+         1773|   :p.
+         1774|   More help can be obtained on any of the main menu items (and their
+         1775|   associated pull-down menus) by double-clicking on one of the following:
+         1776|   :p.
+         1777|   :sl compact.
+         1778|   :li.:link res=100 reftype=hd.File:elink.
+         1779|   :li.:link res=200 reftype=hd.Edit:elink.
+         1780|   :li.:link res=300 reftype=hd.Help:elink.
+         1781|   :esl.
+         1782|   :p.
+         1783|   :sl compact.
+         1784|   :li.Brian R. Anderson
+         1785|   :li.British Columbia Institute of Technology
+         1786|   :li.3700 Willingdon Avenue
+         1787|   :li.Burnaby, B.C.  V5G 3H2
+         1788|   :li.CANADA
+         1789|   :esl.
+         1790|   :p.
+         1791|   .****************************************************************************
+         1792|   .*
+         1793|   :h1 res=100.File Menu Help
+         1794|   :i2 refid=ed.File Menu
+         1795|   .*
+         1796|   :p.
+         1797|   The File menu allows access to disk files.  :hp8.File size must not
+         1798|   exceed 64K.:ehp8.  To edit more than one file, start multiple copies of the
+         1799|   editor by double-clicking on the :hp2.Edit:ehp2. entry in a Desktop Manager
+         1800|   menu or from the command line:
+         1801|   :p.
+         1802|   :hp2.[C: \WORK]:ehp2. :hp7.START EDIT:ehp7.
+edit.ipf                                                                Page 38
+
+         1803|   :p.
+         1804|   With multiple copies of the editor running, you can use the clipboard
+         1805|   to move or copy text from one file to another (see :hp9.Edit:ehp9. menu for
+         1806|   more details).
+         1807|   :p.
+         1808|   For more information, double-click on one of these topics:
+         1809|   :p.
+         1810|   :sl compact.
+         1811|   :li.:link res=101 reftype=hd.New:elink.
+         1812|   :li.:link res=102 reftype=hd.Open:elink.
+         1813|   :li.:link res=103 reftype=hd.Save:elink.
+         1814|   :li.:link res=104 reftype=hd.Save as:elink.
+         1815|   :li.:link res=105 reftype=hd.Exit:elink.
+         1816|   :esl.
+         1817|   :p.
+         1818|   .***********************************************************************
+         1819|   .*
+         1820|   :h1 res=101.New Help
+         1821|   :i2 refid=ed.New
+         1822|   .*
+         1823|   :p.
+         1824|   :hp9.New:ehp9. clears the edit window so that you can create a new file.
+         1825|   If the contents of the edit window have changed since the last time you 
+         1826|   saved, you will be given a chance to save before the window is cleared.
+         1827|   :p.
+         1828|   Unless you want to discard the changes that you have made to your file,
+         1829|   select :hp2.Yes:ehp2. when prompted; if you select :hp2.No:ehp2., the
+         1830|   file will :hp5.not:ehp5. be saved.  If you select :hp2.Cancel:ehp2., you
+         1831|   will be returned to the edit window without any action.
+         1832|   :p.
+         1833|   To activate this command, select :hp9.New:ehp9. from the menu.
+         1834|   :p.
+         1835|   .***********************************************************************
+         1836|   .*
+         1837|   :h1 res=102.Open Help
+         1838|   :i2 refid=ed.Open
+         1839|   .*
+         1840|   :p.
+         1841|   :hp9.Open:ehp9. allows you to access existing files on any disk or within
+         1842|   any directory.  The dialog box that results from choosing :hp9.Open:ehp9.
+         1843|   contains two list boxes -- one with disks/directories, the other with files.
+         1844|   :p.
+         1845|   To change to another disk or directory, simply double-click on the disk or 
+         1846|   directory of interest -- the files list box will immediately show the
+         1847|   files in that directory.
+         1848|   :p.
+         1849|   To select a file, simply double-click on the required file and it will
+         1850|   be opened and read into the edit window.
+         1851|   :p.
+         1852|   You may also open files using just the keyboard:  Of course, you may
+         1853|   simply type the name of the file that you want to open, followed by the
+         1854|   Enter key.  Use the tab key to switch from one part of the dialog box
+         1855|   to another.  Use the up and down Arrow keys to scroll through the
+         1856|   disk/directory and file list boxes.  Use the Enter key to make your
+         1857|   selection.  Use the Escape key to cancel without making a selection.
+edit.ipf                                                                Page 39
+
+         1858|   :p.
+         1859|   To activate this command, select :hp9.Open:ehp9. from the menu.
+         1860|   :p.
+         1861|   If you select :hp9.Open:ehp9. when you are already editing a file (and
+         1862|   the file has changed since the last time you saved), you will be given
+         1863|   the opportunity to save before the new file is opened.
+         1864|   :p.
+         1865|   .***********************************************************************
+         1866|   .*
+         1867|   :h1 res=103.Save Help
+         1868|   :i2 refid=ed.Save
+         1869|   .*
+         1870|   :p.
+         1871|   :hp9.Save:ehp9. will save the contents of the edit window to the current
+         1872|   file.  If the edit window contains new text that has never been saved,
+         1873|   you will be prompted for a filename.  The current filename (if any)
+         1874|   appears in the title bar.
+         1875|   :p.
+         1876|   To activate this command, select :hp9.Save:ehp9. from the menu.
+         1877|   :p.
+         1878|   .***********************************************************************
+         1879|   .*
+         1880|   :h1 res=104.Save as Help
+         1881|   :i2 refid=ed.Save as
+         1882|   .*
+         1883|   :p.
+         1884|   :hp9.Save as:ehp9. allows you to save the contents of the edit window
+         1885|   under a different filename (i.e., different from previous saves and/or
+         1886|   different from the original filename).  Unlike :hp9.Save:ehp9., (which
+         1887|   saves using the existing name) :hp9.Save as:ehp9. :hp5.always:ehp5. prompts
+         1888|   for a new filename.
+         1889|   :p.
+         1890|   :hp9.Save as:ehp9. is useful for two distinct purposes: saving an altered
+         1891|   file under a different name (to preserve the original file); and
+         1892|   splitting a file.
+         1893|   :p.
+         1894|   Splitting a file is :hp1.tricky:ehp1., and should only be attempted after
+         1895|   first saving a backup copy of the entire file.  Here are the steps involved
+         1896|   in splitting a file:
+         1897|   :p.
+         1898|   :sl compact.
+         1899|   :li.1.  Cut one portion of the text to the clipboard.
+         1900|   :li.2.  Save the remaining text to a new file.
+         1901|   :li.3.  Delete the text that was just saved to the file.
+         1902|   :li.4.  Paste the text that was previously Cut to the clipboard.
+         1903|   :li.5.  Save the retreived text to a :hp5.second:ehp5. new file.
+         1904|   :esl.
+         1905|   :p.
+         1906|   To activate this command, select :hp9.Save as:ehp9. from the menu.
+         1907|   :p.
+         1908|   .***********************************************************************
+         1909|   .*
+         1910|   :h1 res=105.Exit Help
+         1911|   :i2 refid=ed.Exit
+         1912|   .*
+edit.ipf                                                                Page 40
+
+         1913|   :p.
+         1914|   :hp9.Exit:ehp9. terminates the editor session, and returns you to the
+         1915|   operating system (PM screen or OS/2 command prompt, depending upon how
+         1916|   you started the program).  If you have changed the contents of the
+         1917|   edit window since the last time that you saved, you will be given 
+         1918|   the opportunity to save the contents to a file (or Cancel and return
+         1919|   to the editor).
+         1920|   :p.
+         1921|   To activate this command (i.e., quit the editor), you may select
+         1922|   :hp9.Exit:ehp9. from the menu, select Close from the system menu,
+         1923|   click on the End Task pushbutton from the task list, or use the
+         1924|   keyboard accelerator: F3.
+         1925|   :p.
+         1926|   .***********************************************************************
+         1927|   .*
+         1928|   :h1 res=200.Edit Menu Help
+         1929|   :i2 refid=ed.Edit
+         1930|   .*
+         1931|   :p.
+         1932|   The :hp9.Edit:ehp9. menu provides various text manupulation functions.
+         1933|   For more information, double-click on one of these topics:
+         1934|   :p.
+         1935|   :sl compact.
+         1936|   :li.:link res=201 reftype=hd.Undo:elink.
+         1937|   :li.:link res=202 reftype=hd.Cut:elink.
+         1938|   :li.:link res=203 reftype=hd.Copy:elink.
+         1939|   :li.:link res=204 reftype=hd.Paste:elink.
+         1940|   :li.:link res=205 reftype=hd.Delete:elink.
+         1941|   :li.:link res=206 reftype=hd.Find:elink.
+         1942|   :li.:link res=207 reftype=hd.Replace:elink.
+         1943|   :li.:link res=208 reftype=hd.Go to line:elink.
+         1944|   :esl.
+         1945|   :p.
+         1946|   .***********************************************************************
+         1947|   .*
+         1948|   :h1 res=201.Undo Help
+         1949|   :i2 refid=ed.Undo
+         1950|   .*
+         1951|   :p.
+         1952|   :hp9.Undo:ehp9. provides a single-level undo/redo function to allow
+         1953|   you to recover from mistakes.  This menu selection will be
+         1954|   :hp1.greyed:ehp1.  (i.e., unavailable) if the editor does not have
+         1955|   an action that it can recover from.  For example, it is not possible
+         1956|   to undo a save.
+         1957|   :p.
+         1958|   :hp9.Undo:ehp9. is most useful when you accidently delete something
+         1959|   that you meant to keep.  It is important to realize that :hp2.Edit:ehp2.
+         1960|   can recover only the most recent action -- if you delete something and
+         1961|   don't realize it until after you have started typing, it is too late!
+         1962|   :p.
+         1963|   :hp9.Undo:ehp9. can also recover from an accidental undo -- i.e., it
+         1964|   can re-do.  Again, the same caution applies -- if you don't realize
+         1965|   that the undo was a mistake (and do something else), you will not
+         1966|   be able to re-do, because :hp2.Edit:ehp2. can undo only your latest action.
+         1967|   :p.
+edit.ipf                                                                Page 41
+
+         1968|   To activate this command, select :hp9.Undo:ehp9. from the menu, or
+         1969|   use the keyboard accelerator: Alt+Backspace.
+         1970|   :p.
+         1971|   .***********************************************************************
+         1972|   .*
+         1973|   :h1 res=202.Cut Help
+         1974|   :i2 refid=ed.Cut
+         1975|   .*
+         1976|   :p.
+         1977|   :hp9.Cut:ehp9. allows you to move text from one part of a document
+         1978|   to another, or even between two different documents.
+         1979|   :p.
+         1980|   :hp9.Cut:ehp9. (or :hp9.Copy:ehp9.) places text on the clipboard, where
+         1981|   it may be later retreived by :hp9.Paste:ehp9..  Text remains on the
+         1982|   clipboard even if you exit the program, and is available to other
+         1983|   processes (e.g., other running copies of :hp2.Edit:ehp2.).
+         1984|   :p.
+         1985|   To cut a section of text, you must first :hp1.highlight:ehp1.  the text.
+         1986|   You can do this either with the mouse or the keyboard.  With the mouse,
+         1987|   you point to the beginning of the area that you want to cut, depress and
+         1988|   hold the left mouse button, and then move the mouse to the end of the area
+         1989|   that you want to cut.  With the keyboard, you move the text cursor (with
+         1990|   the Arrow or Page Up/Page Down keys) to the beginning of the area that
+         1991|   you want to cut, depress (and hold) the Shift key and then move (using
+         1992|   the same keys as before) to the end of the area that you want to cut.
+         1993|   In either case (mouse or keyboard) the result is that the selected text 
+         1994|   is marked by changing colors (usually by making the text reverse video, 
+         1995|   but may be different if you have changed the default colors on your computer).
+         1996|   :p.
+         1997|   Once the text has been chosen (:hp1.highlighted:ehp1. ) select 
+         1998|   :hp9.Cut:ehp9. from the menu, or use the keyboard accelerator:
+         1999|   Shift+Del.
+         2000|   :p.
+         2001|   If no text has been selected, the :hp9.Cut:ehp9. menu item will be
+         2002|   :hp1.greyed:ehp1.  (i.e., disabled).
+         2003|   :p.
+         2004|   :hp9.Cut:ehp9. and :hp9.Copy:ehp9. are somewhat similar (in that both
+         2005|   result in the selected text being placed on the clipboard), but very
+         2006|   different (in that :hp9.Cut:ehp9. results in the text being deleted,
+         2007|   while :hp9.Copy:ehp9. does not).
+         2008|   :p.
+         2009|   .***********************************************************************
+         2010|   .*
+         2011|   :h1 res=203.Copy Help
+         2012|   :i2 refid=ed.Copy
+         2013|   .*
+         2014|   :p.
+         2015|   :hp9.Copy:ehp9. allows you to duplicate text from one part of a document
+         2016|   to another, or even between two different documents.
+         2017|   :p.
+         2018|   :hp9.Copy:ehp9. (or :hp9.Cut:ehp9.) places text on the clipboard, where
+         2019|   it may be later retreived by :hp9.Paste:ehp9..  Text remains on the
+         2020|   clipboard even if you exit the program, and is available to other
+         2021|   processes (e.g., other running copies of :hp2.Edit:ehp2.).
+         2022|   :p.
+edit.ipf                                                                Page 42
+
+         2023|   To copy a section of text, you must first :hp1.highlight:ehp1.  the text.
+         2024|   You can do this either with the mouse or the keyboard.  With the mouse,
+         2025|   you point to the beginning of the area that you want to copy, depress and
+         2026|   hold the left mouse button, and then move the mouse to the end of the area
+         2027|   that you want to copy.  With the keyboard, you move the text cursor (with
+         2028|   the Arrow or Page Up/Page Down keys) to the beginning of the area that
+         2029|   you want to copy, depress (and hold) the Shift key and then move (using the
+         2030|   same keys as before) to the end of the area that you want to copy.  In either
+         2031|   case (mouse or keyboard) the result is that the selected text is marked by
+         2032|   changing colors (usually by making the text reverse video, but may be
+         2033|   different if you have changed the default colors on your computer).
+         2034|   :p.
+         2035|   Once the text has been chosen (:hp1.highlighted:ehp1. ) select 
+         2036|   :hp9.Copy:ehp9. from the menu, or use the keyboard accelerator:
+         2037|   Ctrl+Ins.
+         2038|   :p.
+         2039|   If no text has been selected, the :hp9.Copy:ehp9. menu item will be
+         2040|   :hp1.greyed:ehp1.  (i.e., disabled).
+         2041|   :p.
+         2042|   :hp9.Copy:ehp9. and :hp9.Cut:ehp9. are somewhat similar (in that both
+         2043|   result in the selected text being placed on the clipboard), but very
+         2044|   different (in that :hp9.Cut:ehp9. results in the text being deleted,
+         2045|   while :hp9.Copy:ehp9. does not).
+         2046|   :p.
+         2047|   .***********************************************************************
+         2048|   .*
+         2049|   :h1 res=204.Paste Help
+         2050|   :i2 refid=ed.Paste
+         2051|   .*
+         2052|   :p.
+         2053|   :hp9.Paste:ehp9. works in conjunction with :hp9.Cut:ehp9. or :hp9.Copy:ehp9.
+         2054|   to either move or duplicate sections of text.  After text has been
+         2055|   :hp1.highlighted:ehp1.  and then placed on the clipboard, :hp9.Paste:ehp9.
+         2056|   retreives the text from the clipboard and inserts it into the edit window
+         2057|   at the current cursor position.
+         2058|   :p.
+         2059|   To activate this command, select :hp9.Paste:ehp9. from the menu, or
+         2060|   use the keyboard accelerator: Shift+Ins.
+         2061|   :p.
+         2062|   :hp9.Paste:ehp9. does :hp5.not:ehp5. remove the text from the clipboard
+         2063|    -- i.e., the same text can be retreived multiple times.
+         2064|   :p.
+         2065|   If text is :hp1.highlighted:ehp1.  at the time that :hp9.Paste:ehp9. is 
+         2066|   selected, the clipboard data :hp5.replaces:ehp5. the highlighted text.
+         2067|   Although this :hp1.feature:ehp1.  can sometimes be useful, it is usually
+         2068|   a mistake -- fortunately, even this operation can be reversed by the
+         2069|   :hp9.Undo:ehp9. command.
+         2070|   :p.
+         2071|   .***********************************************************************
+         2072|   .*
+         2073|   :h1 res=205.Delete Help
+         2074|   :i2 refid=ed.Delete
+         2075|   .*
+         2076|   :p.
+         2077|   :hp9.Delete:ehp9. allows you to remove text from a document.  The text
+edit.ipf                                                                Page 43
+
+         2078|   does :hp5.not:ehp5. go to the clipboard, but can be retreived (if
+         2079|   done immediately) by :hp9.Undo:ehp9.
+         2080|   :p.
+         2081|   To delete a section of text, you must first :hp1.highlight:ehp1.  the text.
+         2082|   You can do this either with the mouse or the keyboard.  With the mouse,
+         2083|   you point to the beginning of the area that you want to delete, depress and
+         2084|   hold the left mouse button, and then move the mouse to the end of the area
+         2085|   that you want to delete.  With the keyboard, you move the text cursor (with
+         2086|   the Arrow or Page Up/Page Down keys) to the beginning of the area that
+         2087|   you want to delete, depress (and hold) the Shift key and then move (using the
+         2088|   same keys as before) to the end of the area that you want to delete.  In
+         2089|   either case (mouse or keyboard) the result is that the selected text is
+         2090|   marked by changing colors (usually by making the text reverse video, but may
+         2091|   be different if you have changed the default colors on your computer).
+         2092|   :p.
+         2093|   Once the text has been chosen (:hp1.highlighted:ehp1. ) select 
+         2094|   :hp9.Delete:ehp9. from the menu, or use the keyboard accelerator:
+         2095|   Del.
+         2096|   :p.
+         2097|   If no text has been selected, the :hp9.Delete:ehp9. menu item will be
+         2098|   :hp1.greyed:ehp1.  (i.e., disabled), however the Del key will still operate:
+         2099|   it deletes the current character.
+         2100|   :p.
+         2101|   .***********************************************************************
+         2102|   .*
+         2103|   :h1 res=206.Find Help
+         2104|   :i2 refid=ed.Find
+         2105|   .*
+         2106|   :p.
+         2107|   :hp9.Find:ehp9. allows you to search for one or more occurrences of a word
+         2108|   or phrase (up to about 50 characters).
+         2109|   :p.
+         2110|   To activate this command, select :hp9.Find:ehp9. from the menu, or use
+         2111|   the keyboard accelerator: Ctrl+F.
+         2112|   :p.
+         2113|   When activated, you will be prompted to enter a string to search for.
+         2114|   After typing in the target string, press the Enter key or click on the
+         2115|   Find pushbutton.  If the search is successful, the cursor will move
+         2116|   to the first occurrence of the string; the editor will also
+         2117|   :hp1.highlight:ehp1.  the string in the edit window.
+         2118|   :p.
+         2119|   If the target string is not found, a message box informs you of that.
+         2120|   :p.
+         2121|   If you do not specify a target string, :hp9.Find:ehp9. will exit 
+         2122|   without doing anything.  Depressing the Escape key or clicking on
+         2123|   the Cancel pushbutton has the same effect.
+         2124|   :p.
+         2125|   If you activate the :hp9.Find:ehp9. again, the previous word will
+         2126|   already appear in the target field, allowing you to more easily
+         2127|   continue the search (for multiple occurrences) -- just hit the
+         2128|   Enter key or click on the Find pushbutton.
+         2129|   :p.
+         2130|   :hp9.Find:ehp9. starts its search from the cursor position, and
+         2131|   continues to the end of the edit window.
+         2132|   :p.
+edit.ipf                                                                Page 44
+
+         2133|   .***********************************************************************
+         2134|   .*
+         2135|   :h1 res=207.Replace Help
+         2136|   :i2 refid=ed.Replace
+         2137|   .*
+         2138|   :p.
+         2139|   :hp9.Replace:ehp9. allows you to search, and optionally replace text
+         2140|   (a word or phrase up to about 50 characters).
+         2141|   :p.
+         2142|   To activate this command, select :hp9.Replace:ehp9. from the menu, or use
+         2143|   the keyboard accelerator: Ctrl+R.
+         2144|   :p.
+         2145|   When activated, you will be prompted to enter a string to search for.
+         2146|   (You may optionally enter the replacement string at this time as well).
+         2147|   After typing in the target string, press the Enter key or click on the
+         2148|   Find pushbutton.  If the search is successful, the cursor will move
+         2149|   to the first occurrence of the string; the editor will also
+         2150|   :hp1.highlight:ehp1.  the string in the edit window.
+         2151|   :p.
+         2152|   Once the first occurrence of the target is found, the :hp9.Replace:ehp9.
+         2153|   dialog box will reappear (this time with the Replace and Replace All
+         2154|   pushbuttons active).  You may now enter the replacement string (if you
+         2155|   leave it blank, the target is replaced with :hp5.nothing:ehp5. -- i.e., 
+         2156|   the target is deleted).  You may now choose Find (searches for next
+         2157|   occurrence :hp5.without replacing:ehp5.), Replace (replaces the highlighted
+         2158|   occurrence of the target), Replace All (replaces :hp5.every:ehp5. occurrence
+         2159|   of the target, or Cancel (does nothing).
+         2160|   :p.
+         2161|   If the target string is not found, a message box informs you of that.
+         2162|   :p.
+         2163|   In the case of Replace All, a message box informs you when it has
+         2164|   replaced all occurrences of the target.
+         2165|   :p.
+         2166|   If you do not specify a target string, :hp9.Replace:ehp9. will exit 
+         2167|   without doing anything.  Depressing the Escape key or clicking on
+         2168|   the Cancel pushbutton has the same effect.
+         2169|   :p.
+         2170|   :hp9.Replace:ehp9. starts its search from the cursor position, and
+         2171|   continues to the end of the edit window.
+         2172|   :p.
+         2173|   .***********************************************************************
+         2174|   .*
+         2175|   :h1 res=208.Go to line Help
+         2176|   :i2 refid=ed.Go to line
+         2177|   .*
+         2178|   :p.
+         2179|   :hp9.Go to line:ehp9. allows you to go directly to a specified line.
+         2180|   :p.
+         2181|   To activate this command, select :hp9.Go to line:ehp9. from the menu,
+         2182|   or use the keyboard accelerator: Ctrl+G.
+         2183|   :p.
+         2184|   This feature is particularly helpful when you are using compiler
+         2185|   diagnostic messages (which reports syntax errors by line number) to 
+         2186|   locate and fix program bugs.
+         2187|   :p.
+edit.ipf                                                                Page 45
+
+         2188|   You will find it easier if you :hp5.first:ehp5. fix the syntax errors
+         2189|   that occur near the end of the file, as changes made (added or deleted
+         2190|   lines) will not affect line numbering of syntax errors that occur near
+         2191|   the beginning of the file.
+         2192|   :p.
+         2193|   .***********************************************************************
+         2194|   .*
+         2195|   :h1 res=300.Help Menu Help
+         2196|   :i2 refid=ed.Help
+         2197|   .*
+         2198|   :p.
+         2199|   The Help menu gives you access to several types of help, including
+         2200|   help for using the help system, general help about this program,
+         2201|   a list of keys used by this program, an index of available
+         2202|   help topics, and copyright information about :hp2.Edit:ehp2..
+         2203|   :p.
+         2204|   For more information, double-click on one of these topics:
+         2205|   :p.
+         2206|   :sl compact.
+         2207|   :li.:link res=301 reftype=hd.Help for help:elink.
+         2208|   :li.:link res=302 reftype=hd.Extended help:elink.
+         2209|   :li.:link res=303 reftype=hd.Keys help:elink.
+         2210|   :li.:link res=304 reftype=hd.Help index:elink.
+         2211|   :li.:link res=305 reftype=hd.About:elink.
+         2212|   :esl.
+         2213|   :p.
+         2214|   .***********************************************************************
+         2215|   .*
+         2216|   :h1 res=301.Help for help Explained
+         2217|   :i2 refid=ed.Help for help
+         2218|   .*
+         2219|   :p.
+         2220|   :hp9.Help for help:ehp9. gives information about using the OS/2 help
+         2221|   system (known as the :hp1.Information Presentation Facility:ehp1. ).
+         2222|   The various features and services are explained, and the keystrokes
+         2223|   used by the help system are listed and explained.
+         2224|   :p.
+         2225|   .***********************************************************************
+         2226|   .*
+         2227|   .*
+         2228|   :h1 res=302.Extended help Explained
+         2229|   :i2 refid=ed.Extended help
+         2230|   .*
+         2231|   :p.
+         2232|   :hp9.Extended help:ehp9. is actually a rather abbreviated explanation
+         2233|   of this application.  Hypertext links (shown in light green) give you
+         2234|   access to other available help for this application (e.g., instructions for
+         2235|   using each of the menu options).
+         2236|   :p.
+         2237|   .***********************************************************************
+         2238|   .*
+         2239|   :h1 res=303.Keys help Explained
+         2240|   :i2 refid=ed.Keys help
+         2241|   .*
+         2242|   :p.
+edit.ipf                                                                Page 46
+
+         2243|   :hp9.Keys help:ehp9. lists the keystrokes used by this application.
+         2244|   :p.
+         2245|   .***********************************************************************
+         2246|   .*
+         2247|   :h1 res=304.Help index Explained
+         2248|   :i2 refid=ed.Help index
+         2249|   .*
+         2250|   :p.
+         2251|   :hp9.Help index:ehp9. give an alphebetic listing of all available help
+         2252|   topics.  The index is organized in two levels (main topic and subtopic).
+         2253|   All topics related to this application are subtopics of the main
+         2254|   topic :hp2.Editor:ehp2..
+         2255|   :p.
+         2256|   Each item in the index is a hypertext link: double-click or depress the
+         2257|   Enter key to get help on a topic in the index.
+         2258|   :p.
+         2259|   .***********************************************************************
+         2260|   .*
+         2261|   :h1 res=305.About Explained
+         2262|   :i2 refid=ed.About
+         2263|   .*
+         2264|   :p.
+         2265|   :hp9.About:ehp9. displays copyright information about this application.
+         2266|   :p.
+         2267|   .***********************************************************************
+         2268|   .*
+         2269|   :h1 res=310.Keys Help
+         2270|   :i2 refid=ed.Editing Keys
+         2271|   .*
+         2272|   :p.
+         2273|   :hp2.Editing Keys:ehp2.
+         2274|   :p.
+         2275|   :hp4.     
+         2276|   :dl tsize=8 break=all.     
+         2277|   :dt.F1
+         2278|   :dd.Help
+         2279|   :dt.F3
+         2280|   :dd.Exit
+         2281|   :dt.Alt+Backspace
+         2282|   :dd.Undo/Redo
+         2283|   :dt.Shift+Del
+         2284|   :dd.Cut
+         2285|   :dt.Ctrl+Ins
+         2286|   :dd.Copy
+         2287|   :dt.Del
+         2288|   :dd.Delete Block or Character
+         2289|   :dt.Ctrl+F
+         2290|   :dd.Find (Search)
+         2291|   :dt.Ctrl+R
+         2292|   :dd.Replace (Search and Replace)
+         2293|   :dt.Page Up
+         2294|   :dd.Scroll Text (Vertical)
+         2295|   :dt.Page Down
+         2296|   :dd.Scroll Text (Vertical)
+         2297|   :dt.Ctrl+Page Up
+edit.ipf                                                                Page 47
+
+         2298|   :dd.Scroll Text (Horizontal)
+         2299|   :dt.Ctrl+Page Down
+         2300|   :dd.Scroll Text (Horizontal)
+         2301|   :dt.Home
+         2302|   :dd.Beginning of Line
+         2303|   :dt.End
+         2304|   :dd.End of Line
+         2305|   :dt.Ctrl+Home
+         2306|   :dd.Beginning of Document
+         2307|   :dt.Ctrl+End
+         2308|   :dd.End of Document
+         2309|   :dt.Ctrl+Right Arrow
+         2310|   :dd.Next Word
+         2311|   :dt.Ctrl+Left Arrow
+         2312|   :dd.Previous Word
+         2313|   :dt.Insert
+         2314|   :dd.Toggle Insert/Overwrite
+         2315|   :dt.Del
+         2316|   :dd.Delete Character or Block
+         2317|   :edl.     
+         2318|   :ehp4.     
+         2319|   :p.
+         2320|   .***********************************************************************
+         2321|   :index.     
+         2322|   :euserdoc.     
+         2323|   .* end of help for Edit
+         2324|   
+         2325|   
+

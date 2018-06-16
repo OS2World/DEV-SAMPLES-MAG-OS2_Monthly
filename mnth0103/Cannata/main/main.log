@@ -1,0 +1,52 @@
+
+Operating System/2 Program Maintenance Utility
+Version 2.000.000 Dec 02 1991
+Copyright (C) IBM Corporation 1988-1991.
+Copyright (C) Microsoft Corp. 1988-1991.
+All rights reserved.
+
+	icc /c /Gd- /Ge  /Gm+ /Kb+ /Ms /Re /Se /ss /Ti+ -Fomain.obj main.c
+	rc -r main.rc
+Operating System/2  Resource Compiler
+Version 2.00.000 Nov 9 1991
+(C) Copyright IBM Corporation 1988-1991
+(C) Copyright Microsoft Corp. 1985-1991
+All rights reserved.
+
+
+Creating binary resource file main.RES
+RC:  RCPP -E -D RC_INVOKED -f main.rc -ef C:\OS2\RCPP.ERR -I C:\TOOLKT20\C\OS2H -I C:\IBMC\INCLUDE -I C:\TOOLKT20\SC -I C:\TOOLKT20\ASM\OS2INC -I C:\TOOLKT20\ASM\OS2INC
+
+main.rc...
+	LINK386  /NOE /NOD /CODEVIEW /ALIGN:16 /EXEPACK /M @main.lnk
+
+Operating System/2 LX (Linear Executable) Linker
+Version 2.00.000 Feb 25 1992
+Copyright (C) IBM Corporation 1988-1992.
+Copyright (C) Microsoft Corp. 1988-1992.
+All rights reserved.
+
+Object Modules [.obj]: /NOE /NOD /CODEVIEW /ALIGN:16 /EXEPACK /M main.obj 
+Run File [main.exe]: main.exe                 
+List File [main.map]: main.map                 
+Libraries [.lib]: ..\API.LIB + DDE4NBS + os2386                  
+Definitions File [nul.def]: main.def                 
+	rc main.res main.exe
+Operating System/2  Resource Compiler
+Version 2.00.000 Nov 9 1991
+(C) Copyright IBM Corporation 1988-1991
+(C) Copyright Microsoft Corp. 1985-1991
+All rights reserved.
+
+
+Reading binary resource file main.res
+
+...
+Writing resources to OS/2 v2.0 Linear .EXE file
+Writing 2 DEMAND resource object(s)
+  Writing:  4092 bytes in 1 page(s)
+    9000.1 (4018 bytes)
+    1.5 (72 bytes)
+  Writing:  12 bytes in 1 page(s)
+    9000.8 (10 bytes)
+

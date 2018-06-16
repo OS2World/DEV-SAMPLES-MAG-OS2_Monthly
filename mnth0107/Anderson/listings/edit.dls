@@ -1,0 +1,21 @@
+            Listing for edit.def                                        Page 2
+
+           24|   ;-------------------------------------
+           25|   ; EDIT.DEF module definition file
+           26|   ;-------------------------------------
+           27|   
+           28|   NAME           EDIT  WINDOWAPI
+           29|   
+           30|   DESCRIPTION    'Simple Text Editor Using MLE -- (c) 1992, Brian R. Anderson'
+           31|   PROTMODE
+           32|   HEAPSIZE       16384
+           33|   STACKSIZE      8196
+           34|   EXPORTS        ClientWndProc
+           35|                  AboutDlgProc
+           36|                  OpenDlgProc
+           37|                  SaveasDlgProc
+           38|                  FindDlgProc
+           39|                  ReplaceDlgProc
+           40|                  GoLnDlgProc
+           41|   
+

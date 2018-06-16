@@ -1,0 +1,223 @@
+From OS/2 Monthly Magazine Volume 1, Issue 3.
+
+    (c) Copyright 1992, Bertram Glenn Moshier. All rights reserved.
+
+                             Watching OS/2
+                            By Bert Moshier
+
+One of the following three sentences does not apply to OS/2 2.0 for
+March 31.  (a) Is it soup, yet?  (b) Are we there, yet Mommy?  (c) But
+Mother, I can do it myself!  The answer, of course, is (c).  IBM had to
+finish OS/2 2.0 and everyone was wondering on March 31, if IBM and OS/2
+2.0 were really ready.
+
+You are reading this column after the launch of OS/2 2.0 that occurred
+at the Spring COMDEX.  You have knowledge about the fate of OS/2 many of
+us (back in February) were desiring to know.  Did it go out by the end
+of March?  Did first day orders ship on April 10?  Is it stable?  Is IBM
+advertising and marketing it to the person using the personal computer?
+What new features (since the last beta drop) did IBM add, if any?  Did
+all the features that caused the last delay ship?  How are the press and
+the public receiving OS/2?  Are OS/2 1.x end-users still waiting for
+their upgrade to 2.0?  How long will the upgrade process take to
+complete?  Will IBM have a new upgrade procedure or will it be the same
+old tune?
+
+Today is April 20, and for many people these questions remain.  We have
+some answers, but these answers create new questions.  IBM is
+advertising OS/2, but not widely.  OS/2 Marketing is happening, but
+slowly.  Shrink wrap OS/2 exists, but in very low numbers.  Many stores
+say they will not carry OS/2 on their shelves.  The Corner Store and the
+IBM 800 number together sold in the first two weeks over 280,000 copies
+($49, $99 and $139).  This tells us that word of mouth and computer
+networks (IBM BBS, Compuserve IBMOS2, Fidonet, Bitnet, Internet, and
+Usenet to name a few) are doing a good job.  Reliable sources say IBM is
+selling 4,000 copies an hour as of April 28.
+
+Originally, this column was going to be on a question.  Is OS/2 2.0
+really "The Integration Platform" IBM claims?  After much consideration,
+I felt we needed to take care of some administrative details.  In the
+previous columns, we got right to work reviewing our desire for IBM to
+market and advertise OS/2 aggressively.  Normally, a first column
+discusses the columnist, column goals and other housekeeping details.
+With Spring upon us and a moment of time, we should cover these areas.
+Before we delve into these details, a word from our sponsor.
+
+-------
+
+Hi!  My name is Susan.  I am a sophomore at The Ohio University.  I just
+don't understand computers.  Why are they so difficult?  They just don't
+work like other things in my life.  For example, when I lived at home my
+mother had me doing chores around the house.  To get them all done, and
+still have time to go out in the afternoon, I'd have to do several of
+them at the same time.  I'd start a load of clothes and dishes, start
+mowing the lawn.  After fifteen minutes, I'd come back inside, move
+clothes to the dryer, refill the washer, and return to the mowing.  Come
+in later and unload the dishwasher, do the weeding, and so on.
+
+Why can't my PC let me start up unattended work and interactively work
+at the same time?  I tried using a window application to download a file
+while doing my homework, but the download failed because of lost
+characters.  The download did work when nothing else was running.
+Another time when doing work, my roommate needed some diskettes
+formatted.  My work came to a halt.  A friend told me about changing
+configuration files.  All I am asking is for the computer to serve me,
+instead of me serving it.  Is this too much to ask?
+
+This commercial brought to you by End-Users For A More Productive
+Environment.  We believe the computer is mankind's servant.  Isn't it
+time the computer started working on our level, instead of us working on
+its level?
+
+Now back to our show.
+
+------
+
+Hello, my name is Bert Moshier.  I am a computer specialist employed by
+an U.S. supercomputer manufacturer working in the network development
+group.  My job has nothing to do OS/2.
+
+I grew up in a small rural Southern Ohio town (now a city) reared by my
+mother who is also the artist for this column.  The first computer I
+used was a Wang programmable calculator with a card reader and an IBM
+Selectric typewriter.  From it, I discovered my love for computers.
+This occurred in 1974 while I was attending Rio Grande College, after
+skipping my senior year of high school.
+
+My Grandmother had a fit when she heard I liked computers.  She did not
+like computers, since her bank was changing over at the time.  I was to
+be an accountant, period.  Later, she changed her mind saying I should
+learn about computers.  Why did she change her mind?  To quote her,
+"Bert, You can help the other accountants get rid of computers."
+
+I graduated in 1979 from The Ohio University at Athens, Ohio with a BGS
+degree.  My major was Computer Science (104 quarter hours of computer or
+related classes).  My area of interest was operating systems, VM/370.
+My project, "An Internal Study of VM/370 and Computer Study," gave me an
+interesting, hard, and rewarding senior year.  Since graduation, I
+discovered there are many jobs dealing with computer internals
+(including assembler and now C) and they pay well.
+
+My first job as a VM systems programmer was with Texas Instruments at
+the Lewisville Interactive Computer Center (LICC).  The Rolling Stone
+tongue was our unofficial logo.  I left TI for a 35% pay raise and to
+stay a VM systems programmer.
+
+My second job was with Owens Corning Fiberglas as the lead VM systems
+programmer.  While there, I became involved with Share (an IBM mainframe
+user group) as a project officer.  I discovered, with the help of Phil
+Howard, two methods to permit a class G user to read and write real
+memory.  IBM fixed one of these holes and declined to fix the other one.
+My significant work was the development of an incremental backup system.
+I learned an important fact at OCF.  I want to help all people to use
+their computers, not one company.
+
+I joined Cray Research, Inc., in 1983 working on the Cray VM Station.  I
+became the VM Station project leader in 1990.  Between 1990 and 1992, I
+was also the RQS (Remote Queuing Subsystem) for OS/2 project leader.
+Duties included looking at the justifications of a Cray OS/2
+communications product.  I joined the Network Support section when a
+group reorganization occurred in January 1992 and am now working on DCE
+(Distributed Computing Environment).
+
+My interest in OS/2 began in 1989.  My manager was complaining that I
+was spending more time getting my PC/AT to work than doing work for him.
+I reviewed why I needed the PC to do my job:  3270 communications, word
+processing, grammar checking, TCP/IP (electronic mail, Cray access, NFS,
+etc.), file editing (Kedit), REXX development and presentation graphics.
+All this real work could run under OS/2.  Finally, no conflicts existed!
+In early 1990, I went to OS/2 and never looked back.
+
+I first used OS/2 as I had been using DOS, one application at a time.
+About six months later, it dawned on me that my mind set was changing.
+I was multitasking my projects on the computer.  I was actively looking
+for work to do and to overlap work.  I seriously felt restricted by CMS
+and its ability to do only one command at a time.  Today, OS/2 2.0 is
+integrating DOS and Windows back into my computers.  I use several DOS
+programs (Risk, Correct Grammar, RightWriter, SimCity, ChessMaster 3000,
+Manage Your Money, and The Word Processor by Bible Research, Inc.).  I
+even have a Windows program (ChessMaster 3000).
+
+I am, though, being selective in choosing DOS and Windows programs.  If
+an OS/2 version exists, I'll strongly consider it.  An example is
+DeScribe instead of WordPerfect for Windows.  Another example is
+Freelance for OS/2 instead of Powerpoint.  The OS/2 versions run faster
+than their DOS or Windows counterparts and support descriptive file
+names.  For example, which file name is the better, given one manually
+enters a name only once using DeScribe,
+Watching-OS2.Volume-One.Third-Issue or Third.Iss?
+
+The name for this column came from my desire to let Carole Patton write
+less about OS/2 and more about Windows.  Ms. Patton, last year, wrote a
+column called Watching Windows for PC Week.  I was writing to PC Week
+suggesting a Watching OS/2 column, when Joel Siragher approached me
+about writing for OS/2 Monthly.  Reality said PC Week was not going to
+off-load OS/2 from Ms. Patton by creating a Watching OS/2 column.  I
+agreed to write for this magazine to help advance OS/2.  To my surprise,
+PC Week shortly afterward stopped carrying Ms. Patton's Watching Windows
+column.
+
+Column direction
+
+This column watches OS/2 and its many facets.  Topics range from
+marketing and advertising, to technical directions, to product reviews,
+to whatever is of interests.  No one is safe from getting coverage.  It
+maybe a pat on the back or a swift kick in the ....
+
+Input comes from many sources, including the mentioned above networks.
+I am finding many of you are on these networks.  Your input allows me to
+discover what is going on with OS/2, for this subject is greater than
+one person can cover.  I am simply a small town boy who, is reporting
+what many see, feel and discover about a very productive and useful
+computer tool.  I use the word "we" to represent network users and me.
+For example, we believe IBM must aggressively market and advertise OS/2
+to the person using the PC.
+
+The writing style is informal and is blunt, when necessary.  I prefer to
+use real life examples, stories, and analogies since they help people
+visualize meanings and reduce ambiguities.  Content comes first and
+grammar second.  Grammar is extremely important for it conveys the
+content.  It is the transport layer, the communications path.  As Joel
+learned from last issue (see no one is safe), grammar can break but not
+make a piece.  I strive for straight forward (simple sentences) and
+active (voice) columns.  The motto is don't make the reader search for
+the meaning.
+
+In conclusion, many positive and wonderful events are starting to occur
+for OS/2.  People are realizing what IBM service really means!  IBM is
+discovering it can bring business to the masses and the few.  People can
+work with their computer on a peer basis.
+
+The President of Stac Electronic, while at the IBM Press briefing,
+related an experience.  He was working late (7 PM), and thought he was
+the only one left at the office.  Much to his surprise, he saw running
+between offices the Stac Comptroller.  He was typing a few keystrokes on
+each machine, and then sitting down to one and typing for a few minutes.
+He explained that he was doing the month end accounting and writing a
+report.  One machine was doing accounts receivable.  Another machine was
+doing accounts payable, while other machines were doing additional
+end-of-the-month activities.  Finally, he was writing a report due
+tomorrow on his own machine.  Every machine in his department was in
+use.  As the Stac Electronic President went home, he realized the
+advantage of OS/2 and multitasking.  How much time did this valuable
+employee lose that night?  How good could the report be, when the author
+got up and ran from machine to machine?
+
+Is everything great for OS/2?  No.  One big problem is the expense of
+development tools!  People wonder if IBM really wants OS/2 to be more
+than an outstanding DOS and Windows extender.  How IBM treats software
+developers, big and small, will tell the tale.
+
+I leave you with this thought from Gordy Miller.  WPS, Where
+Productivity Starts!
+
+                                 -- 30 --
+
+Bert Moshier is the president of the Minnesota OS/2 End-user Group.  He
+has been working with VM systems since 1977, and as a VM systems
+developer since 1979.  He became involved in OS/2 in 1989 when DOS,
+MS-Windows, SUN's PC-NFS, Mansfield REXX and KEDIT would not play
+happily together on his PC-AT.  You may reach him through this
+publication or on the IBM BBS (userid:  Bertram Moshier) at
+404-835-6600.
+

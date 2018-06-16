@@ -1,0 +1,905 @@
+Column Name: Advanced PM Programming
+Column Title: Using Sliders
+
+by: Guy Scharf
+(c) Copyright 1992 Software Architects, Inc.
+
+
+Introducing Sliders
+
+OS/2 2.0 introduces four new controls-slider, value set,
+notebook, and container.  We'll look this month at the
+slider.
+
+The slider is best used for setting values that are more
+analog than digital in nature.  Visually, the slider is
+represented as a bar with a handle that can be moved to any
+location along the bar.  The user can grab the handle and
+move it to the desired location.  The slider can have detents
+that allow the user to set the slider to preselected values
+with a single click of the mouse.  Optional buttons can be
+used to move the slider bar one increment at a time.
+
+Used for output, the slider control also makes an excellent
+progress or percentage complete bar.  Our example
+program shows sliders used for input and as a progress bar.
+
+
+CUA Controls Library/2
+
+IBM has not forgotten OS/2 1.3 developers.  IBM's CUA
+Controls Library/2 product makes all of the OS/2 2.0
+controls as well as the standard font selection and file open
+dialogs available to both OS/2 1.3 and Windows
+developers.
+
+This product provides OS/2 1.3 with the same API as with
+OS/2 2.0.  Converting a program using CUA Library/2
+controls to OS/2 2.0 requires making only minor changes:
+1) a DosLoadModule call required to register the CUA
+Library/2 control is deleted, 2) if the control is defined in
+a resource script, the window class name is changed from
+CCL_SLIDER to WC_SLIDER and 3) a #include statement
+required for CUA Library/2 is deleted.  These are all the
+changes that are required, and selective use of #ifdef and
+#define can take care of most of these changes.  Messages
+sent to or received from the control remain unchanged.
+
+The sample code in this article has been compiled using
+both OS/2 1.3 and OS/2 2.0 with just these changes.
+
+
+Converting from OS/2 1.3 to 2.0
+
+Before examining the slider, let's look at some issues
+involved in developing applications for both OS/2 1.3 and
+OS/2 2.0.  A reader asks why the subclassing example of
+the column in the first issue does not work under OS/2 2.0. 
+Two minor changes are required to make that example
+work.  These are typical of the changes required when
+converting to OS/2 2.0.
+
+First, the length of the message-number parameter in
+messages sent to windows must be changed from a
+USHORT to a ULONG.  In many OS/2 2.0 functions,
+parameters that were USHORTs in OS/2 1.3 have been
+changed to ULONGs. If you use the header files supplied
+with the toolkit, most of these changes should be nearly
+transparent.  If you have typed your own prototypes of
+OS/2 functions, you will probably need to update them.
+
+I now define a MSGID type in my programs, and
+conditionally compile MSGID as a USHORT or a ULONG
+as appropriate for the target operating system.
+
+The second change is caused by a change in the
+WinRegisterClass API.  In OS/2 1.3, this API was
+documented as requiring the existence of a message queue,
+but it does not.  In OS/2 2.0, this API is not documented
+as requiring existence of a message queue, but it does!  To
+fix SUBCLASS.C for OS/2 2.0, move the call to the class
+registering function to follow the creation of the message
+queue.
+
+
+Slider Basics
+
+A slider can be used as an input control device or as a
+read-only display device.  While the latter is simply a
+variation on the input device, it is visually distinctive. 
+Figures 1 and 2 demonstrate these two appearances.
+
+The most visible component of a slider is the slider shaft. 
+The width of the shaft can be varied, which is especially
+useful in displaying progress bars.  The shaft can be
+arranged horizontally or vertically.  The slider arm defines
+the position of the control along a scale of increments.  In
+an input control, this arm is represented by a handle that
+the user can grab and drag.  On an output control, the arm
+is a vertical line, usually with a different color, called a
+ribbon strip, on each side.
+
+The bottom of the slider can be at either the left or right
+(top or bottom) of the control.  Labels, tick marks of
+various sizes, and detents can be placed above or below the
+shaft.
+
+If the user clicks on the slider to either side of the slider
+arm, the arm is moved one increment in that direction. 
+Holding the mouse button down does not cause further
+movement.  Optional slider buttons at either end of the
+slider cause a single movement if clicked once, and
+continuing movement if the mouse button is held down.
+
+A detent allows a user to move the slider arm to a
+prespecified value by clicking on the detent with the mouse
+button.
+
+
+Creating a Slider
+
+As with most controls, you can create a control window
+using WinCreateWindow or you can define the control in a
+resource script.  However, unlike older controls, slider
+control windows require that some control data be supplied
+at the time the control is created.  The SLDCDATA
+structure defines the required data:
+
+        typedef struct _SLDCDATA {
+        ULONG   cbSize;          // Size of control data 
+        USHORT  usScale1Increments;    // # of divisions
+        USHORT  usScale1Spacing;       // Space in pels
+        USHORT  usScale2Increments;    // # of divisions
+        USHORT  usScale2Spacing;       // Space in pels
+        } SLDCDATA;
+
+The control data specifies the length of the slider, in
+arbitrary units called increments, and the distance between
+each increment, in pixels for two scales.  Scale 1, if used,
+appears above or to the left of the slider; scale 2, below or
+to the right.  Since calculating distances in pixels is a
+nuisance, the control will calculate it for you if the distance
+value is given as 0.  If the SLDCDATA structure is not
+provided, the slider is not created.  When defining a slider
+in a resource script, the CTLDATA statement can be used
+to create the required data structure.
+
+After creating the basic slider control, the developer sends
+messages to the control to establish the size and placement
+of tick marks, text above one or more tick marks, detents,
+and the slider arm position.  You can also change the
+dimensions of the slider and modify other appearances of
+the control.  An owner-draw style is available, so that you
+can draw the control yourself.
+
+You retrieve information from the slider by sending
+messages to it.  Some messages return values in
+increments; others, in pixels.  Some messages offer you a
+choice.
+
+
+Sliders in Dialog Resource Scripts
+
+In our example, we have two sliders.  The first allows the
+user to choose a value of 0 to 90 seconds.  Having chosen
+that value using the slider, the user presses the OK button
+and a progress bar is displayed for that number of seconds. 
+The progress bar advances evenly over the number of
+seconds requested.
+
+Let's look first at the resource script, SLIDER.RC in our
+example.  Both sliders are horizontally arranged with
+SLS_HORIZONTAL.  On the time-setting slider,
+SLS_PRIMARYSCALE1 says that we are going to write our
+tick marks and text above the slider shaft.  To make more
+room for this text in the control area, we move the slider
+shaft to the bottom of the control window with
+SLS_BOTTOM.  We define 0 as being at the left end of the
+slider with SLS_HOMELEFT.  We then request buttons at
+the right end of the control with SLS_BUTTONSRIGHT.
+
+The CTLDATA statement defines the SLDCDATA structure. 
+The CTLDATA statement is followed by a series of numeric
+parameters.  These parameters are each converted by the
+resource compiler into a USHORT.  The complete string of
+USHORTs constitutes the data structure used by the dialog
+when creating the slider control window.  Since the first
+element of the SLDCDATA structure is a ULONG giving
+the total size of the structure, we must compose that
+ULONG with two USHORTs.  The total length of the data
+structure is 12 bytes.  Since Intel architecture places the
+least significant digits in the high-order bytes, we define a
+ULONG with a value of 12 as two USHORTs with values
+of 12 and 0.  We define this slider as having 91
+increments, allowing us to represent values from 0 through
+90.  We set the pixel spacing of the increments to 0, to
+allow the dialog to compute the largest spacing that will fit
+within the bounds of the control.  We need to define only
+the scale that we are going to use; any definition we
+provide for the other scale is ignored.
+
+Our definition for the progress bar is similar.  We put the
+slider in the center of the control window with
+SLS_CENTER.  We make it a read-only control, and thus
+having a vertical line instead of a handle as the slider arm,
+with SLS_READONLY.  We put the text below the slider by
+specifying SLS_PRIMARYSCALE2.  Finally, we ask that the
+slider have a different color on each side of the slider arm,
+making the appearance that of a horizontal bar.  This is
+called a ribbon strip and we request it with the
+SLS_RIBBONSTRIP style.
+
+We define CTLDATA for this slider similarly.  The 101
+increments allow values of 0 through 100.
+
+
+Initializing the Slider
+
+Sliders require more setup than older controls.  In the
+example, the setup code is isolated in the InitSlider()
+function.  We call this function during WM_INITDLG
+processing to initialize each slider.
+
+As the first step, we obtain the increments and spacing
+values from the original CTLDATA structure (or as
+calculated by the control).  Most of the messages we will
+be sending the slider control will use increments.  Detents,
+however, are set in terms of pixels, as they are not required
+to be aligned with an increment.  Since our initialization
+function is a general utility, we obtain this information
+from the control rather than hard coding it or having it
+passed in by the caller.  We use
+WM_QUERYWINDOWPARAMS to obtain this control data. 
+Alternatively, we could have used the
+SLM_QUERYSLIDERINFO message to obtain most of the
+information we need.  This message returns four types of
+dimension information, either as increments or as pixel
+dimensions.  This message is used frequently when
+programming sliders.
+
+If the caller wants the slider shaft to be larger, we change
+its dimensions using SLM_SETSLIDERINFO.  Again, this
+is a message that can set many values.  In our example, we
+increase the width when using the slider as a progress bar.
+
+Ticks are set at specific increments.  (An increment is an
+arbitrary unit between 0 and the maximum specified in the
+CTLDATA statement.)  The programmer controls tick sizes. 
+In this example, we use two tick sizes, which we refer to
+as major and minor tick marks.  Detents are set similarly. 
+Our utility can set tick marks only on a linear scale.  You
+can set tick marks at any increment values, or at none.  We
+set no tick marks for the progress bar, as the absolute value
+is of little interest.
+
+Text can also be set at increments.  While any text string
+can be set, we use numbers corresponding to the increment
+value.
+
+
+Looking at the Sample Program
+
+The sample program is relatively simple-the slider control
+is easy to program and to use.  The main program simply
+starts a dialog to obtain a time interval between 0 and 90
+seconds.  When the user presses OK, that dialog starts a
+second dialog to count down that number of seconds the
+user specified.  The dialogs then return to the main
+program, which then terminates.  This demo program does
+not have a standard window.
+
+The GetAmountDlgProc() dialog procedure is the dialog
+procedure for the IDLG_SETTIME dialog.  It initializes the
+slider during WM_INITDLG processing and waits for the
+user to press the OK or Cancel button.  When the user
+presses OK, the dialog reads the number of seconds set on
+the slider control and starts the progress display dialog,
+passing the number of seconds requested.
+
+The ProgressDlgProc() dialog procedure is the dialog
+procedure for the IDLG_PROGRESS dialog.  It initializes
+its slider, using different parameters more appropriate to a
+progress bar.  It then sets up a repetitive timer using
+WinStartTimer().  Each time the timer sends a WM_TIMER
+message, the dialog computes the percentage complete and
+updates the slider if the percentage has changed.
+
+The frequency of the timer is controlled by the
+TIMERINTERVAL #define statement.  We have defined the
+slider as having 100 increments, so the movement of the
+slider will never be finer than 1/100 of the total distance. 
+If the duration is large, then very frequent timer messages
+are wasteful, as the percentage complete will not change
+with each message.  However, if the timer intervals are
+large, then the progress bar does not move smoothly when
+the number of seconds is small.  Picking a good frequency
+for the timer depends on the use planned for the slider. 
+We used a rate of four per second in this example.
+
+In a real application, you could use a progress bar like this
+to report the status of some time-consuming task.  That task
+could send periodic updates to the dialog, which would then
+update the progress bar to reflect the progress of the task. 
+Or, you could use a WM_TIMER message to poll the state
+of a task and update the progress bar appropriate.  We have
+used both approaches, depending on whether the task knew
+how to send messages or whether it could only update a
+counter.
+
+
+Summary
+
+Sliders are very useful for obtaining or displaying analog
+values.  They excel when a bar representation fits the
+experience of the user.  Sliders also make great progress
+bars or percentage complete displays.
+
+The programs in this article are available on the OS2DEV
+forum on CompuServe.  GO OS2DEV and download file
+SLIDER.ZIP from library 4, Ver 2.0.
+
+------------------------
+
+Guy Scharf is president of Software Architects, Inc., 2163
+Jardin Drive, Mountain View, CA 94040.  Software
+Architects, Inc. specializes in OS/2 Presentation Manager
+software development and consulting.  Guy can be reached
+on the CompuServe OS2DEV forum or on CompuServe
+Mail at 76702,557 or through Internet at
+76702.557@compuserve.com.
+
+
+
+LISTING 1.  SLIDER.C
+====================
+
+// slider.c -- Sample program to demonstrate slider
+
+//--------------------------------------------------------------
+//  slider.c
+//
+//      Sample program to demonstrate sliders.  
+//
+//  By: Guy Scharf                      (415) 948-9186
+//      Software Architects, Inc.       FAX: (415) 948-1620
+//      2163 Jardin Drive               
+//      Mountain View, CA   94040       
+//      CompuServe: 76702,557
+//      Internet: 76702.557@compuserve.com
+//  (c) Copyright 1992 Software Architects, Inc.  
+//
+//      All Rights Reserved.
+//
+//  Software Architects, Inc. develops software products for 
+//  independent software vendors using OS/2 and Presentation 
+//  Manager.
+//--------------------------------------------------------------
+
+#define INCL_PM                         // Basic OS/2 PM
+#define INCL_BASE                       // components
+#include <OS2.H>
+
+#include <stdlib.h>                     // C runtime library
+#include <string.h>
+
+#include "slider.h"                     // Slider demo defs
+
+//  Prototypes of dialog procedures
+
+static MRESULT EXPENTRY GetAmountDlgProc (HWND, MSGID, MPARAM,
+                                          MPARAM);
+static MRESULT EXPENTRY ProgressDlgProc (HWND, MSGID, MPARAM,
+                                         MPARAM);
+
+//--------------------------------------------------------------
+//                                                                          
+//  Main program to drive slider example
+//                                                                          
+//--------------------------------------------------------------
+
+int main (void)
+{
+    HAB              hab;                        // Handle to anchor block
+    HMQ              hmqMsgQueue;                // Handle to msg queue
+#ifndef OS220
+    HMODULE hmodSlider;                 // Handle to slider mod
+#endif
+
+    hab = WinInitialize (0);            // Initialize PM
+
+    hmqMsgQueue = WinCreateMsgQueue (hab, 0); // Create msg queue
+
+#ifndef OS220
+    if (DosLoadModule (NULL, 0, CCL_SLIDER_DLL, &hmodSlider))
+        return FALSE;
+#endif
+
+    WinDlgBox (HWND_DESKTOP, HWND_DESKTOP, GetAmountDlgProc, 0,
+               IDLG_SETTIME, NULL);
+
+#ifndef OS220
+    DosFreeModule (hmodSlider);
+#endif
+
+    WinDestroyMsgQueue (hmqMsgQueue);   // Shutdown
+    WinTerminate       (hab);
+    return 0;
+}
+
+//--------------------------------------------------------------
+//                                                                          
+//  GetAmountDlgProc() -- Determine time delay desired
+//                                                                          
+//--------------------------------------------------------------
+
+static MRESULT EXPENTRY GetAmountDlgProc (
+HWND    hwndDlg,
+MSGID   msg,
+MPARAM  mp1,
+MPARAM  mp2)
+{
+    USHORT  usTime;                     // Time for progress
+
+    switch(msg)
+    {
+        //------------------------------------------------------
+        //  Initialize dialog by setting labels, ticks, detents,
+        //  etc.  This must all be done programmatically.
+        //------------------------------------------------------
+        case WM_INITDLG:
+
+            //--------------------------------------------------
+            //  Set the marks, detents, and labels
+            //  Set small tick marks every 1 second
+            //  Set large tick marks every 10 seconds
+            //  Set detent every 15 seconds
+            //--------------------------------------------------
+            InitSlider (hwndDlg, IDSL_SETTIME_TIME, 0,
+                        1,  4,
+                        10, 8,
+                        30, 30,
+                        "8.Courier");
+
+            return 0;
+
+        //------------------------------------------------------
+        //  Process pushbuttons.  Enter starts a progress bar.
+        //  Cancel (ESC) just quits quietly.
+        //------------------------------------------------------
+        case WM_COMMAND:
+            switch (SHORT1FROMMP(mp1))
+            {
+                                        // Cancel pressed
+                                        // Dismiss dialog
+                case DID_CANCEL:
+                    WinDismissDlg (hwndDlg, FALSE);
+                    return 0;
+
+                                        // OK button pressed
+                case DID_OK:            // Read slider position
+                                        // from slider
+                    usTime = SHORT1FROMMR(WinSendDlgItemMsg(
+                               hwndDlg,
+                               IDSL_SETTIME_TIME,
+                               SLM_QUERYSLIDERINFO,
+                               MPFROM2SHORT(SMA_SLIDERARMPOSITION,
+                                            SMA_INCREMENTVALUE),
+                               0));
+                                        // Start progress bar
+                                        // dialog
+                    if (usTime > 0)
+                        WinDlgBox (HWND_DESKTOP, HWND_DESKTOP,
+                                   ProgressDlgProc, 0,
+                                   IDLG_PROGRESS, &usTime);
+                    return 0;
+            }
+            return 0;
+                               
+        //------------------------------------------------------
+        //  All other messages go to default window procedure
+        //------------------------------------------------------
+        default:
+            return (WinDefDlgProc (hwndDlg, msg, mp1, mp2));
+    }
+    return FALSE;
+}
+
+
+//--------------------------------------------------------------
+//                                                                          
+//  ProgressDlgProc() -- Show progress bar.  This is a minimal
+//  function dialog.  It just moves the progress bar along
+//  without reflecting any particular activity.
+//                                                                          
+//--------------------------------------------------------------
+
+typedef struct
+{
+    USHORT  usTotalUnits;               // # units to count
+    USHORT  usUnitsSoFar;               // count so far
+    USHORT  usPctDone;                  // Last reported % done
+} PROG, *PPROG;
+
+#define TIMERINTERVAL    4              // Timer checks per sec
+
+static MRESULT EXPENTRY ProgressDlgProc (
+HWND    hwndDlg,
+MSGID   msg,
+MPARAM  mp1,
+MPARAM  mp2)
+{
+    PPROG   pprog;                      // Progress data
+
+    switch(msg)
+    {
+        //------------------------------------------------------
+        //  Initialize dialog by constructing a work area and
+        //  establishing a pointer to it in the dialog window
+        //  word.  Set initial values to 0 and compute the
+        //  number of ticks desired from the passed value
+        //  (which is in seconds)
+        //------------------------------------------------------
+        case WM_INITDLG:                // Initialize data
+            pprog = malloc (sizeof (PROG));
+            WinSetWindowPtr (hwndDlg, QWL_USER, pprog);
+
+            pprog->usUnitsSoFar = 0;    // Ticks so far
+            pprog->usPctDone = 0;       // Start at 0
+            pprog->usTotalUnits = (USHORT)(*(PUSHORT)mp2
+                                          * TIMERINTERVAL);
+
+            //--------------------------------------------------
+            //  Set 2x wide slider, 
+            //  No small tick
+            //  No large ticks
+            //  No detents
+            //  0, 50, 100% complete
+            //--------------------------------------------------
+            InitSlider (hwndDlg, IDSL_PROGRESS_BAR, 2,
+                        0, 4,
+                        0, 8,
+                        0, 50,
+                        NULL);
+
+            //--------------------------------------------------
+            //  Start the timer for periodic display
+            //--------------------------------------------------
+            WinStartTimer (WinQueryAnchorBlock (hwndDlg),
+                           hwndDlg, ID_TIMER,
+                           1000/TIMERINTERVAL);
+
+            return 0;
+
+        //------------------------------------------------------
+        //  When dialog is destroyed, we release any data
+        //  we have allocated.  This prevents memory leakage.
+        //------------------------------------------------------
+        case WM_DESTROY:                
+            pprog = WinQueryWindowPtr (hwndDlg, QWL_USER);
+                                        // Stop the timer
+            WinStopTimer (WinQueryAnchorBlock (hwndDlg),
+                          hwndDlg, ID_TIMER);
+            if (pprog != NULL)          // If data exists,
+                free (pprog);           // free it
+            WinSetWindowPtr (hwndDlg, QWL_USER, NULL);
+
+            return 0;
+
+        //------------------------------------------------------
+        //  We support only a Cancel pushbutton
+        //------------------------------------------------------
+        case WM_COMMAND:
+            switch (SHORT1FROMMP(mp1))
+            {                           // Cancel key pressed
+                case DID_CANCEL:        // Just quit quietly
+                    WinDismissDlg (hwndDlg, FALSE);
+                    return 0;
+            }
+            return 0;
+                     
+          
+        //------------------------------------------------------
+        //  On every timer tick, we computer the percent
+        //  complete.  If different than on the last timer
+        //  click, we update the progress bar.
+        //------------------------------------------------------
+        case WM_TIMER:
+        {
+            USHORT  usNewPctDone = 0;   // Percent complete
+
+                                        // Get ptr to dialog data
+            pprog = WinQueryWindowPtr (hwndDlg, QWL_USER);
+
+                                        // Compute % complete
+                                        // and update the slider
+            pprog->usUnitsSoFar++;
+                                        // Don't allow over 100
+            usNewPctDone = (USHORT)min((100*pprog->usUnitsSoFar)
+                                / pprog->usTotalUnits, 100);
+
+                                        // If % done is changed,
+                                        // update slider
+            if (usNewPctDone != pprog->usPctDone)
+            {
+                pprog->usPctDone = usNewPctDone;
+                
+                WinSendDlgItemMsg (hwndDlg, IDSL_PROGRESS_BAR,
+                            SLM_SETSLIDERINFO,
+                            MPFROM2SHORT (SMA_SLIDERARMPOSITION,
+                                            SMA_INCREMENTVALUE),
+                            MPFROMSHORT (usNewPctDone));
+            }
+
+                                        // If all done, quit
+            if (pprog->usUnitsSoFar > pprog->usTotalUnits)
+                WinSendMsg (hwndDlg, WM_CLOSE, 0, 0);
+
+            return 0;
+        }
+
+        //------------------------------------------------------
+        //  All other messages go to default window procedure
+        //------------------------------------------------------
+        default:
+            return (WinDefDlgProc (hwndDlg, msg, mp1, mp2));
+    }
+
+    return FALSE;
+}
+
+//--------------------------------------------------------------
+// Function: InitSlider                                         
+// Outputs:  none                                               
+//                                                              
+// This function receives all parameters for configuring a
+// slider.  It sets tick marks, tick text, and detents 
+// according to the input parameters.  The scale text font is 
+// changed if requested.  This function works only on scale 1.
+//--------------------------------------------------------------
+
+VOID InitSlider (                       // Initialize slider
+HWND    hwndDlg,                        // Handle of dialog
+ULONG   idSlider,                       // ID of slider control
+USHORT  usSizeMultiplier,               // Size multiplier
+USHORT  usMinorTickSpacing,             // Minor tick spacing
+USHORT  usMinorTickSize,                // Size of minor ticks
+USHORT  usMajorTickSpacing,             // Major tick spacing
+USHORT  usMajorTickSize,                // Size of major ticks
+USHORT  usDetentSpacing,                // Detent spacing
+USHORT  usTextSpacing,                  // Text label spacing
+PSZ     pszFont)                        // Font for text or NULL
+{
+    USHORT  i;                          // Loop index
+    CHAR    buffer[20];                 // String buffer
+    USHORT  usIncrements = 0;           // Number of increments
+    USHORT  usSpacing = 0;              // Spacing
+
+    WNDPARAMS   wprm;                   // Window parameters ct;
+    SLDCDATA    sldcd;                  // Slider control data
+
+    HWND    hwndSlider = WinWindowFromID (hwndDlg, idSlider);
+
+    //----------------------------------------------------------
+    // Get original slider dimensions in increments for future
+    // calls.  (My thanks to Wayne Kovsky for this example of 
+    // using WM_QUERYWINDOWPARAMS.)
+    //----------------------------------------------------------
+    wprm.fsStatus   = WPM_CTLDATA;      // Request control data
+    wprm.cbCtlData  = sizeof (SLDCDATA);
+    wprm.pCtlData   = &sldcd;
+
+    if (WinSendMsg (hwndSlider, WM_QUERYWINDOWPARAMS,
+                     MPFROMP(&wprm), 0))
+    {                                   // Copy fields we need
+        usIncrements = sldcd.usScale1Increments;
+        usSpacing    = sldcd.usScale1Spacing;
+    }
+    
+    //----------------------------------------------------------
+    //  If requested, change dimensions of the slider
+    //----------------------------------------------------------
+    if (usSizeMultiplier > 1)
+    {
+        MRESULT mr;
+        mr = WinSendMsg (hwndSlider,
+                         SLM_QUERYSLIDERINFO,
+                         MPFROMSHORT(SMA_SHAFTDIMENSIONS), 0);
+
+        WinSendMsg (hwndSlider,
+                    SLM_SETSLIDERINFO,
+                    MPFROMSHORT(SMA_SHAFTDIMENSIONS),
+                    MPFROMSHORT (SHORT2FROMMR(mr) *
+                                             usSizeMultiplier));
+
+    }
+
+    //----------------------------------------------------------
+    //  If requested, set minor ticks along axis
+    //----------------------------------------------------------
+    if (usMinorTickSpacing != 0)
+        for (i = 0; i <= usIncrements; i += usMinorTickSpacing)
+        {
+            WinSendMsg (hwndSlider,     // Set minor tick
+                        SLM_SETTICKSIZE,
+                        MPFROM2SHORT(i, usMinorTickSize),
+                        NULL);
+        }
+
+    //----------------------------------------------------------
+    //  If requested, set major ticks along axis
+    //----------------------------------------------------------
+    if (usMajorTickSpacing != 0)
+        for (i = 0; i <= usIncrements; i += usMajorTickSpacing)
+        {
+            WinSendMsg (hwndSlider,     // Set major tick
+                        SLM_SETTICKSIZE,
+                        MPFROM2SHORT(i, usMajorTickSize),
+                        NULL);
+        }
+
+    //----------------------------------------------------------
+    //  If requested, set detents
+    //----------------------------------------------------------
+    if (usDetentSpacing != 0)
+        for (i = 0; i <= usIncrements; i += usDetentSpacing)
+        {
+            WinSendMsg (hwndSlider,     // Set the detent
+                   SLM_ADDDETENT,
+                   MPFROM2SHORT((i*usSpacing), usDetentSpacing),
+                   NULL);
+        }
+
+    //----------------------------------------------------------
+    //  If requested, set text labels.  Also change font if
+    //  requested
+    //----------------------------------------------------------
+    if (usTextSpacing != 0)
+    {
+        if (pszFont != NULL)
+            WinSetPresParam (hwndSlider,
+                             PP_FONTNAMESIZE,
+                             (strlen(pszFont)+1),
+                             pszFont);
+        for (i = 0; i <= usIncrements; i += usTextSpacing)
+        {
+            itoa (i, buffer, 10);       // Convert to string
+            WinSendMsg (hwndSlider,     // Place in slider scale
+                        SLM_SETSCALETEXT,
+                        MPFROMSHORT(i),
+                        MPFROMP(buffer));
+        }
+    }
+
+    return;
+}
+
+LISTING 2.  SLIDER.H
+====================
+
+// slider.h -- Definitions for slider demo
+
+//--------------------------------------------------------------
+//  Change the following as required for target system
+//--------------------------------------------------------------
+#define OS220                           // Define target system
+
+#ifdef OS220
+    #define MSGID   ULONG               // OS/2 2.0
+#else
+    #define MSGID   USHORT              // OS/2 1.3
+    #include <fclsldp.h>                // CUA Library/2
+    #define WC_SLIDER CCL_SLIDER        // Window class
+#endif                               
+
+//  Defines for dialogs, controls
+
+#define IDLG_SETTIME                100 // Set time dialog
+#define IDSL_SETTIME_TIME           101
+
+#define IDLG_PROGRESS               200 // Progress bar dialog
+#define IDSL_PROGRESS_BAR           201
+
+#define ID_TIMER                      1 // For WinStartTimer
+
+//  Prototypes for useful functions
+
+VOID InitSlider (                       // Initialize slider
+HWND    hwndDlg,                        // Handle of dialog
+ULONG   idSlider,                       // ID of slider control
+USHORT  usSizeMultiplier,               // Size multiplier
+USHORT  usMinorTickSpacing,             // Minor tick spacing
+USHORT  usMinorTickSize,                // Size of minor ticks
+USHORT  usMajorTickSpacing,             // Major tick spacing
+USHORT  usMajorTickSize,                // Size of major ticks
+USHORT  usDetentSpacing,                // Detent spacing
+USHORT  usTextSpacing,                  // Text label spacing
+PSZ     pszFont);                       // Font for text or NULL
+
+LISTING 3.  SLIDER.RC
+=====================
+
+#include <os2.h>                        // OS/2 definitions
+#include "slider.h"                     // Application defs
+
+DLGTEMPLATE IDLG_SETTIME LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+  DIALOG  "Set Time to Wait", IDLG_SETTIME, 66, 27, 203, 64, 
+          WS_VISIBLE, FCF_SYSMENU | FCF_TITLEBAR
+  BEGIN
+    CONTROL         "", IDSL_SETTIME_TIME, 15, 33, 173, 25, 
+                    WC_SLIDER,
+                    SLS_HORIZONTAL | SLS_BOTTOM | 
+                    SLS_SNAPTOINCREMENT | SLS_BUTTONSRIGHT | 
+                    SLS_HOMELEFT | SLS_PRIMARYSCALE1 | 
+                    WS_GROUP | WS_TABSTOP | WS_VISIBLE
+                    CTLDATA 12, 0, 91, 0, 0, 0
+    DEFPUSHBUTTON   "OK", DID_OK, 33, 10, 48, 14, WS_GROUP
+    PUSHBUTTON      "Cancel", DID_CANCEL, 113, 11, 48, 14, 
+                    NOT WS_TABSTOP
+  END
+END
+
+
+DLGTEMPLATE IDLG_PROGRESS LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+  DIALOG  "Percent Complete", IDLG_PROGRESS, 38, 57, 224, 73, 
+          WS_VISIBLE, FCF_SYSMENU | FCF_TITLEBAR
+  BEGIN
+    CONTROL         "", IDSL_PROGRESS_BAR, 18, 23, 189, 40, 
+                    WC_SLIDER, 
+                    SLS_HORIZONTAL | SLS_CENTER | SLS_READONLY
+                    SLS_RIBBONSTRIP | SLS_HOMELEFT | 
+                    SLS_PRIMARYSCALE2 | 
+                    WS_GROUP | WS_TABSTOP | WS_VISIBLE
+                    CTLDATA 12, 0, 101, 0, 101, 0
+    PUSHBUTTON      "Cancel", DID_CANCEL, 93, 4, 40, 14
+  END
+END
+
+LISTING 4.  SLIDER.MAK
+======================
+
+# IBM Developer's Workframe/2 Make File Creation run at 14:39:08 on 06/30/92
+
+# Make File Creation run in directory:
+#   D:\P\MAGAZINE\SLIDER;
+
+.SUFFIXES:
+
+.SUFFIXES: .c .rc
+
+ALL: SLIDER.EXE \
+     SLIDER.RES
+
+slider.exe:  \
+  SLIDER.OBJ \
+  SLIDER.RES \
+  SLIDER.MAK
+   @REM @<<SLIDER.@0
+     /A:16 /CO /F /M /ST:16384 /NOL /PM:PM +
+     SLIDER.OBJ
+     slider.exe
+     
+     
+     ;
+<<
+   LINK386.EXE @SLIDER.@0
+   RC SLIDER.RES slider.exe
+
+{.}.rc.res:
+   RC -r .\$*.RC
+
+{.}.c.obj:
+   ICC.EXE /Sm /Ss /Kbocgapexr /Ti /W2 /C .\$*.c
+
+!include SLIDER.DEP
+
+
+
+LISTING 5.  SLIDER.DEP
+======================
+
+# IBM Developer's Workframe/2 Make File Creation run at 14:39:08 on 06/30/92
+
+# Make File Creation run in directory:
+#   D:\P\MAGAZINE\SLIDER;
+
+# Assumed INCLUDE environment variable path:
+#   C:\TOOLKT20\C\OS2H;
+#   C:\TOOLKT20\ASM\OS2INC;
+#   C:\IBMC\INCLUDE;
+
+
+SLIDER.RES:  SLIDER.RC  \
+#  {.;$(INCLUDE)}OS2.H  \
+   {.;$(INCLUDE)}SLIDER.H  \
+   SLIDER.MAK
+
+SLIDER.OBJ:  SLIDER.C  \
+#  {$(INCLUDE);}OS2.H  \
+#  {$(INCLUDE);}stdlib.h  \
+#  {$(INCLUDE);}string.h  \
+#  {$(INCLUDE);}fclsldp.h  \
+   {.;$(INCLUDE);}slider.h  \
+   SLIDER.MAK
+

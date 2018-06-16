@@ -1,0 +1,84 @@
+     One of the many new features in OS/2 2.0 is a new type of menu
+called the conditional cascade menu.  A conditional cascade menu is
+a menu that contains one or more mutually exclusive menu options,
+called a cascade.  When the cascade is displayed, a check mark
+identifies the default option.  The conditional cascade menu itself
+contains the menu text followed by a push button.  When the button
+is selected, the cascade appears.  When the conditional cascade
+menu is selected, the system takes action on the default item in
+the cascade.
+
+     One of the most common examples of a conditional cascade menu
+is the folder popup menu.  The folder popup menu contains three
+conditional cascade menus: "Open", "Help", and "Create another". 
+Looking at "Open", if the button to "Open" is selected, the cascade
+appears with four options, one of them being the default (the
+default is usually "Icon View").  If an item in the cascade is
+selected, the folder opens the appropriate window.  If "Open" is
+selected, the default cascade item is opened.
+
+     Listed below is a sample application that demonstrates the use
+of the conditional cascade menu.  The window contains a menu called
+"Strings" that, when selected, brings up a conditional cascade menu
+called "Display".  If "Display", button is selected, a cascade
+appears with three items called "String 1", "String 2", and "String
+3".  Notice that "String 3" is the default item because that item
+is checked.  If one of these items are selected, the respective
+menu item string is displayed on the window.  If "Display" is
+selected, the application will display "String 3" on the window,
+because "String 3" is the default cascade item for "Display".
+
+     In order to create a conditional cascade menu, the menu first
+has to be set up as a standard submenu with menu items.  CASCADE.RC
+lists "Display" as a submenu with "String 1" through "String 3" as
+the submenu items.  CASCADE.C converts the submenu to a conditional
+cascade menu when the WM_CREATE message is intercepted.  When that
+message is received, a call to WinWindowFromID retrieves a handle
+from the menu id.  When the handle is retrieved, the menu's
+reserved word must be updated with the MS_CONDITIONALCASCADE flag,
+then inserted back to the menu.  Once the word is updated, the menu
+is now a conditional cascade menu.
+
+     Now that the conditional cascade menu has been created, it is
+a good idea to set the current cascade item.  When the conditional
+cascade menu is created, the first cascade option becomes the
+default.  But when the conditional cascade menu is created, no
+check mark is automatically set to the first cascade option, so it
+is a good idea to set the default option.  This is done by calling
+WinSendMsg, with MM_SETDEFAULTITEMID as the message id and the
+default cascade option as the first extra parameter.  The example
+calls WinSendMsg with ID_STRING_3 as the default item.  The system
+responds by setting "String 3" as the default option, which then a
+check mark is displayed at the menu option.  If a change in the
+default options is desired, just send another MM_SETDEFAULTITEMID
+message with the new default menu option. 
+Each time a new default option is selected, the system will remove
+the check mark next the previous default and insert the mark next
+to the new default option.
+
+     Although the default option check mark is maintained by the
+system, the check can be added or removed manually the same way
+that standard check marks are edited.  Manually adding or removing
+check marks in the cascade will not change the default item.  Each
+time a new option is selected, the only cascade options that are
+affected are the old and new default options.  Placing check  marks
+next to non-affected cascade options will not be changed, so it is
+possible to have more than one checked cascade option.
+
+     The next item to discuss is how a conditional cascade menu
+selection is processed.  For most standard menu items, if the item
+is selected the corresponding item id is sent which can be
+intercepted by the window's procedure.  But when a conditional
+cascade menu is selected, the id of the default cascade item is
+sent instead of the id of the cascade menu.  In CASCADE.RC, the
+default conditional cascade menu has been assigned the id of
+ID_DISPLAY, but when "Display" is selected, ID_STRING_3 is sent
+because that is the id of the default cascade item.  If the default
+cascade id is changed, that new id is then sent when "Display" is
+selected.
+
+     Conditional cascade menus are excellent for menu selections
+that benefit from a default option.  It allows the user to select
+a default option from a list of options, while still allowing the
+user to select all options, if desired.
+

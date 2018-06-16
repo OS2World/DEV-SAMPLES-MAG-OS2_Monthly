@@ -1,0 +1,141 @@
+The Parlance of Squares
+
+I love writing this column.  Not only do I look forward to 
+actually playing this game once it's done, but I like 
+contributing to something in which I strongly believe, and I 
+really do believe that OS/2 is the wave of the future.  
+Although the OS/2 community is currently small enough for one 
+individual to make an impact, we all know that this great 
+operating system will soon conquer the PC world and leave 
+Windows smoldering in the dirt.
+
+Time constraints prevented me from adding as much as I 
+promised last month.  The only new enhancements you will find 
+are the implementation of dialog boxes for the "Map" menu 
+items.  Do not underestimate the amount of work required to 
+support these features, however.  A whole module was added 
+for the load and save routines.  The basic skeleton of the 
+code comes from Petzold's book, an antiquated yet still 
+valuable resource.
+
+The dialog boxes themselves are created with the Dialog Box 
+Editor that comes with the tool kit.  The editor creates a 
+.dlg, a .res, and a .h file.  The .dlg file contains the 
+resource script commands that define the dialog boxes.  The 
+.res file is a compiled version of the .dlg file.  
+
+There are a few things that should be kept in mind.  First, 
+do not include .res file as a module in the make file because 
+the resource compiler (rc) cannot combine individual 
+resources.  Every time rc links a resource file into the 
+executable, it replaces the existing resources with those in 
+the .res file.  If you want to include several types of 
+resources, then you must create a master resource script file 
+which contains "rcinclude" statements.  This process will 
+create a single .res file containing all your resources.
+
+Second, beware of errors in the online help for the tool kit.  
+The only way to be certain of the information is to check the 
+header files.  An example is the structure definition for 
+FILEFINDBUF3.  Compare this with the entry in bsedos.h and 
+you will see what I mean.
+
+Last of all, double-check all the parameters when using code 
+designed for OS/2 1.x.  Most of the 16-bit integer parameters 
+are now 32 bits long.  Note that there is no speed difference 
+between short and long integers on a true 386/486 system, 
+since the 32-bit wide data bus can swallow both sizes in one 
+gulp.
+
+Look at the file game.rc, which is the master resource file 
+for this project.  It includes the dialog.dlg file that the 
+editor creates.  Note that both files include dialog.h - the 
+header file also created by the dialog editor.  I am not sure 
+why this is necessary, but hopefully an explanation will 
+present itself in due time.
+
+The dialog box for loading and saving files follows a 
+convention that exists in most applications.  The two 
+list-boxes show a list of directories and a list of files in 
+the current directory, and an entry field allows you to type 
+in a file or path name.  Selecting a file from the list-box 
+places that name in the entry field automatically.  Once you 
+have selected a file, click on "Save" to save the current map 
+to that file, or click on "Load" to load that file.  The 
+current implementation is not 100% complete.  The load and 
+save option should not be combined, and there is no check for 
+overwriting an existing file.  These changes will be 
+available in the next installment.
+
+The code for controlling both list-boxes is in the file 
+files.c, which will eventually become a module of generic 
+file I/O routines.  The fill-functions for the list-boxes are 
+very similar.  Any existing entries are erased and the new 
+entries are determined by scanning the current drive and 
+directory.  You may notice that the list-boxes are extra 
+wide.  This allows most HPFS long filenames to be displayed 
+in their entirety.  I only wish that my other applications 
+worked the same way.  As with everything else in this 
+project, the dimensions of the dialog box can be changed with 
+the editor to suit your preferences.  Those of you with high 
+resolution monitors and tiny system fonts will probably want 
+to increase the size even further.
+
+Notice that the DosFindFirst/Next functions ignore any 
+extended attributes.  The map files will eventually be given 
+a file type (a.k.a. association) that will distinguish them 
+from other files without needing a special extension.  The 
+short-term goal of this project is to bring the game up and 
+running as quickly as possible, so that no one has to wait 
+until 1994 before he can play the game.  Note that I did not 
+say 1993.  Sorry folks, but this thing will not be done 
+before Christmas.  I think by Springtime it should be 
+playable.
+
+My roommate Scott and I got into a discussion over the 
+importance and design of a user interface.  We ended up 
+agreeing on almost everything, but the differences between 
+the programmer (me) and the user (Scott) became very 
+apparant.  Coming from his point of view, Scott argued that 
+the UI should be designed and coded at the same time as the 
+rest of the program.  His concern is that leaving the 
+interface until later will cause inconsistencies between the 
+interface and the application.  I had to agree with him on 
+this point, but I also had to mention that trying to create 
+both at the same time causes most programmers to bite off 
+more than they can chew.
+
+Frankly, I think that attempting to fully design an 
+application, interface and all, before any coding is started 
+is a pipe dream that only works with software devoid of 
+creativity.  Remember, this game cannot be designed 
+beforehand because it is a group project.  New ideas and 
+changes occur constantly, so the primary goal for the present 
+is not to design a complete user interface, but rather a 
+flexible one.  What does that mean, you ask?  It means that 
+the application should not be designed with only one 
+"look-and-feel" in mind.
+
+In other words, there is more than one way to skin a cat, 
+just like there is more than one way to create a playing 
+field.  Pull-down menus allowed me to create a map editor 
+which worked without wasting too much time on the code.  Had 
+I taken the time to create something more sophisticated, it 
+would have been vastly more time-consuming to modify the more 
+complicated code.  And that is only the short-term problem.  
+In the long run, we would probably end up with a user 
+interface which no longer suited the task at hand.  
+Therefore, our approach will be to formulate an interface 
+which expands along with each new feature.
+
+This, in a nutshell, is my philosophy on user interface 
+design.  I will be very happy to entertain any comments on 
+the subject.   Scott, by the way, is responsible for the new 
+icon, which is much better than the one I designed.  If 
+anyone thinks he or she can do a better job, feel free to 
+submit your creativity.
+
+I am taking a short hiatus from this project, since I am 
+moving into a new apartment in August.  The next installment 
+will appear in the November issue.  This delay will also give 
+my readers a chance to catch up and respond.

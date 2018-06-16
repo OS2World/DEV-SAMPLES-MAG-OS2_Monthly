@@ -1,0 +1,47 @@
+#include <os2.h>
+#include "resource.h"
+#include "dialog.h"
+
+rcinclude dialog.dlg
+
+ICON ID_RESOURCE game.ico
+
+BITMAP IDB_HEX_MASK HexMask.bmp
+BITMAP IDB_MECH_SE mech_se.bmp
+BITMAP IDB_MECH_NE mech_ne.bmp
+BITMAP IDB_MECH_N  mech_n.bmp
+BITMAP IDB_MECH_NW mech_nw.bmp
+BITMAP IDB_MECH_SW mech_sw.bmp
+BITMAP IDB_MECH_S  mech_s.bmp
+
+BITMAP IDB_TER_BLDGLITE BldgLight.bmp
+BITMAP IDB_TER_BLDGMED  BldgMedium.bmp
+BITMAP IDB_TER_BLDGHEAV BldgHeavy.bmp
+BITMAP IDB_TER_BLDGHARD BldgHard.bmp
+
+MENU ID_RESOURCE {
+  SUBMENU "~File", IDM_FILE {
+    MENUITEM "~Load...", IDM_FILE_LOAD
+    MENUITEM "~Save", IDM_FILE_SAVE,,MIA_DISABLED
+    MENUITEM "Save ~As...", IDM_FILE_SAVE_AS
+    MENUITEM "~About...", IDM_ABOUT
+  }
+  SUBMENU "~Mode", IDM_MODE {
+    MENUITEM "~Move", IDM_MODE_MOVE
+    MENUITEM "~Target", IDM_MODE_TARGET,,MIA_CHECKED
+    MENUITEM "~Edit", IDM_MODE_EDIT
+  }
+  SUBMENU "~Terrain", IDM_TERRAIN {
+    MENUITEM "Clear Ground", IDM_TER_CLEAR_GROUND,,MIA_CHECKED
+    MENUITEM "Rough Ground/Rubble", IDM_TER_ROUGH_GROUND
+    MENUITEM "Water", IDM_TER_WATER
+    MENUITEM "Light Woods", IDM_TER_LIGHT_WOODS
+    MENUITEM "Heavy Woods", IDM_TER_HEAVY_WOODS
+    MENUITEM "Pavement", IDM_TER_PAVEMENT
+    MENUITEM "Bridge", IDM_TER_BRIDGE
+    MENUITEM "Light Building", IDM_TER_LIGHT_BLDG
+    MENUITEM "Medium Building", IDM_TER_MEDIUM_BLDG
+    MENUITEM "Heavy Building", IDM_TER_HEAVY_BLDG
+    MENUITEM "Hardened Building", IDM_TER_HARD_BLDG
+  }
+}

@@ -1,0 +1,48 @@
+/* quotes.rc */
+
+#include "quotes.h"
+
+MENU ID_QUOTES PRELOAD
+BEGIN
+    SUBMENU "~File", IDM_FILE
+    BEGIN
+	MENUITEM "~New" , IDM_NEW
+	MENUITEM "~Open...", IDM_OPEN
+	MENUITEM SEPARATOR
+	MENUITEM "E~xit", IDM_EXIT
+    END
+    SUBMENU "~Options", IDM_OPTIONS
+    BEGIN
+	SUBMENU "~Text", IDM_TEXT
+	BEGIN
+	    MENUITEM "~Twain", IDM_TWAIN
+	    MENUITEM "~Ibsen", IDM_IBSEN
+	    MENUITEM "~Gates", IDM_GATES
+	END
+	SUBMENU "~Color", IDM_COLOR
+	BEGIN
+	    SUBMENU "~Foreground", IDM_FOREGROUND
+	    BEGIN
+		MENUITEM "~Red", IDMF_RED
+		MENUITEM "~Green", IDMF_GREEN
+		MENUITEM "~Blue", IDMF_BLUE
+	    END
+	    SUBMENU "~Background", IDM_BACKGROUND
+	    BEGIN
+		MENUITEM "~Red", IDMB_RED
+		MENUITEM "~Green", IDMB_GREEN
+		MENUITEM "~Blue", IDMB_BLUE
+	    END
+	END
+    END
+END
+
+STRINGTABLE
+BEGIN
+    IDS_TWAIN	"Thunder is good, thunder is impressive; but it is lightning that does the work."
+    IDS_IBSEN	"I hold that man is in the right who is most closely in league with the future."
+    IDS_GATES	"After mid-1990, we will ship PM applications at the same time or before Windows versions."
+END
+
+ICON ID_QUOTES "quotes.ico"
+

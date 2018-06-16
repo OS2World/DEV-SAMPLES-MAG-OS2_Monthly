@@ -1,0 +1,71 @@
+#include <os2.h>
+#include "resource.h"
+#include "dialog.h"
+
+rcinclude dialog.dlg
+
+ICON ID_RESOURCE btech2.ico
+BITMAP 2 about.bmp
+
+BITMAP IDB_HEX_MASK HexMask.bmp
+BITMAP IDB_MECH_SE mech_se.bmp
+BITMAP IDB_MECH_NE mech_ne.bmp
+BITMAP IDB_MECH_N  mech_n.bmp
+BITMAP IDB_MECH_NW mech_nw.bmp
+BITMAP IDB_MECH_SW mech_sw.bmp
+BITMAP IDB_MECH_S  mech_s.bmp
+
+BITMAP IDB_TER_CLEAR_GROUND   ClrGrnd.bmp
+BITMAP IDB_TER_ROUGH_GROUND   Rubble.bmp
+BITMAP IDB_TER_WATER          Water.bmp
+BITMAP IDB_TER_LIGHT_WOODS    LiteWood.bmp
+BITMAP IDB_TER_HEAVY_WOODS    HeavWood.bmp
+BITMAP IDB_TER_PAVEMENT       Pavement.bmp
+BITMAP IDB_TER_BRIDGE         Bridge.bmp
+BITMAP IDB_TER_BLDGLIGHT      BldgLite.bmp
+BITMAP IDB_TER_BLDGMEDIUM     BldgMed.bmp
+BITMAP IDB_TER_BLDGHEAVY      BldgHeav.bmp
+BITMAP IDB_TER_BLDGHARD       BldgHard.bmp
+
+MENU ID_RESOURCE {
+  SUBMENU "~File", IDM_FILE {
+    MENUITEM "~New\tCtrl+N", IDM_FILE_NEW
+    MENUITEM "~Open...\tCtrl+O", IDM_FILE_OPEN
+    MENUITEM "~Save", IDM_FILE_SAVE
+    MENUITEM "Save ~As...", IDM_FILE_SAVE_AS
+    MENUITEM "~Close\tCtrl+F4", IDM_FILE_CLOSE
+    MENUITEM "~Quit\tAlt+F4", IDM_FILE_QUIT
+  }
+  SUBMENU "~Mode", IDM_MODE {
+    MENUITEM "~Move/Target\tCtrl+M", IDM_MODE_MOVE,,MIA_CHECKED
+    MENUITEM "~Edit\tCtrl+E", IDM_MODE_EDIT
+  }
+  SUBMENU "~Terrain", IDM_TERRAIN {
+    MENUITEM "Clear Ground", IDM_TER_CLEAR_GROUND,,MIA_CHECKED
+    MENUITEM "Rough Ground/Rubble", IDM_TER_ROUGH_GROUND
+    MENUITEM "Water", IDM_TER_WATER
+    MENUITEM "Light Woods", IDM_TER_LIGHT_WOODS
+    MENUITEM "Heavy Woods", IDM_TER_HEAVY_WOODS
+    MENUITEM "Pavement", IDM_TER_PAVEMENT
+    MENUITEM "Bridge", IDM_TER_BRIDGE
+    MENUITEM "Light Building", IDM_TER_LIGHT_BLDG
+    MENUITEM "Medium Building", IDM_TER_MEDIUM_BLDG
+    MENUITEM "Heavy Building", IDM_TER_HEAVY_BLDG
+    MENUITEM "Hardened Building", IDM_TER_HARD_BLDG
+  }
+  SUBMENU "~Help", IDM_HELP {
+    MENUITEM "~Product information", IDM_ABOUT
+  }
+}
+
+ACCELTABLE ID_RESOURCE {
+  "n", IDM_FILE_NEW, CONTROL
+  "N", IDM_FILE_NEW, CONTROL
+  "o", IDM_FILE_OPEN, CONTROL
+  "O", IDM_FILE_OPEN, CONTROL
+  "e", IDM_MODE_EDIT, CONTROL
+  "E", IDM_MODE_EDIT, CONTROL
+  "m", IDM_MODE_MOVE, CONTROL
+  "M", IDM_MODE_MOVE, CONTROL
+}
+

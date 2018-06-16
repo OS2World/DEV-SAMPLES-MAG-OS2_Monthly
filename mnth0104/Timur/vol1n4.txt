@@ -1,0 +1,157 @@
+You can be the Captain
+
+Some of the more astute gamers among you may have noticed a 
+familiarity in the description of this project last month.  The 
+rumors are true - this game will be an OS/2 version of Fasa's 
+Battletech and Mechwarrior.  Fasa is a company based in Chicago 
+that specializes in role-playing games.  A simple agreement 
+between us allows me to use Fasa's trademarks, provided I share 
+the copyright with them and include all the appropriate dis
+claimers and trademark notices in everything I publish.
+
+The most important thing to remember is that this game is not an 
+official product from Fasa.  When I spoke with the president, I 
+only asked for permission to use their trademarks.  Beyond that, 
+they have no connection with it, so any correspondence should be 
+directed to me.
+
+Before I describe this month's source code, there are a few terms 
+which need to be defined.  These terms will be used throughout 
+the entire project.  Anyone who is interested in following or 
+contributing to the development should obtain the rule books.  A 
+good start would be Fasa's "The Rules of Warfare" Battletech 
+manual, available at your local gaming store.
+
+Battlemech - a trademark of Fasa, this is the name given to the 
+humanoid tanks described in last month's article.  It is usually 
+abbreviated as 'Mech.
+
+hex - a regular hexagon, where all six sides and all six interior 
+angles are the same size.  Figure 1 is an example.
+
+hex map - a map of a playing field divided into hexagons.  This 
+setup allows a player to move in six directions, while a normal 
+quadrile grid only allows four.
+                 
+trajectory - a straight line between the center-points of any two 
+hexagons which indicates the path a projectile can take if it 
+were launched from one hex and aimed at the other.
+
+shortest path - a connecting series of hexes that trace the 
+shortest route from one hex to another.  A walking 'Mech would 
+most likely take the shortest path.  If he were to fire a rocket, 
+its path would be a trajectory.
+
+The complete source code will not be published in this magazine 
+because of its length, but it will be available electronically 
+and (eventually) on disk.  Listed at the end are some BBS's which 
+will get the files directly from me.  Feel free to distribute 
+them to all your friends and loved ones.
+
+The code is intended to be compiled under OS/2 2.0 only, and at 
+this writing the only compiler that qualifies is a pre-release of 
+IBM's C Set/2.  This compiler (or its full-release version) will 
+be used until Borland C++ for OS/2 is released, hopefully in the 
+fourth quarter of this year.  At that point we will also make the 
+code somewhat object-oriented.
+
+The following list describes the files that accompany this 
+month's installment:
+
+	GAME.C	Main executable
+	HEXES.C	Map/targetting routines
+	HEXES.H	Header/Prototype file for HEXES.C
+	GAME.EXE	Ready-to-run executable
+	GAME.ICO	Icon file
+	GAME.RC	Resource source file (for the icon)
+	HEX.PCX	PCX bitmap description of a hexagon
+	GAME.PRJ	WorkFrame/2 project file
+
+The game is divided into three sections: initialization and 
+shutdown (function main() in GAMES.C), the window procedure 
+(function WinProc() in GAMES.C), and the hex map routines (file 
+HEXES.C).  This first version of the program demonstrates the 
+targetting mechanism of combat mode.  Upon startup, it draws a 
+dark grey hex map on a black background.  Use the mouse to select 
+an origin hex, and drag the targetting line to a destination.  
+While you are dragging, a background thread highlights the origin 
+hex.
+
+Figure 1 is a diagram of a hexagon marked with various constants 
+which explain their definitions.  HEX_SIDE is the only constant 
+that needs to be specified, since the length of a side is all 
+that is needed to determine the size of a regular hexagon.  How
+ever, to insure that our visual representation is accurate, 
+HEX_HEIGHT is given a value that creates a symmetrical hexagon on 
+a VGA monitor.  Future versions will overcome this limitation.
+
+File HEXES.H includes a hex map that shows how the indices are 
+chosen.  This particular numbering scheme makes certain calcula
+tions easier, such as the screen pixel algorithms in function 
+HexCoord().  Next month, we will look at algorithms for the dis
+tance and the shortest path that also benefit from this method.
+
+The size of the window is given by WINDOW_WIDTH and 
+WINDOW_HEIGHT, two constants defined in HEXES.H.  This is actu
+ally the size of the client window.  Unfortunately, we can only 
+specify the size of the frame window, which has a title bar for a 
+top border.  The height of the title bar can only be determined 
+after it has been drawn, so we need to draw the window, find the 
+title bar's handle, obtain its size, and re-size the frame again 
+with the added height.
+
+The window procedure handles only five messages: create, repaint, 
+button down, button up, and button moved.  The code for WM_CREATE 
+calculates the maximum number of colors that the display can 
+handle.  This is used by HexHighlight() to choose the highlight
+ing method, either color-cycling if there are more than sixteen 
+colors, or blinking if the selection is not as wide.  
+
+I had to create both methods since the color-cycling routine did 
+not work as expected on a 16-color screen.  It seems that lines 
+are not ditehered, so all you see are two alternating shades of 
+red.  Since I do not have access to a 256-color display, this 
+portion of the code has not been fully tested.
+
+The drawing of the actual map is handled by WM_PAINT.  Targetting 
+is cancelled in the rare event that the window is repainted while 
+we are aiming our rockets.  Remember that WM_PAINT must be able 
+to redraw all the graphics in the window at any time.  Before 
+long, it will become the largest section of the window procedure.
+
+The remaining three messages regulate the targetting mechanism. 
+WM_BUTTON1DOWN activates it, WM_BUTTON1UP terminates it, and 
+WM_MOUSEMOVE moves the line.  When button one is pressed, the 
+index of the hex under the mouse pointer is determined.  If it is 
+found, then 'target' is initialized with data on the origin hex.  
+Two presentation space handles are obtained - one for the line 
+and another for hex highlighting.  The parameters for line draw
+ing are set, and then HexHighlight() is started.
+
+When the button is released, 'fActive' is set to false, causing 
+the while-loop in HexHighlight() to terminate.  The targetting 
+line is erased, and its presentation space is released.
+
+If the mouse is moved while targetting is active, then 
+WM_MOUSEMOVE determines whether the new location warrants 
+redrawing the line.  If so, it erases the existing line (if any), 
+stores the new destination-hex information, and draws the new 
+line.
+
+The code in HEXES.C should be rather straightforward and easy to 
+understand.  The only possible exception is the array of POINTL's 
+in function HexDraw().  The value returned by HexCoord() is the 
+X,Y coordinate of the lower-left vertex.  A hexagon is created by 
+drawing the six sides in a counter-clockwise fashion.  The array 
+is a list of all the vertices, in counter-clockwise order, rela
+tive to the lower-left corner.  Add the proper offset to each 
+point, call GpiPolyLine to draw them all at once, and you have a 
+hexagon.
+
+That wraps up this month's installment.  Please feel free to mail 
+any comments, suggestions, or complaints to me, because I am very 
+interested in knowing your thoughts.  Next month's installment 
+will continue the development of the targetting machanism and 
+introduce the code for terrains.  It would be very nice if some
+one volunteered a few bitmaps to represent the different surfaces 
+(hint, hint).

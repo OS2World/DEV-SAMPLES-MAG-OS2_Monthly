@@ -1,0 +1,67 @@
+DLGINCLUDE 1 "dialog.h"
+
+DLGTEMPLATE IDD_TARGETTING PRELOAD MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "Targetting", IDD_TARGETTING, 35, 12, 107, 76, NOT FS_DLGBORDER | 
+            FS_BORDER | FS_SCREENALIGN | WS_VISIBLE, FCF_TITLEBAR
+    BEGIN
+        LTEXT           "Range:", -1, 4, 66, 32, 8, NOT WS_GROUP
+        LTEXT           "", IDD_RANGE, 40, 66, 43, 8, NOT WS_GROUP
+        LTEXT           "Angle:", -1, 4, 56, 28, 8
+        LTEXT           "", IDD_ANGLE, 36, 56, 43, 8, NOT WS_GROUP
+        LTEXT           "Visibility:", -1, 4, 46, 40, 8
+        LTEXT           "", IDD_VISIBILITY, 50, 46, 43, 8, NOT WS_GROUP
+        LTEXT           "Position:", -1, 4, 36, 39, 8
+        LTEXT           "Target:", -1, 4, 26, 31, 8
+        LTEXT           "", IDD_POSITION, 47, 36, 54, 8, NOT WS_GROUP
+        LTEXT           "", IDD_TARGETPOS, 40, 26, 60, 8, NOT WS_GROUP
+        LTEXT           "PointerXY:", -1, 4, 15, 47, 8
+        LTEXT           "HexIndex:", -1, 4, 5, 45, 8
+        LTEXT           "", 207, 53, 15, 50, 8, NOT WS_GROUP
+        LTEXT           "", 208, 52, 5, 51, 8, NOT WS_GROUP
+    END
+END
+
+DLGTEMPLATE IDD_ABOUT PRELOAD MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "", IDD_ABOUT, 13, 7, 297, 186, FS_SCREENALIGN | WS_VISIBLE, 
+            FCF_TITLEBAR
+    BEGIN
+        DEFPUSHBUTTON   "OK", DID_OK, 6, 4, 40, 14
+        RTEXT           "Copyright (C) 1994 Timur Tabi", -1, 143, 112, 146, 
+                        9, DT_WORDBREAK | NOT WS_GROUP
+        CTEXT           "An OS/2 implementation of Fasa's BattleTech and Mec"
+                        "hWarrior games, as chronicled in ""OS/2 Monthly""", 
+                        -1, 156, 140, 127, 32, DT_WORDBREAK | NOT WS_GROUP
+        CONTROL         "", -1, 149, 136, 140, 41, WC_STATIC, SS_FGNDFRAME | 
+                        WS_VISIBLE
+        RTEXT           "The following trademarks are the property of Fasa C"
+                        "orporation: BattleTech, CityTech, AeroTech, MechWar"
+                        "rior, BattleMech, and 'Mech", -1, 70, 63, 219, 28, 
+                        DT_WORDBREAK | NOT WS_GROUP
+        LTEXT           "To order a subscription to ""OS/2 Monthly"", call 8"
+                        "00-365-2642 or 908-937-6542", -1, 6, 22, 130, 33, 
+                        DT_WORDBREAK | NOT WS_GROUP
+        RTEXT           "Fairfax, VA 22030", -1, 223, 6, 66, 17, 
+                        DT_WORDBREAK | NOT WS_GROUP
+        CONTROL         DID_CANCEL, -1, 6, 58, 21, 16, WC_STATIC, SS_BITMAP | 
+                        WS_GROUP | WS_VISIBLE
+        RTEXT           "Copyright (C) 1994 Fasa Corporation", -1, 131, 94, 
+                        158, 18, DT_WORDBREAK | NOT WS_GROUP
+        RTEXT           "11811 Federalist Way #2", -1, 196, 23, 93, 8, 
+                        DT_WORDBREAK | NOT WS_GROUP
+        RTEXT           "Internet: timur@seas.gwu.edu", -1, 145, 44, 144, 8, 
+                        DT_WORDBREAK | NOT WS_GROUP
+        RTEXT           "Fidonet: 1:109/347", -1, 195, 36, 94, 8, 
+                        DT_WORDBREAK | NOT WS_GROUP
+        LTEXT           "BattleTech/2", -1, 6, 145, 140, 28
+                        PRESPARAMS PP_FOREGROUNDCOLOR, 0x00FF0000L
+                        PRESPARAMS PP_FONTNAMESIZE, "26.Tms Rmn Bold Italic"
+        LTEXT           "The Ultimate OS/2 Game", 101, 6, 130, 135, 14
+                        PRESPARAMS PP_FONTNAMESIZE, "14.Tms Rmn"
+        LTEXT           "Written by Timur Tabi", 102, 6, 117, 130, 11
+                        PRESPARAMS PP_FONTNAMESIZE, "12.Tms Rmn"
+        LTEXT           "Artwork by Scott Cherkofsky", 103, 6, 101, 130, 17
+                        PRESPARAMS PP_FONTNAMESIZE, "8.Tms Rmn"
+    END
+END

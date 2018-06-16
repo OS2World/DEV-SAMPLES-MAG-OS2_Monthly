@@ -1,0 +1,26 @@
+#include <os2.h>
+#include "resource.h"
+
+ICON ID_RESOURCE game.ico
+MENU ID_RESOURCE {
+  SUBMENU "~Map", IDM_MAP {
+    MENUITEM "~Load", IDM_MAP_LOAD
+    MENUITEM "~Save", IDM_MAP_SAVE
+    MENUITEM "~Edit", IDM_MAP_EDIT
+    MENUITEM "~About", IDM_ABOUT
+  }
+  SUBMENU "~Terrain", IDM_TERRAIN {
+    MENUITEM "Clear Ground", IDM_TER_CLEAR_GROUND,,MIA_CHECKED
+    MENUITEM "Rough Ground/Rubble", IDM_TER_ROUGH_GROUND
+    MENUITEM "Water", IDM_TER_WATER
+    MENUITEM "Light Woods", IDM_TER_LIGHT_WOODS
+    MENUITEM "Heavy Woods", IDM_TER_HEAVY_WOODS
+    MENUITEM "Pavement", IDM_TER_PAVEMENT
+    MENUITEM "Bridge", IDM_TER_BRIDGE
+    MENUITEM "Light Building", IDM_TER_LIGHT_BLDG
+    MENUITEM "Medium Building", IDM_TER_MEDIUM_BLDG
+    MENUITEM "Heavy Building", IDM_TER_HEAVY_BLDG
+    MENUITEM "Hardened Building", IDM_TER_HARD_BLDG
+  }
+}
+

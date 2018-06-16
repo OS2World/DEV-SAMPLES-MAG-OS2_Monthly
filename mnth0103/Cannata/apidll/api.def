@@ -1,0 +1,22 @@
+;========================================================================
+; API.DEF - C-Tree Sysytems, Inc. API DLL definition file
+;========================================================================
+LIBRARY     API
+
+DESCRIPTION 'An Api Dll'
+
+PROTMODE
+
+DATA        MULTIPLE READWRITE LOADONCALL
+
+CODE        LOADONCALL
+
+EXPORTS     UtlMsgBox                   @1
+            UtlLoadString               @2
+            UtlLoadMessage              @3
+            UtlDisplayError             @4
+            UtlDisplayDebug             @5
+
+
+            NewStdApp                   @201
+

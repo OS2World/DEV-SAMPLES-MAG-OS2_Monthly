@@ -1,0 +1,17 @@
+;-------------------------------------
+; EDIT.DEF module definition file
+;-------------------------------------
+
+NAME           EDIT  WINDOWAPI
+
+DESCRIPTION    'Simple Text Editor Using MLE -- (c) 1992, Brian R. Anderson'
+PROTMODE
+HEAPSIZE       16384
+STACKSIZE      8196
+EXPORTS        ClientWndProc
+               AboutDlgProc
+               OpenDlgProc
+               SaveasDlgProc
+               FindDlgProc
+               ReplaceDlgProc
+               GoLnDlgProc

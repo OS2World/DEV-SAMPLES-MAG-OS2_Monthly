@@ -1,0 +1,58 @@
+DLGINCLUDE 1 "dialog.h"
+
+DLGTEMPLATE IDD_SAVE_MAP PRELOAD MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "Save Map", IDD_SAVE_MAP, -63, -76, 350, 176, WS_VISIBLE, 
+            FCF_TITLEBAR
+    BEGIN
+        DEFPUSHBUTTON   "Save", DID_OK, 302, 105, 40, 14
+        PUSHBUTTON      "Cancel", DID_CANCEL, 302, 63, 40, 14
+        LISTBOX         IDD_DIRLIST, 10, 11, 151, 130
+        LISTBOX         IDD_FILELIST, 166, 11, 129, 130
+        ENTRYFIELD      "", IDD_FILEEDIT, 12, 148, 281, 8, ES_MARGIN
+        LTEXT           "Current Directory:", -1, 10, 162, 76, 8
+        LTEXT           "", IDD_PATH, 89, 162, 206, 8
+    END
+END
+
+DLGTEMPLATE IDD_ABOUT PRELOAD MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "The Ultimate OS/2 Game", IDD_ABOUT, 63, 62, 235, 143, 
+            WS_VISIBLE, FCF_TITLEBAR
+    BEGIN
+        DEFPUSHBUTTON   "OK", DID_OK, 6, 4, 40, 14, WS_GROUP | NOT 
+                        WS_TABSTOP
+        ICON            DID_OK, -1, 20, 108, 21, 16
+        CTEXT           "Copyright (C) 1992 Timur Tabi", -1, 101, 78, 128, 8
+        CTEXT           "Copyright (C) 1992 Fasa Corporation", -1, 73, 67, 
+                        156, 8, NOT WS_GROUP
+        CTEXT           "An OS/2 implementation of the BattleTech and MechWa"
+                        "rrior games, as chronicled in ""OS/2 Monthly""", -1, 
+                        76, 98, 130, 32, DT_WORDBREAK
+        CONTROL         "", -1, 66, 94, 150, 41, WC_STATIC, SS_FGNDFRAME | 
+                        WS_VISIBLE
+        LTEXT           "Written by Timur Tabi", -1, 5, 42, 35, 36, 
+                        DT_WORDBREAK | NOT WS_GROUP
+        RTEXT           "The following trademarks are the property of Fasa C"
+                        "orporation:", -1, 81, 39, 148, 19, DT_WORDBREAK | 
+                        NOT WS_GROUP
+        RTEXT           "BattleTech, CityTech, AeroTech, MechWarrior, Battle"
+                        "Mech, and 'Mech", -1, 118, 7, 111, 28, DT_WORDBREAK | 
+                        NOT WS_GROUP
+    END
+END
+
+DLGTEMPLATE IDD_LOAD_MAP PRELOAD MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "Load Map", IDD_LOAD_MAP, -61, -75, 350, 176, WS_VISIBLE, 
+            FCF_TITLEBAR
+    BEGIN
+        DEFPUSHBUTTON   "Load", DID_OK, 302, 105, 40, 14
+        PUSHBUTTON      "Cancel", DID_CANCEL, 302, 63, 40, 14
+        LISTBOX         IDD_DIRLIST, 10, 11, 151, 130
+        LISTBOX         IDD_FILELIST, 166, 11, 129, 130
+        ENTRYFIELD      "", IDD_FILEEDIT, 12, 148, 281, 8, ES_MARGIN
+        LTEXT           "Current Directory:", -1, 10, 162, 76, 8
+        LTEXT           "", IDD_PATH, 89, 162, 206, 8
+    END
+END

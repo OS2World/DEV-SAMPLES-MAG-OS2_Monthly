@@ -1,0 +1,15 @@
+#define INCL_WIN
+#include "os2.h"
+#include "entryfld.h"
+
+DLGTEMPLATE IDLG_TEST LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "Test Custom Entry Field", IDLG_TEST, 12, 25, 140, 48, WS_VISIBLE,
+            FCF_SYSMENU | FCF_TITLEBAR
+    BEGIN
+        CONTROL         "",     IDEF_SUBCLASS_ENTRYFIELD,
+                                        13,  25, 113,  10, WC_UDUPPER,
+                        ES_LEFT | ES_MARGIN | WS_TABSTOP | WS_VISIBLE
+     DEFPUSHBUTTON      "OK",   DID_OK, 50,   5,  40,  13, WS_TABSTOP
+    END
+END

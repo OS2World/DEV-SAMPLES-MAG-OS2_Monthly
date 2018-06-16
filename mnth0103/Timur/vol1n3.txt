@@ -1,0 +1,204 @@
+In the Beginning...
+
+
+
+This article is the first in a long series covering the 
+development of a role-playing game (RPG).  I've been 
+watching the OS/2 scene for quite a while now, and the most 
+sophisticated games I've seen so far are not much better 
+than Solitaire.  To remedy this situation, I've taken it 
+upon myself to conquer new territory.  The purpose of this 
+column is to teach OS/2 PM programming and have fun at the 
+same time.
+
+
+
+Why OS/2, you ask?  Although a pure DOS game can produce 
+faster graphics, the power of the OS/2 API provides a 
+foundation upon which a rich and exciting game can be 
+created.  Of course, the animation can't be as fast and 
+tight as it would be under DOS, especially since OS/2 is 
+message-based.  However, we can use a message-based 
+architecture to our advantage.  For example, in a combat 
+scene with multiple computer=controlled players, each player 
+runs as a thread, and all movements and attacks are 
+processed by sending a message to the client window, which 
+handles all the graphics.  This feature centralizes the 
+drawing routines in one function.  The importance of this 
+will become apparant once we start building the code to 
+process the WM_PAINT message.
+
+
+
+As a character in this role-playing game, you are the pilot 
+of a large and heavily armored humanoid tank.  The tank can 
+be armed with missiles, lasers, and the like, and since it 
+is humanoid, it's capable of punching, kicking, and 
+sometimes jumping.  Thus, you have a greater variety of 
+attacks than in most other role-playing games.  In addition, 
+you don't need to remain in your tank to accomplish your 
+goal.  There are plenty of encounters possible inside 
+buildings and outside on foot. 
+
+
+
+The design of a tank must follow certain rules, obviously, 
+and there are several standard models you can configure to 
+your liking.  The more armor you add, the slower and heavier 
+the tank gets, and high-powered weapons cause it to overheat 
+more quickly.  When a tank is hit, the computer must 
+determine the extent and the severity of the damage.
+
+
+
+If you browse through the rule books of some of the larger 
+RPG's, you'll probably be overwhelmed by the complexity of 
+all the rules.  Your character can't breathe before you role 
+a die five times to see how long each breath is.  Okay, a 
+minor exaggeration, but you get the point.  Fortunately, 
+this is where a computer excels.  The objective of this 
+project is to make a role-playing game that's just as much 
+as fun as an evening campaign with your friends, is just as 
+exciting as any arcade game, but still leaves out all the 
+drudgery of determining the outcome of each event.  The 
+computer is very capable of handling extremely complex 
+attack rules governing how often you can fire, where you 
+hit, and what kind of damage you've incurred.
+
+
+
+There are two types of "arenas" in this game.  The first is 
+an animated representation of combat.  A window displays the 
+surrounding territory, and the player can enter his moves 
+and see them graphically executed.
+
+
+
+The second arena is a role-playing system.  Unlike most 
+computer role-playing games, this one will attempt to 
+generate some of the universe by itself.  Of course, the 
+computer can't think, and it can't create dialogs, but it 
+can generate a map.
+
+
+
+These two arenas are independent of each other.  If you want 
+some quick arcade action, you can choose to play that arena 
+alone.  Simply ask the computer to set up a combat scene of 
+a given skill level, and fire away.  And when playing a 
+campaign, you can have the computer handle the combat and 
+tell you who won.  Just make sure there's no way you can 
+lose!
+
+
+
+Most role-playing objectives can be reduced to one single 
+task: to obtain or destroy one or several items.  In order 
+to reach this goal, you have to obtain (or destroy) other 
+items, or you have to obtain certain information.  The first 
+is a physical barrier, and the second is an intellectual 
+barrier.
+
+
+
+An example of a physical barrier is a secured fortress 
+hiding a key.  In order to obtain the key, you must break 
+through all of the defenses of the fortress and enter the 
+throne-room.  There you can simply retrieve the key from a 
+safe and escape to the outside.
+
+
+
+An intellectual barrier might be an old hermit living in a 
+cave, who knows where the key is.  You have to find the 
+hermit, and this might require exploring the mountains long 
+enough until you get lucky and find him.  Or perhaps you 
+need to talk to the bartender to know where the hermit is.
+
+
+
+Each goal can be broken down into a series of physical and 
+intellectual barriers.  This game includes a world editor, 
+which the game master (GM) can use to create an environment 
+for a campaign.  The editor will allow you to create both 
+the physical and intellectual barriers.  By designing the 
+map, you've essentially created all the physical barriers.  
+The intellectual barriers can be programmed by adding a 
+simple dialog.  This dialog is not much more than a list of 
+responses to certain key words (you may have seen this 
+already in a popular commercial product).  For instance, a 
+player types in the word "job," and the person to whom he is 
+talking tells him what he does for a living.
+
+
+
+If this is not sophisticated enough for you, then you can 
+play this game on a network, making one of the players the 
+GM.  The computer will then prompt the GM for instructions.  
+He can either accept what the computer proposes, or he can 
+select his own moves or responses.  This allows for more 
+meaningful dialogs, but it also forces the GM to type a lot.
+
+
+
+Since this is a programming column, I have to discuss 
+programming techniques as well.  I will assume that you are 
+already familiar with OS/2 PM programming, so I won't bother 
+mentioning anything that you can find in the reference 
+guides, on-line help, or other documentation that's commonly 
+available.  I will limit my discussions to explaining only 
+the more interesting topics.  Here's a list of what you'll 
+find on these pages:
+
+
+
+Animation.  Granted, PM isn't the fastest graphical system 
+on the planet, but it is flexible, and it is capable of some 
+impressive feats if you know how to use it correctly.  I'll 
+describe techniques you can use to obtain the fastest 
+animation possible.
+
+
+
+Sounds.  The PC speaker has always been a miserable source 
+of sound effects.  However, some manufacturers of sound 
+cards are busy developing OS/2 drivers, especially for OS/2 
+2.0.  I'll try to get beta versions of these drivers and 
+include sound effects that take advantage of the advanced 
+hardware.
+
+
+
+Networks and Modems.  Two is better than one, and playing a 
+game across a network or via a modem should add to the 
+excitement.  As I mentioned earlier, one of the network 
+nodes can be a GM running the show.  Or you could have 
+several players at once, each one seeing the world through 
+his own eyes only.
+
+
+
+Foreign languages.  Let's not forget our friends overseas, 
+who might be eager to play with us.  The difficulty will be 
+keeping all text localized, so that there are only a few 
+source files that need to be translated.  I can get 
+translations into German and French done for free.  Does 
+anyone want to volunteer for others?
+
+
+
+32-bit.  The development system I'll be using is IBM's new 
+32-bit OS/2 C compiler and toolkits, which include the 
+WorkFrame/2 editing environment.  I will discuss the 
+differences from 16-bit programming that these new and 
+long-awaited OS/2 2.0 development tools have to offer.  I 
+will also try to incorporate as many of the new 2.0 
+functions as I can.
+
+
+
+You get all this (and source code) for free!  The rules will 
+be presented as the project develops.  I'm very interested 
+in any comments from my readers.  Although my name appears 
+at the top of the page, I really want this to be a team 
+effort.

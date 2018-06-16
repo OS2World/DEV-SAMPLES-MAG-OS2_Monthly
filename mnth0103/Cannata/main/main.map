@@ -1,0 +1,73 @@
+
+ WndStd
+
+ Start         Length     Name                   Class
+ 0001:00000000 000000646H CODE32                 CODE 32-bit
+ 0002:00000000 00000005CH DDE4_DATA32            DATA 32-bit
+ 0003:00000000 000000000H DATA32                 DATA 32-bit
+ 0003:00000000 000000000H CONST32                CONST 32-bit
+ 0003:00000000 000000000H BSS32                  BSS 32-bit
+ 0003:00000000 000000004H c_common               BSS 32-bit
+ 0003:00000010 000006000H STACK32                STACK 32-bit
+
+ Origin   Group
+ 0003:0   DGROUP
+ 0000:0   FLAT
+
+  Address         Publics by Name
+
+ 0003:00000000       @BSSMAIN.C
+ 0000:00000000  Imp  DOS32FLATTOSEL       (DOSCALLS.425)
+ 0000:00000000  Imp  DOS32SELTOFLAT       (DOSCALLS.426)
+ 0000:00000000  Imp  DosAllocMem          (DOSCALLS.299)
+ 0000:00000000  Imp  DosExit              (DOSCALLS.234)
+ 0001:00000000       main
+ 0001:00000474       malloc
+ 0000:00000000  Imp  NewStdApp            (API.201)
+ 0001:0000008C       UserWndProc
+ 0000:00000000  Imp  WinBeginPaint        (PMWIN.703)
+ 0000:00000000  Imp  WinDefWindowProc     (PMWIN.911)
+ 0000:00000000  Imp  WinEndPaint          (PMWIN.738)
+ 0000:00000000  Imp  WinFillRect          (PMWIN.743)
+ 0002:00000004       _argc
+ 0002:00000008       _argv
+ 0001:00000198       _DosFlatToSel
+ 0001:00000190       _DosSelToFlat
+ 0003:00000000       _edata
+ 0003:00000010       _end
+ 0002:00000000       _exeentry
+ 0001:00000640       _ilog2
+ 0002:0000001C       _pBucketArr
+ 0001:000001A0       _setuparg
+ 0001:00000388       _split_chunk
+ 0001:00000630       _terminate
+
+  Address         Publics by Value
+
+ 0000:00000000  Imp  DosExit              (DOSCALLS.234)
+ 0000:00000000  Imp  WinEndPaint          (PMWIN.738)
+ 0000:00000000  Imp  DOS32FLATTOSEL       (DOSCALLS.425)
+ 0000:00000000  Imp  WinBeginPaint        (PMWIN.703)
+ 0000:00000000  Imp  WinFillRect          (PMWIN.743)
+ 0000:00000000  Imp  DosAllocMem          (DOSCALLS.299)
+ 0000:00000000  Imp  NewStdApp            (API.201)
+ 0000:00000000  Imp  WinDefWindowProc     (PMWIN.911)
+ 0000:00000000  Imp  DOS32SELTOFLAT       (DOSCALLS.426)
+ 0001:00000000       main
+ 0001:0000008C       UserWndProc
+ 0001:00000190       _DosSelToFlat
+ 0001:00000198       _DosFlatToSel
+ 0001:000001A0       _setuparg
+ 0001:00000388       _split_chunk
+ 0001:00000474       malloc
+ 0001:00000630       _terminate
+ 0001:00000640       _ilog2
+ 0002:00000000       _exeentry
+ 0002:00000004       _argc
+ 0002:00000008       _argv
+ 0002:0000001C       _pBucketArr
+ 0003:00000000       @BSSMAIN.C
+ 0003:00000000       _edata
+ 0003:00000010       _end
+
+Program entry point at 0001:016C

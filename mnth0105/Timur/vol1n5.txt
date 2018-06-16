@@ -1,0 +1,214 @@
+Paint by Numbers
+
+This month, we will make our first attempt at creating a real 
+terrain for the combat map.  Each hexagon is a thirty-meter 
+wide area of a particular "terrain", such as grasslands, 
+water, buildings, and so on.  There is still a lot of work 
+left, however.  The terrain is represented by colors and 
+patterns instead of bitmaps.  So instead of seeing an icon of 
+a building inside a hexagon, you see a shade of pink.  Yes, I 
+realize that pink is a dumb color for a building.  Like I 
+said, the program needs work, and bitmaps will have to wait 
+until I decide how scrolling and scaling will be handled.  
+
+Ideally, the map could have any size (even hundreds of 
+hexagons per side) that can be scrolled in the four main 
+directions and scaled to any size.  The only problem with 
+this grandiose idea is the speed at which it runs.  The 
+current version has a fixed window without bitmaps, and 
+drawing the entire map takes several seconds.  Most of the 
+time is spent filling the hexagons, a task handled by 
+function HexFillDraw(), shown in Listing 1.  Filling an 
+area takes too long, so I need to find a faster method.  Any 
+suggestions?
+
+The pull-down menus allow you to toggle edit-mode and select 
+the terrain type, and a simple mouse click will change a 
+hexagon to the new terrain.  Unfortunately, the load and save 
+options are not available, so you will have to wait until 
+next month before you can share your playing fields with the 
+rest of the world.  But since my articles are due about two 
+months before they are published, you can cheat a little by 
+skipping ahead to the code for the October issue.  When I 
+submit an article to "OS/2 Monthly", I also upload the 
+accompanying source code to my local BBS.  So the code for 
+the October issue is actually available in early August.
+
+The overall structure of the program has been slightly 
+modified.  For starters, global variables are declared 
+differently.  True object-oriented techniques frown upon 
+global variables, but sometimes they can result in simpler 
+and faster code.  Listing 1 is an excerpt from HEXES.C that 
+implements the idea.
+
+This technique may or may not be original, but I haven't seen 
+it before.  The constant HEXES_C is defined at the top of 
+HEXES.C, and is used to alter the declaration of these 
+globals depending on whether they are being included inside 
+HEXES.C.  The compiler sees the line "HPS hpsHex" when it 
+processes HEXES.C, but it sees "extern HPS hpsHex" when it 
+compiles any other file.  Therefore, the declaration and 
+definition of this variable are in the same place.
+
+The other unorthodox change is also related to global 
+variables.  The presentation space handles are now created 
+once during initialization and kept open until the program 
+terminates.  This has three advantages.  First, stack space 
+is reduced because these variables are no longer local to the 
+window procedure.  Second, speed is increased because the 
+handles are only obtained once, and not every time a button 
+is pressed.  Third, function calls are simplified since the 
+handles are stored in global variables and not passed as 
+parameters.
+
+I haven't seen this technique used elsewhere either, which 
+means it will probably backfire on me six months down the 
+road.  There may be a problem with keeping a P.S. handle open 
+across successive window procedure calls.  However, it 
+appears to work flawlessly, and it does produce more 
+efficient code.
+
+The targetting routines have been moved from the window 
+procedure to their own module.  The primary reason for this 
+change was to reduce the size of WinProc().  With the 
+addition of pull-down menus, the mouse has gained a second 
+function - map editing.  The routines for changing and 
+drawing the map are in the same module, but this combination 
+may be split in the future, especially since the load and 
+save features will be added next month.  These features 
+require dialog boxes, which will be the primary focus of the 
+September installment.
+
+Each hexagon on the map has various attributes associated 
+with it.  These attributes are stored in a two-dimensional 
+array of structures called amap.  The structure, aptly 
+labelled MAP, only stores the terrain type and the height.  
+More fields will be added as the mapping system becomes more 
+complex.
+
+The terrain types are listed in the resource file and cover 
+the majority of features one would find on a typical combat 
+field.  Of course, there is plenty of room for additions if 
+anyone would like to submit their ideas.  Pull-down menus are 
+being used because it is the easiest way to incorporate these 
+features into the program.  
+
+The menu for terrain selection will eventually be replaced by 
+something more graphical.  One possibility would be to create 
+a second window that shows each of the terrain types as a 
+small icon on which you can select.  Clicking with the left 
+button will make that terrain the current choice.  Clicking 
+with the right button will pop up an information window 
+showing the attributes of that terrain, such as how it 
+affects visibility and maneuverability.
+
+This game deviates from the rule books in its treatment of 
+height.  In the original game, hills were simply another type 
+of terrain.  I want a little more flexibility than that, 
+because there is no reason why woods or buildings cannot be 
+located on elevated ground.
+
+Representing the change in elevation is tricky.  Using 
+different shades or intensities would render the map 
+illegible because of the confusing array of colors.  
+Surrounding all the hexagons of equal height with a contour 
+line requires a very complex and time-consuming algorithm.  
+Showing a number inside a hexagon is simple, but it might not 
+be distinguishable from any bitmap which would also occupy 
+the hex.  As you can see, support for height was not been 
+included this month since I have not yet decided on how to 
+represent it on the screen.
+
+The variable eMode (an enumerated type defined in GAME.C) 
+indicates the user's current activity.  This version supports 
+only two choices: targetting and editing.  Targetting is the 
+initial mode and the code is identical to last month's.  The 
+source hexagon cycles more quickly during targetting, but 
+nothing else has changed.  The next addition to targetting 
+will be a display of the current angle and length of the 
+targetting line.  As you move the line, the computer will 
+tell you at what bearing and range your target is.  It will 
+also calculate the visibility and inform you of the chance of 
+hitting the target.
+
+In the final version of this game, the map editor will be 
+separate from the combat phase.  Changing the playing field 
+during a battle is not a priviledge that mere mortals can 
+enjoy.  Once a campaign has been created, it cannot be 
+changed during play.  However, the editor will remain 
+connected to the rest of the game until it is completed.
+
+The window procedure has changed the most.  WM_CREATE perfoms 
+more initializations, especially since the presentation space 
+handles are now global variables.  Variable bDefTerrain is 
+used by WM_PAINT to draw the window background quickly.  Any 
+hexagons which are the same color as the background are not 
+redrawn.  The default is the color for clear ground, which 
+will most likely be the majority of the map.
+
+The button-down routine (WM_BUTTON1DOWN message) checks the 
+current mode, and either activates targetting or changes the 
+hexagon's terrain type.  This is the only message that is 
+important to both modes.  WM_BUTTON1UP and WM_MOUSEMOVE are 
+important only to targetting, so these routines have not 
+changed significantly.
+
+The WM_COMMAND message processes all the menu selections.  If 
+any of the terrain types have been selected, than the 
+check-mark for the current terrain is cleared, and the new 
+terrain is selected.  When the user clicks on "Edit," the the 
+user mode is toggled.
+
+That wraps it up for this month.  I hope that obtaining the 
+source code has not been a problem, but we are still working 
+on opening the distribution channels.  The main focus in the 
+September issue will be dialog boxes and lots of other good 
+stuff.
+
+
+Listing 1: functions HexDraw() and HexFillDraw()
+---------
+
+void HexDraw(HPS hps, HEXINDEX hi) {
+  POINTL ptlHex[]={ {HEX_SIDE,0},
+                    {HEX_SIDE+HEX_EXT,HEX_HEIGHT/2},
+                    {HEX_SIDE,HEX_HEIGHT},
+                    {0,HEX_HEIGHT},
+                    {-HEX_EXT,HEX_HEIGHT/2},
+                    {0,0}                         };
+  int i=0;
+
+  ptlHex[5]=HexCoord(hi);
+  GpiMove(hps,&ptlHex[5]);
+  for (;i<5;i++) {
+    ptlHex[i].x+=ptlHex[5].x;
+    ptlHex[i].y+=ptlHex[5].y;
+  }
+  GpiPolyLine(hps,6L,&ptlHex[0]);
+}
+
+void HexFillDraw(HEXINDEX hi) {
+  GpiSetColor(hpsHex,HexTerrainColor(abMap[hi.c][hi.r].bTerrain));
+  GpiSetPattern(hpsHex,HexTerrainPattern(abMap[hi.c][hi.r].bTerrain));
+  GpiBeginArea(hpsHex,BA_NOBOUNDARY);
+  HexDraw(hpsHex,hi);
+  GpiEndArea(hpsHex);
+  GpiSetColor(hpsHex,HEX_COLOR);
+  HexDraw(hpsHex,hi);
+}
+
+
+Listing 2: "#define EXTERN extern" trick
+---------
+
+#ifdef HEXES_C
+#define EXTERN
+#else
+#define EXTERN extern
+#endif
+
+EXTERN HPS hpsHex;
+EXTERN TARGET target;
+EXTERN long lNumColors;
+EXTERN MAP amap[NUM_COLUMNS][NUM_ROWS];
+#undef EXTERN

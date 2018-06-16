@@ -1,0 +1,233 @@
+The Body Electric
+
+Those pink checkerboards just had to go.  Representing 
+different building types by colored patterns is not my idea 
+of an intuitive user interface, so this month I introduce 
+bitmaps to enhance the combat map.
+
+To facilitate bitmap programming, a new BITMAP module has 
+been added.  All bitmaps are loaded from the executable's 
+resources and stored in a memory presentation space.  From 
+there, they are displayed with a GpiBitBlt() call.
+
+The game now allows you to move a 'Mech across the playing 
+field.  The 'Mech starts out at location (0,0) and can be 
+moved one hex at a time.  Simply click on a nearby hexagon, 
+and the 'Mech will either turn to face it or move onto it.  
+In BattleTech, each sixty-degree turn is one movement point, 
+and a 'Mech can only move forward or backward.  The current 
+version of this game does not keep track of movement points 
+or turns, however.
+
+During targetting, the source hexagon is always taken to be 
+the 'Mech, so once you click with the left mouse button, the 
+targetting line is automatically drawn to the mouse pointer.
+
+BITMAP
+------
+
+This new module provides generic bitmap support for the 
+entire game.  All bitmaps are stored in the same memory 
+presentation space.
+
+BitmapLoad() loads a bitmap and returns a bitmap handle if it 
+succeeds.  It also initializes the module when first called.  
+Note all the WinMessageBox() calls to indicate an error.  A 
+more advanced error handler will be included in a future 
+version.
+
+BitmapDraw() draws a bitmap on the client window.  Most 
+bitmaps in this game are irregular in shape.  The bitmap 
+itself is always rectangular, but the image it holds usually 
+is not.  For instance, a bitmap of a terrain is hexagonal.  
+The four corners are part of the bitmap, but not part of the 
+image.
+
+Thus there is a problem.  Some bitmap pixels must be drawn 
+over the screen, and others should not overwrite anything.  
+In other words, only a portion of the rectangular bitmap 
+should be drawn.  The rest should be ignored.
+
+By using a bitmap mask, this effect can be achieved.  The 
+mask is the same size and shape as the original bitmap and is 
+drawn at the same location, but it contains only two colors: 
+white and black.  The black portions are where the true image 
+exists in original bitmap.  The white areas are where the 
+background image should show through.  It is important to 
+remember that wherever the mask is white, the original bitmap 
+should be black.
+
+The mask is logically-AND'ed with the screen.  The black 
+portions of the mask erase the screen, and the white portions 
+leave the screen unaltered.  Then the original bitmap is 
+logically-OR'ed onto the screen over the mask.
+
+If the mask bitmap handle is NULLHANDLE, then no masking 
+operation is performed.  This is handy for times when the 
+background is already known to be black.
+
+GAME
+----
+
+Most of the window-related variables have been moved to a new 
+module, WINDOW.  However, all of the code is tentatively 
+still here.  See the discussion of WINDOW for details. 
+
+The window procedure has been updated only to reflect changes 
+in the other modules.  For instance, WM_CREATE now calls 
+MechInit() to initialize the MECH module.
+
+HEXES
+-----         
+
+The biggest change in this module is the technique used to 
+draw the combat map.  The addition of bitmap support 
+necessitated an update of the drawing functions.  Also, the 
+routines which support the different terrains have been moved 
+to a separate module, TERRAIN.
+
+The following two methods were previously used to draw the 
+combat map:
+
+1. The client window is painted black.  For each hexagon, the 
+current color and pattern is set, and an area bracket is 
+started. A hexagon is drawn, the bracket is closed, and OS/2 
+fills in the rest.
+
+2. Similar to the first method, except that the client window 
+is painted with the color and pattern of the default terrain 
+(in this case, clear ground).  A black hexagonal grid is 
+overlaid.  Only the hexagons which differ from the default 
+are then painted.
+
+Beginning this month, a third technique comes into play:
+
+3.  The client window is once again painted black, the color 
+of the hexagonal grid.  The inside of each hexagon is painted 
+without redrawing the hexagon itself.
+
+The window procedure should take no longer than 1/10th of a 
+second to process any message, otherwise it blocks the 
+message queue for too long.  Unfortunately, drawing the 
+entire combat map can take several seconds.
+
+One solution is to move HexDrawMap() into a separate thread. 
+This may solve the queue problem, but the combat map still 
+takes too long to draw.  Method #2 works well as long as the 
+combat field is mostly of clear ground, which is not always 
+the case.
+
+The proper technique would be to use WinQueryWindowRect() to 
+determine the hexagons which need to be redrawn.  This 
+function returns a rectangle that outlines the region of the 
+client window which has been invalidated.  A function similar 
+to HexLocate() could be used to find the four hexagons that 
+lie on the corners of that rectangle.  Then HexDrawMap() 
+would read:
+
+   for (hi.c=iStartC; hi.c<=iEndC; hi.c++)
+     for (hi.r=iStartR; hi.r<=iEndR; hi.r++)
+       HexFillDraw(hi);
+
+The individual hexagons, however, still take a long time to 
+draw. There are a few potential solutions to this problem.  
+Look for these and other speed enhancements in future 
+articles:
+
+1. Draw all hexagons of a given terrain at once, thereby 
+avoiding multiple calls to GpiSetColor() and GpiSetPattern().
+
+2. Use a different technique for drawing filled polygons.  I 
+have not explored all the possibilities yet, so there may be 
+other Gpi functions which work better.
+
+3. Use bitmaps for all the terrains.  The GpiBitBlt() 
+function might be faster than area-bracket fills.
+
+Two new defines, XLAG and YLAG, represent the horizontal and 
+vertical spacing between the hexagons on the hex map.  The 
+default value of two produces a spacing of one pixel.  These 
+defines only affect HexCoord(), HexMidpoint(), and 
+HexLocate(), since these are the only functions which 
+maintain a link between screen coordinates and hex indices.  
+WINDOW_WIDTH and WINDOW_HEIGHT also use XLAG and YLAG to 
+determine the size of the client window needed to display the 
+entire hex map.
+
+MECH
+---- 
+
+This month introduces a user-controlled 'Mech, supported by 
+the MECH module.  This module initializes the 'Mech's 
+position and orientation in MechInit() and changes them in 
+MechMove(). MechInit() also loads the bitmaps representing 
+the 'Mech in all six orientations.
+
+MechMove() has to determine whether the 'Mech needs to be 
+rotated or moved.  First, it rejects any target hexagon which 
+is not adjacent to the 'Mech.  Then, it calculates the 
+direction to that hexagon.  If this value is different from 
+the current orientation, the 'Mech is rotated and redrawn.  
+Otherwise, it is moved to the new position.
+
+If you wish to move the 'Mech to a hexagon on its left or 
+right side, click on the target hex once to rotate the 'Mech 
+and again to move him.  However, do not click the mouse twice 
+too quickly.  This action is registered as a double-click, 
+which means that OS/2 does not send two WM_BUTTON1DOWN 
+messages.  Rather, it sends one WM_BUTTON1DOWN followed by a 
+WM_BUTTON1DBLCLK.
+
+MENU
+----
+
+Changes in the header file for this module eliminate the need 
+for MenuInit(), since this function did nothing but 
+initialize global variables.  A separate if-statment in 
+MainCommand() allows this function to handle any number of 
+terrains without a code change. The only other change to this 
+module is the inclusion of my address in the "About..." 
+dialog box.
+
+TERRAIN
+-------
+
+This module encapsulates all the terrain-related code and 
+data which was once in HEXES.  There are eleven terrain 
+types, and each one has a set of attributes listed in 
+structure TERRAIN. Function TerrainInit() initializes the 
+array of terrain data, ater[], with pre-defined constants.  A 
+configuration file will eventually be created to store 
+information on all the terrains.
+
+Function TerrainIdFromMenu() returns the terrain ID (a number 
+from 0 to 10) which maps to a given IDM_TER_xxx value.  In 
+previous versions of this game, the terrain ID was the same 
+as the menu ID listed in file RESOURCE.H.
+
+WINDOW
+------
+
+This module does not contain any code yet, but its purpose is 
+to localize most of the presentation-manager specific 
+features of this game.  In the distant future, there might be 
+interest in porting this game to other platforms.  Separating 
+the operating system specific code early on will make 
+cross-platform development much easier.
+
+Next Month
+----------
+
+There are a few quirks and minor bugs in this code which have 
+yet to be fixed.  The mouse is never captured during 
+targetting.  Clicking on the client window will not bring it 
+into focus.  The info box is not hidden when the main window 
+is minimized.  These and other problems will be addressed in 
+the next installment.
+
+I would also like to make a formal request for volunteer 
+translators.  As you know, multilingual support is one of the 
+goals of this project.  I expect to have a few dozen 
+single-line strings (most of them error messages) which need 
+to be translated into as many foriegn languages as possible.  
+Anyone out there interested in lending a hand?

@@ -1,0 +1,9 @@
+An OS/2-PM Editor Using MLE           by Brian R. Anderson
+
+This disk contains the following directories:
+ 
+   PROGRAMS   -- the executable editor & installation files
+   SOURCE     -- the complete source code for the editor
+   ARTICLE    -- the descriptive article, including bitmaps (screen shots)
+   LISTINGS   -- numbered (for printing) source code files
+   

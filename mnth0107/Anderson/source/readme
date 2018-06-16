@@ -1,0 +1,14 @@
+An OS/2-PM Editor Using MLE           by Brian R. Anderson
+
+This directory contains the following files:
+
+   MAKEFILE  -- builds the program
+   EDIT.H    -- base header (includes resource & ipf constants)
+   EDIT.C    -- main(), ClientWndProc(), & subclassing
+   EDLG.H    -- prototypes, etc. used by dialog box procedures
+   EDLG.C    -- dialog box procedures and supporting code
+   EFILE.H   -- prototypes, etc. used by file I/O procedures
+   EFILE.C   -- file I/O procedures
+   EDIT.DEF  -- linker control (module definition file)
+   EDIT.IPF  -- help text
+   EDIT.ICO  -- bitmap of the icon

@@ -1,0 +1,24 @@
+# IBM Developer's Workframe/2 Make File Creation run at 00:11:08 on 07/29/92
+
+# Make File Creation run in directory:
+#   D:\P\MAGAZINE\SLIDER;
+
+# Assumed INCLUDE environment variable path:
+#   C:\TOOLKT20\C\OS2H;
+#   C:\TOOLKT20\ASM\OS2INC;
+#   C:\IBMC\INCLUDE;
+
+
+SLIDER.RES:  SLIDER.RC  \
+#  {.;$(INCLUDE)}OS2.H  \
+   {.;$(INCLUDE)}SLIDER.H  \
+#    {.;$(INCLUDE)}FCLSLDP.H  \
+   SLIDER.MAK
+
+SLIDER.OBJ:  SLIDER.C  \
+#  {$(INCLUDE);}OS2.H  \
+#  {$(INCLUDE);}stdlib.h  \
+#  {$(INCLUDE);}string.h  \
+   {.;$(INCLUDE);}slider.h  \
+#    {$(INCLUDE);}fclsldp.h  \
+   SLIDER.MAK

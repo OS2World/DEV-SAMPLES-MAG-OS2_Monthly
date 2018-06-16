@@ -1,0 +1,99 @@
+#include <os2.h>
+#include "StdAppU.h"
+#include "Utl.h"
+
+
+
+// *  Help table definition
+HELPTABLE   STDAPP_HELP_TABLE
+{
+   HELPITEM    STDAPP_IDR_WIN, STDAPP_SUBTABLE, STDAPP_PANEL_MAIN
+}
+
+// *  Main window subtable, includes menu item help
+HELPSUBTABLE STDAPP_SUBTABLE
+SUBITEMSIZE     2
+{
+   HELPSUBITEM STDAPP_IDM_HELP,          STDAPP_PANEL_HELP
+   HELPSUBITEM STDAPP_IDM_HELPUSINGHELP, STDAPP_PANEL_HELPHELPFORHELP
+   HELPSUBITEM STDAPP_IDM_HELPGENERAL,   STDAPP_PANEL_HELPEXTENDED
+   HELPSUBITEM STDAPP_IDM_HELPKEYS,      STDAPP_PANEL_HELPKEYS
+   HELPSUBITEM STDAPP_IDM_HELPINDEX,     STDAPP_PANEL_HELPINDEX
+}
+
+
+
+MESSAGETABLE
+{
+   IDMSG_INITFAILED            "Initalization failed."
+
+   IDMSG_FRAMEWINCREATEFAILED  "Failed to create frame window."
+
+   IDMSG_CLIENTWINCREATEFAILED "Failed to create client window."
+
+   IDMSG_CANNOTGETHPS          "Cannot get HPS for window."
+
+   IDMSG_HELPLOADERROR         "Failed to load help manager."
+
+   IDMSG_CANNOTLOADSTRING      "Failed to load string."
+
+   IDMSG_CANNOTOPENPRINTER     "Failed to open printer."
+
+   IDMSG_HELPDISPLAYERROR      "Failed to display help panel."
+
+   IDMSG_CANNOTALLOCATEMEMORY  "Not enough memory."
+
+
+   IDMSG_GPISETCOLOR           "GpiSetColor Failed"
+
+   IDMSG_GPISETCURRENTPOSITION "GpiSetCurrentPosition Failed"
+
+   IDMSG_GPIFULLARC            "GpiFullArc Failed"
+
+   IDMSG_GPIBEGINPATH          "GpiBeginPath Failed"
+
+   IDMSG_GPICLOSEFIGURE        "GpiCloseFigure Failed"
+
+   IDMSG_GPIENDPATH            "GpiEndPath Failed"
+
+   IDMSG_GPIFILLPATH           "GpiFillPath Failed"
+
+   IDMSG_GPISETPAGEVIEWPORT    "GpiSetPageViewport Failed"
+
+   IDMSG_GPISETARCPARAMS       "GpiSetArcParams Failed"
+
+   IDMSG_CANNOTLOADMESSAGE     "Failed to load message."
+
+   IDMSG_CANNOTLOADMODULE      "Failed to load module."
+
+   IDMSG_CONFIRMEXITOF         "Confirm exit of "
+
+   IDMSG_STDAPPSERVICE         "StdApp Service"
+
+   IDMSG_ACTBARCREATEERR       "ActionBar not created!"
+
+   IDMSG_CREATEHLPSUBMENUWIN   "Cant create Help Submenu window"
+
+   IDMSG_ADDHLPSUBMENUWIN      "Cant add Help Submenu window to actionbar"
+
+   IDMSG_CREATEEXITSUBMENUWIN  "Cant create Exit Submenu window"
+
+   IDMSG_ADDEXITSUBMENUWIN     "Cant add Exit Menu item"
+
+   IDMSG_CONFIRMEXITDLG        "Confirm Exit Dialog"
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

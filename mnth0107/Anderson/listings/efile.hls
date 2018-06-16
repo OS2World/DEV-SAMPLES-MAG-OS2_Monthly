@@ -1,0 +1,16 @@
+            Listing for efile.h                                         Page 30
+
+         1417|   /* file I/O for OS/2 Programmer's Editor */
+         1418|   
+         1419|   /* return types for local file I/O functions */
+         1420|   #define CANTREAD (-1L)
+         1421|   #define CANTWRITE (-2L)
+         1422|   #define TOOLONG (-3L)
+         1423|   #define NOMEMORY (-4L)
+         1424|   
+         1425|   LONG ReadFile (char *fn, PCHAR *b);
+         1426|   LONG MakeWriteBuffer (LONG cb, PCHAR *b);
+         1427|   LONG WriteFile (char *fn, LONG cb, PCHAR b);
+         1428|   VOID Release (PCHAR b);
+         1429|   
+

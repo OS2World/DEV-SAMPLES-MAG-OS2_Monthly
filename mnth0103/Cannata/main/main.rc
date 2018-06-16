@@ -1,0 +1,45 @@
+#include <os2.h>
+#include "..\APIDLL\stdappu.h"
+#include "..\APIDLL\utl.h"
+#include "main.h"
+
+
+
+//MENU STDAPP_IDR_WIN
+//{
+//  MENUITEM    "~Messages", IDMU_MSG,  MIS_TEXT
+//}
+
+
+
+ICON STDAPP_IDR_WIN_BITMAP main.ico
+
+
+ACCELTABLE STDAPP_IDR_WIN
+{
+  VK_F3, STDAPP_IDM_EXIT,    VIRTUALKEY
+}
+
+
+
+
+
+STRINGTABLE
+{
+   STDAPP_IDS_WIN_APPNAME                 "Main"
+   STDAPP_IDS_WIN_CLASSNAME               "ClassMain"
+   STDAPP_IDS_WIN_TITLE                   "StdApp"
+   STDAPP_IDS_HELPLIBRARYNAME             "Main.HLP"
+   STDAPP_IDS_HELPWINDOWTITLE             "Main Help"
+   STDAPP_IDS_TITLEBARSEPARATOR           ": "
+}
+
+
+
+
+
+
+
+
+
+

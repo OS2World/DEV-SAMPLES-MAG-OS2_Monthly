@@ -1,0 +1,71 @@
+
+Operating System/2 Program Maintenance Utility
+Version 2.000.000 Dec 02 1991
+Copyright (C) IBM Corporation 1988-1991.
+Copyright (C) Microsoft Corp. 1988-1991.
+All rights reserved.
+
+	rc -r api.rc
+Operating System/2  Resource Compiler
+Version 2.00.000 Nov 9 1991
+(C) Copyright IBM Corporation 1988-1991
+(C) Copyright Microsoft Corp. 1985-1991
+All rights reserved.
+
+
+Creating binary resource file api.RES
+RC:  RCPP -E -D RC_INVOKED -f api.rc -ef C:\OS2\RCPP.ERR -I C:\TOOLKT20\C\OS2H -I C:\IBMC\INCLUDE -I C:\TOOLKT20\SC -I C:\TOOLKT20\ASM\OS2INC -I C:\TOOLKT20\ASM\OS2INC
+
+api.rc...
+	icc /c /Gd+ /Ge- /Gm+ /Kb+ /Ms /Re /Se /ss /Ti+ -FoStdApp.obj StdApp.c
+	icc /c /Gd+ /Ge- /Gm+ /Kb+ /Ms /Re /Se /ss /Ti+ -FoUtl.obj Utl.c
+	echo StdApp.obj            utl.obj           > api.lnk
+	echo api.dll               >> api.lnk
+	echo api.map               >> api.lnk
+	echo DDE4NBS + os2386            >> api.lnk
+	echo api.def               >> api.lnk
+	LINK386  /NOE /NOD /CODEVIEW /ALIGN:16 /EXEPACK /M @api.lnk
+
+Operating System/2 LX (Linear Executable) Linker
+Version 2.00.000 Feb 25 1992
+Copyright (C) IBM Corporation 1988-1992.
+Copyright (C) Microsoft Corp. 1988-1992.
+All rights reserved.
+
+Object Modules [.obj]: /NOE /NOD /CODEVIEW /ALIGN:16 /EXEPACK /M StdApp.obj            utl.obj 
+Run File [StdApp.exe]: api.dll               
+List File [api.map]: api.map               
+Libraries [.lib]: DDE4NBS + os2386            
+Definitions File [nul.def]: api.def               
+	rc api.res api.dll
+Operating System/2  Resource Compiler
+Version 2.00.000 Nov 9 1991
+(C) Copyright IBM Corporation 1988-1991
+(C) Copyright Microsoft Corp. 1985-1991
+All rights reserved.
+
+
+Reading binary resource file api.res
+
+....
+Writing resources to OS/2 v2.0 Linear .EXE file
+Writing 2 DEMAND resource object(s)
+  Writing:  728 bytes in 1 page(s)
+    1.10 (382 bytes)
+    2.10 (341 bytes)
+  Writing:  36 bytes in 1 page(s)
+    9999.18 (10 bytes)
+    9998.19 (24 bytes)
+
+	copy api.dll ..
+        1 file(s) copied.
+	implib api.lib api.def
+
+Operating System/2 Import Library Manager
+Version 2.00.000 Feb 14 1992
+Copyright (C) IBM Corporation 1988-1992.
+Copyright (C) Microsoft Corp. 1988-1992.
+All rights reserved.
+
+	copy api.lib ..
+        1 file(s) copied.

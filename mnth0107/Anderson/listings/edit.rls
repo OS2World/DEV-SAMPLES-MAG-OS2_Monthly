@@ -1,0 +1,220 @@
+            Listing for edit.rc                                         Page 33
+
+         1537|   #include <os2.h>
+         1538|   #include "edit.h"
+         1539|   
+         1540|   ICON ID_EDIT edit.ico
+         1541|   
+         1542|   MENU ID_EDIT
+         1543|   {
+         1544|      SUBMENU "~File",                             IDM_FILE
+         1545|         {
+         1546|            MENUITEM "~New...",                    IDM_NEW
+         1547|            MENUITEM "~Open...",                   IDM_OPEN
+         1548|            MENUITEM SEPARATOR
+         1549|            MENUITEM "~Save",                      IDM_SAVE
+         1550|            MENUITEM "Save ~as...",                IDM_SAVEAS
+         1551|            MENUITEM SEPARATOR
+         1552|            MENUITEM "E~xit...\tF3",               IDM_EXIT
+         1553|         }
+         1554|      SUBMENU "~Edit",                             IDM_EDIT
+         1555|         {
+         1556|            MENUITEM "~Undo\tAlt+Backspace",       IDM_UNDO
+         1557|            MENUITEM SEPARATOR
+         1558|            MENUITEM "Cu~t\tShift+Del",            IDM_CUT
+         1559|            MENUITEM "~Copy\tCtrl+Ins",            IDM_COPY
+         1560|            MENUITEM "~Paste\tShift+Ins",          IDM_PASTE
+         1561|            MENUITEM "~Delete\tDel",               IDM_DELETE
+         1562|            MENUITEM SEPARATOR
+         1563|            MENUITEM "~Find...\tCtrl+F",           IDM_FIND
+         1564|            MENUITEM "~Replace...\tCtrl+R",        IDM_REPLACE
+         1565|            MENUITEM SEPARATOR
+         1566|            MENUITEM "~Go to line...\tCtrl+G",     IDM_GO
+         1567|         }
+         1568|      SUBMENU "~Help",                             IDM_HELP
+         1569|         {
+         1570|            MENUITEM "~Help for help...",          IDM_HELPFORHELP
+         1571|            MENUITEM "~Extended help...",          IDM_EXTENDEDHELP
+         1572|            MENUITEM "~Keys help...",              IDM_KEYSHELP
+         1573|            MENUITEM "Help ~index...",             IDM_HELPINDEX
+         1574|            MENUITEM SEPARATOR
+         1575|            MENUITEM "~About...",                  IDM_ABOUT
+         1576|         }
+         1577|   }
+         1578|   
+         1579|   
+         1580|   ACCELTABLE ID_EDIT
+         1581|   {
+         1582|      VK_F3, IDM_EXIT, VIRTUALKEY
+         1583|      VK_BACKSPACE, IDM_UNDO, VIRTUALKEY, ALT
+         1584|      VK_DELETE, IDM_CUT, VIRTUALKEY, SHIFT
+         1585|      VK_INSERT, IDM_COPY, VIRTUALKEY, CONTROL
+         1586|      VK_INSERT, IDM_PASTE, VIRTUALKEY, SHIFT
+         1587|      VK_DELETE, IDM_DELETE, VIRTUALKEY
+         1588|      "^F", IDM_FIND
+         1589|      "^R", IDM_REPLACE
+         1590|      "^G", IDM_GO
+         1591|   }
+edit.rc                                                                 Page 34
+
+         1592|   
+         1593|   
+         1594|   HELPTABLE ID_EDIT
+         1595|   {
+         1596|      HELPITEM    ID_EDIT, ID_EDIT, ID_EDIT
+         1597|   }
+         1598|   
+         1599|   
+         1600|   HELPSUBTABLE ID_EDIT
+         1601|   {
+         1602|      HELPSUBITEM    IDM_FILE, IDM_FILE
+         1603|      HELPSUBITEM    IDM_NEW, IDM_NEW
+         1604|      HELPSUBITEM    IDM_OPEN, IDM_OPEN
+         1605|      HELPSUBITEM    IDM_SAVE, IDM_SAVE
+         1606|      HELPSUBITEM    IDM_SAVEAS, IDM_SAVEAS
+         1607|      HELPSUBITEM    IDM_EXIT, IDM_EXIT      
+         1608|      HELPSUBITEM    IDM_EDIT, IDM_EDIT
+         1609|      HELPSUBITEM    IDM_UNDO, IDM_UNDO
+         1610|      HELPSUBITEM    IDM_CUT, IDM_CUT
+         1611|      HELPSUBITEM    IDM_COPY, IDM_COPY
+         1612|      HELPSUBITEM    IDM_PASTE, IDM_PASTE
+         1613|      HELPSUBITEM    IDM_DELETE, IDM_DELETE
+         1614|      HELPSUBITEM    IDM_FIND, IDM_FIND
+         1615|      HELPSUBITEM    IDM_REPLACE, IDM_REPLACE
+         1616|      HELPSUBITEM    IDM_GO, IDM_GO
+         1617|      HELPSUBITEM    IDM_HELP, IDM_HELP
+         1618|      HELPSUBITEM    IDM_HELPFORHELP, IDM_HELPFORHELP
+         1619|      HELPSUBITEM    IDM_EXTENDEDHELP, IDM_EXTENDEDHELP
+         1620|      HELPSUBITEM    IDM_KEYSHELP, IDM_KEYSHELP
+         1621|      HELPSUBITEM    IDM_HELPINDEX, IDM_HELPINDEX
+         1622|      HELPSUBITEM    IDM_ABOUT, IDM_ABOUT
+         1623|   }
+         1624|   
+         1625|   
+         1626|   DLGTEMPLATE IDD_ABOUT LOADONCALL MOVEABLE DISCARDABLE 
+         1627|   {
+         1628|       DIALOG "About Edit", IDD_ABOUT, 30, 30, 212, 88, FS_NOBYTEALIGN | 
+         1629|                   FS_DLGBORDER | WS_VISIBLE | WS_CLIPSIBLINGS | WS_SAVEBITS,
+         1630|                   FCF_SYSMENU | FCF_TITLEBAR
+         1631|       {
+         1632|           CONTROL "OS/2 Programmer's Editor", -1, 46, 72, 122, 8, WC_STATIC, 
+         1633|                   SS_TEXT | DT_LEFT | DT_TOP | WS_GROUP | WS_VISIBLE
+         1634|           CONTROL ID_EDIT, ID_EDIT, 87, 48, 22, 16, WC_STATIC, SS_ICON | 
+         1635|                   WS_GROUP | WS_VISIBLE
+         1636|           CONTROL "Copyright (c) 1992, Brian R. Anderson", -1, 23, 32, 163, 8, 
+         1637|                   WC_STATIC, SS_TEXT | DT_LEFT | DT_TOP | WS_GROUP | WS_VISIBLE
+         1638|           CONTROL "OK", DID_OK, 81, 10, 38, 13, WC_BUTTON, BS_PUSHBUTTON | 
+         1639|                   BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+         1640|       }
+         1641|   }
+         1642|   
+         1643|   
+         1644|   DLGTEMPLATE IDD_OPEN
+         1645|   {
+         1646|      DIALOG "Open File", IDD_OPEN, 8, 8, 240, 170,,
+edit.rc                                                                 Page 35
+
+         1647|                  FCF_DLGBORDER | FCF_TITLEBAR | FCF_SYSMENU
+         1648|      {
+         1649|         LTEXT "Use mouse to choose file, or type filename." -1, 8, 138, 224, 8
+         1650|         LTEXT "Current Directory:"     -1,             8, 126,  80,  8
+         1651|         LTEXT ""                       DID_PATH,      88, 126, 144,  8
+         1652|         LTEXT "Filename:"              -1,             8, 110,  48,  8
+         1653|         ENTRYFIELD ""                  DID_FILEEDIT,  56, 110, 176,  8, ES_MARGIN
+         1654|         CTEXT "Directories"            -1,            16,  96,  92,  8
+         1655|         CTEXT "Files"                  -1,           134,  96,  92,  8
+         1656|         LISTBOX                        DID_DIRLIST,   16,  32,  92, 64
+         1657|         LISTBOX                        DID_FILELIST, 134,  32,  92, 64
+         1658|         DEFPUSHBUTTON "OK"             DID_OK,        44,   8,  38, 13, WS_GROUP
+         1659|         PUSHBUTTON "Cancel"            DID_CANCEL,   160,   8,  38, 13, WS_GROUP
+         1660|      }
+         1661|   }
+         1662|   
+         1663|   
+         1664|   DLGTEMPLATE IDD_SAVEAS
+         1665|   {
+         1666|      DIALOG "Save As", IDD_SAVEAS, 8, 8, 240, 170,,
+         1667|                  FCF_DLGBORDER | FCF_TITLEBAR | FCF_SYSMENU
+         1668|      {
+         1669|         LTEXT "Enter filename to save as." -1, 8, 138, 224, 8
+         1670|         LTEXT "Current Directory:"     -1,             8, 126,  80,  8
+         1671|         LTEXT ""                       DID_PATH,      88, 126, 144,  8
+         1672|         LTEXT "Filename:"              -1,             8, 110,  48,  8
+         1673|         ENTRYFIELD ""                  DID_FILEEDIT,  56, 110, 176,  8, ES_MARGIN
+         1674|         CTEXT "Directories"            -1,            74,  96,  92,  8
+         1675|         LISTBOX                        DID_DIRLIST,   74,  32,  92, 64
+         1676|         DEFPUSHBUTTON "OK"             DID_OK,        64,   8,  38, 13, WS_GROUP
+         1677|         PUSHBUTTON "Cancel"            DID_CANCEL,   140,   8,  38, 13, WS_GROUP
+         1678|      }
+         1679|   }
+         1680|   
+         1681|   
+         1682|   DLGTEMPLATE IDD_FIND LOADONCALL MOVEABLE DISCARDABLE 
+         1683|   {
+         1684|       DIALOG "Find", IDD_FIND, 30, 30, 208, 56, FS_NOBYTEALIGN | FS_DLGBORDER | 
+         1685|                   WS_VISIBLE | WS_SAVEBITS, 
+         1686|                   FCF_SYSMENU | FCF_TITLEBAR
+         1687|       {
+         1688|           CONTROL "Search file for text...", -1, 57, 45, 88, 8, WC_STATIC, 
+         1689|                   SS_TEXT | DT_LEFT | DT_TOP | WS_GROUP | WS_VISIBLE
+         1690|           CONTROL "Target:", -1, 9, 31, 30, 8, WC_STATIC, SS_TEXT | DT_LEFT | 
+         1691|                   DT_TOP | WS_GROUP | WS_VISIBLE
+         1692|           CONTROL "", DID_FINDTEXT, 47, 30, 151, 8, WC_ENTRYFIELD, ES_LEFT | 
+         1693|                   ES_AUTOSCROLL | ES_MARGIN | WS_TABSTOP | WS_VISIBLE
+         1694|           CONTROL "Find", DID_OK, 43, 8, 38, 13, WC_BUTTON, BS_PUSHBUTTON | 
+         1695|                   BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+         1696|           CONTROL "Cancel", DID_CANCEL, 126, 8, 38, 13, WC_BUTTON, BS_PUSHBUTTON | 
+         1697|                   WS_TABSTOP | WS_VISIBLE
+         1698|       }
+         1699|   }
+         1700|   
+         1701|   
+edit.rc                                                                 Page 36
+
+         1702|   DLGTEMPLATE IDD_REPLACE LOADONCALL MOVEABLE DISCARDABLE 
+         1703|   {
+         1704|       DIALOG "Replace", IDD_REPLACE, 30, 30, 236, 76, FS_NOBYTEALIGN | 
+         1705|                   FS_DLGBORDER | WS_VISIBLE | WS_CLIPSIBLINGS | WS_SAVEBITS, 
+         1706|                   FCF_SYSMENU | FCF_TITLEBAR
+         1707|       {
+         1708|           CONTROL "Search file for text, and then replace text...", 
+         1709|                   DID_REPLACEMSG, 18, 63, 186, 8, 
+         1710|                   WC_STATIC, SS_TEXT | DT_LEFT | DT_TOP | WS_GROUP | WS_VISIBLE
+         1711|           CONTROL "Target:", -1, 35, 45, 30, 8, WC_STATIC, SS_TEXT | DT_LEFT | 
+         1712|                   DT_TOP | WS_GROUP | WS_VISIBLE
+         1713|           CONTROL "", DID_OLDTEXT, 73, 45, 152, 8, WC_ENTRYFIELD, ES_LEFT | 
+         1714|                   ES_AUTOSCROLL | ES_MARGIN | WS_TABSTOP | WS_VISIBLE
+         1715|           CONTROL "Replacement:", -1, 7, 29, 61, 8, WC_STATIC, SS_TEXT | 
+         1716|                   DT_LEFT | DT_TOP | WS_GROUP | WS_VISIBLE
+         1717|           CONTROL "", DID_NEWTEXT, 73, 28, 152, 8, WC_ENTRYFIELD, ES_LEFT | 
+         1718|                   ES_AUTOSCROLL | ES_MARGIN | WS_TABSTOP | WS_VISIBLE
+         1719|           CONTROL "Find", DID_OK, 9, 8, 38, 13, WC_BUTTON, BS_PUSHBUTTON | 
+         1720|                   BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+         1721|           CONTROL "Replace", DID_DOREPLACE, 58, 8, 48, 13, WC_BUTTON, 
+         1722|                   BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+         1723|           CONTROL "Replace All", DID_REPLACEALL, 115, 8, 59, 13, WC_BUTTON, 
+         1724|                   BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+         1725|           CONTROL "Cancel", DID_CANCEL, 184, 8, 39, 13, WC_BUTTON, 
+         1726|                   BS_PUSHBUTTON | WS_TABSTOP | WS_VISIBLE
+         1727|       }
+         1728|   }
+         1729|   
+         1730|   
+         1731|   DLGTEMPLATE IDD_GOLINE LOADONCALL MOVEABLE DISCARDABLE 
+         1732|   {
+         1733|       DIALOG "Go to line...", IDD_GOLINE, 35, 45, 195, 49, FS_NOBYTEALIGN | 
+         1734|                   FS_DLGBORDER | WS_VISIBLE | WS_CLIPSIBLINGS | WS_SAVEBITS, 
+         1735|                   FCF_SYSMENU | FCF_TITLEBAR
+         1736|       {
+         1737|           CONTROL "Line number:", -1, 7, 32, 64, 8, WC_STATIC, SS_TEXT | 
+         1738|                   DT_LEFT | DT_TOP | WS_GROUP | WS_VISIBLE
+         1739|           CONTROL "", DID_LINENBR, 71, 32, 106, 8, WC_ENTRYFIELD, ES_LEFT | 
+         1740|                   ES_MARGIN | WS_TABSTOP | WS_VISIBLE
+         1741|           CONTROL "OK", DID_OK, 27, 8, 38, 13, WC_BUTTON, BS_PUSHBUTTON | 
+         1742|                   BS_DEFAULT | WS_TABSTOP | WS_VISIBLE
+         1743|           CONTROL "Cancel", DID_CANCEL, 128, 8, 38, 13, WC_BUTTON, BS_PUSHBUTTON | 
+         1744|                   WS_TABSTOP | WS_VISIBLE
+         1745|       }
+         1746|   }
+         1747|   
+

@@ -1,0 +1,572 @@
+Column Name: Advanced PM Programming
+Column Title: Writing Your Own Controls
+
+Published in the January 1992 issue of "OS/2 Monthly," JDS
+Publications.
+
+by:  Guy Scharf
+(c) Copyright 1991 Software Architects, Inc.
+
+
+Introduction
+
+Welcome to the first "Programming the PM" column.  I
+plan to cover different aspects of OS/2 Presentation
+Manager programming in these columns.  Some of the
+columns will focus on specific programming techniques. 
+Others will cover broader topics.
+
+This is the first issue of OS/2 Monthly and this column, so
+let me introduce myself.  I am a consultant specializing in
+developing OS/2 Presentation Manager products for our
+clients.  I help teach IBM Developer Assistance Program
+workshops for developers converting their applications to
+PM and am a sysop on the IBM OS/2 and Computer
+Consultant's Forums on CompuServe.  These columns will
+be based on work we are doing currently and questions you
+ask.
+
+In this first column, we will look at writing custom
+controls.
+
+In a PM application, one window may "own" another. 
+When one window is owned by another, the owned window
+is often referred to as a "control window" of the owner. 
+Control windows usually have a relatively simple structure,
+and are often information input mechanisms for the owner. 
+A control window often receives user input in the form of
+keystrokes and mouse operations, collects that user input,
+and notifies the owner of selected events.  Control windows
+may also be used for output.  The title bar, system menu,
+and minimize and maximize buttons are all control windows
+of the frame in a standard window.  All of the windows
+you see inside a dialog are control windows.  Programming
+a Presentation Manager application often requires extensive
+work with dialogs and control windows to achieve the
+desired function.
+
+
+Why Write Your Own Control?
+
+OS/2 Presentation Manager comes with a variety of built-in
+controls -- entry fields, push buttons, static text, list boxes,
+combo boxes, and more.  The PM developer quickly finds
+that these controls, while helpful, are not sufficient for the
+application.  Entry fields are useful, but how about an entry
+field that accepts only digits, or one that accepts only
+uppercase letters?  List boxes are great, but how do you put
+multiple columns in a list box, or how do you drag a list
+box item from one location to another?
+
+The first step an OS/2 programmer takes is usually to write
+the processing code in the dialog procedure.  You examine
+the WM_CONTROL messages from the control and
+perform any required processing.  The result works fine. 
+Next, you want a control of the same type in another
+dialog.  So, you modularize the code you wrote before and
+build a subroutine library or DLL.  Now, your dialog
+procedures need only make selected calls to perform the
+required processing.  But, with this approach, you still have
+special handling in the dialog procedure for each different
+type of control.
+
+A custom control is even easier to use.  With a custom
+control, you effectively create a new control that operates
+exactly as you want.  To use it, you need merely name the
+control in the resource script, just as you do for any system
+supplied control.  No special processing is required in the
+dialog.  You set and retrieve information from the control
+in the same way as you do with system-supplied controls.
+
+We'll look here at how to write such a custom control. 
+The approach we use is "subclassing," where we refine the
+operation of an existing control.  You can also write your
+own control from scratch, without basing it on any system
+control classes, but it is often easier to derive your control
+from an existing, similar control than to write it all
+yourself.
+
+
+What is Subclassing?
+
+"Subclassing" is a feature of PM that allows one window
+to be based on another.  Every window in PM has a
+procedure associated with it.  The procedure implements
+the behavior of the window.  Just as your window
+procedure implements the behavior of your main window,
+system-supplied procedures implement the behavior of entry
+fields, list boxes, and other control windows.
+
+PM passes messages to windows by calling the window
+procedure associated with each window.  When you
+subclass a window, you interpose your procedure between
+PM and the procedure originally associated with the
+window.  You can process as many or as few of the
+messages as you like; you can process them, alter them,
+discard them, or pass them to the original procedure for
+processing.  When you pass them to the original window
+procedure, that procedure performs its normal processing. 
+By processing selected messages, we alter the behavior of
+the control we are subclassing, and create a new type of
+control.
+
+A control to convert input to uppercase and reject non-
+printable characters is useful for some input.  We can
+subclass the entry field control and modify it to operate this
+way.  All we have to do is to examine each WM_CHAR
+message that comes to the window, and either convert the
+character to uppercase before passing the WM_CHAR
+message on to the standard entry field procedure, or reject
+the character with a warning beep.  We need do nothing
+else.  A more complex custom entry field control could
+check that the characters typed matched a "picture mask"
+or that only valid complex numbers were entered.  The
+processing would be similar, except that conditions for
+determining what input was acceptable would require more
+complex code.  
+
+
+Making Your Own Control
+
+Here we'll explore each step of creating and using a custom
+control to convert input to uppercase.  One API that you
+will not see here is WinSubclassWindow().  We handle the
+subclassing without using that call.
+
+Every control has an identifier.  System-supplied controls
+are predefined as WC_BUTTON, WC_ENTRYFIELD, etc. 
+We define our own WC_UDUPPER class as a string
+"UpperCase."  In the resource script (subclass.rc, listing
+4), we simply include a CONTROL statement and specify
+the control type as WC_UDUPPER.  Since we are
+subclassing the entry field control, we may also want to set
+specific entry field styles.  We use EF_LEFT and
+EF_MARGIN in this example.
+
+Before opening the dialog box, we must register our new
+control classes.  This requires adding one call to the main
+program (subclass.c, listing 1) -- a call to our
+RegisterEntryFieldClasses() function.  In a full application,
+this might be done at the same time as other window
+classes for the application are registered.  While the system
+supplied window classes are pre-registered, our custom
+class is not, so we have to add this one call.
+
+The registration procedure is contained in the entry field
+module (entryfld.c, listing 2).  Before registering our
+custom control class name, we call WinQueryClassInfo() to
+ask the system for information on the WC_ENTRYFIELD
+class.  Two of the elements returned are the address of the
+standard window procedure for that class, and the number
+of bytes of window words for this class.  We save the
+function address in a static variable for later use when our
+procedure is entered.  We will need to call this routine to
+pass messages on to it for default entry field processing. 
+When we register the class, we have to specify the same
+number of bytes for window words as the original entry
+field class.  These window words are used internally by the
+entry field class.  We have to ensure that the correct
+number of bytes is created for a window of our new class
+too, or the entry field procedure will not function properly
+when we pass messages to it.
+
+The entry field procedure address is used only in this
+module.  We therefore define the variable as static in this
+module, keeping the scope as narrow as possible.  We
+could avoid the need for even this static variable by calling
+WinQueryClassInfo() in our UDUpperWndProc()
+procedure.  However, since the function address is never
+going to change, we can improve performance by saving it
+in a static variable.
+
+With this information, we have everything we need to
+perform subclasssing: our own window procedure (which
+will receive all messages first) and the address of the
+system-supplied procedure to implement the standard entry
+field class.
+
+This approach offers several advantages over using
+WinSubclassWindow().  We have to make a single
+registration call, and then simply use our new class name
+wherever required in resource scripts.  With
+WinSubclassWindow(), in place of a single registration call,
+we must program a specific WinSubclassWindow() call
+every time we want one of our new controls.  In effect, we
+are trading declarative code for procedural code. 
+Additionally, creating our own control allows our control
+to process the WM_CREATE message, if desired.  If you
+issue a WinSubclassWindow() call from within
+WM_INITDLG processing, the subclassing will not occur
+until after the control window has been created.
+
+
+How the Control Works
+
+Now that the class is registered, the dialog box can be
+processed with WinDlgBox().  WinDlgBox() will create all
+of the windows within it automatically.  Since our window
+class has been registered, the window will be created and
+appropriate messages sent to our UDUpperWndProc()
+procedure.  (If we had failed to register our custom control
+class first, WinDlgBox() would fail with a "resource not
+found" error.)
+
+The UDUpperWndProc() procedure receives all messages
+for the control.  We check to see if the message is a
+WM_CHAR message.  If it is, and if it is a key
+downstroke and the key is an alphabetic key, and it is lower
+case, we convert it to uppercase.  If the character is not a
+printable character, we call WinAlarm() to notify the user
+of the error and discard the message by simply returning to
+PM.  For good WM_CHAR messages and all other
+messages, we pass the message to the standard entry field
+procedure whose address we saved when we registered the
+class.  
+
+The system entry field procedure is not aware that we have
+made these changes.  From its perspective, all the
+keystrokes are uppercase and the illegal characters were
+never typed.  Because all messages are passed to the entry
+field procedure, the entry field performs normally in all
+other respects.
+
+
+Extending the Concept
+
+The example shown here is simple, but useful.  You can
+write your own control classes of any desired complexity. 
+We have developed entry field classes that validate that the
+input is alphanumeric, that it is a real number, or that the
+input follows other rules about what characters are allowed.
+
+You can create your own control as a subclass of any
+standard window class using these same techniques.  We
+have controls that operate as directory list boxes, as multi-
+column list boxes, and as list boxes that allow you to drag
+items to different positions in the list.
+
+Your controls can be as complex as desired.  Our directory
+list box, for example, is multi-threaded and prompts the
+user to insert a diskette in a drive if the user selects a drive
+without a diskette in it.  All of these actions are taken care
+of by the control.  The dialog definition in the resource file
+and the dialog procedure need not process any messages to
+support these functions; everything is in the control.
+
+Frequently you will want to add your own message types
+to a custom control, so you can send the control needed
+information.  In our directory list box, a user message tells
+the list box what the initial directory is.  Upon receipt of
+that message, the list box clears its contents and refills
+itself with all of the subdirectories of the starting directory.
+
+More complex controls often require their own data
+structures to hold information about the state of the control. 
+Most system-supplied controls have reserved four bytes of
+window words at QWL_USER.  You may use
+WinSetWindowPtr(hwnd,QWL_USER,ptr) to store a
+pointer to your private data area, and
+WinQueryWindowPtr() to retrieve it.  If you wish to
+preserve these bytes for the user of your control, you may
+add sizeof(PVOID) to the count of bytes of window words
+in the WinRegisterClass() call.  With this approach, your
+private four byte pointer will be located at
+QWL_USER+n-4, where 'n' is the number of bytes of
+window words.  You will probably also need to process
+WM_CREATE and WM_DESTROY messages to initialize
+the control and its data areas properly and to clean up when
+the control is being destroyed.
+ 
+
+Summary
+
+When you need a specialized control that resembles an
+existing control, consider modifying the existing control by
+subclassing it.  Subclassing a control may require less code
+than adding custom processing to messages in a dialog
+procedure.  It certainly makes the dialog procedure itself
+simpler.  And the result may be reused with little effort.
+
+The programs in this article are available on the IBMOS2
+forum on Compuserve.  GO IBMOS2 and download file
+SUBCLS.ZIP from library 3, Ver 1.x Tools.
+
+------------------------
+
+Guy Scharf is president of Software Architects, Inc., 2163
+Jardin Drive, Mountain View, CA 94040.  Software
+Architects, Inc. specializes in OS/2 Presentation Manager
+software development and consulting.  Guy can be reached
+on the CompuServe IBMOS2 forum or on CompuServe
+Mail at 76702,557 or through Internet at
+76702.557@compuserve.com.
+
+=======================================================================
+LISTING 1: SUBCLASS.C
+
+/* subclass.c -- Sample program to demonstrate a private window class */
+
+#define INCL_PM
+#define INCL_BASE
+#include <OS2.H>
+#include <process.h>
+
+#include "entryfld.H"
+
+static MRESULT EXPENTRY TestDlgProc (HWND, USHORT, MPARAM, MPARAM);
+
+typedef struct                          /* Data area for dialog */
+{
+    CHAR    szTypedData[8];             /* Typed data area */
+} WWTEST, *PWWTEST;
+
+void main (void)
+{
+    HAB         hab;                        /* Handle to anchor block */
+    HMQ         hmqMsgQueue;                /* Handle to message queue */
+    WWTEST  wwtest;                     /* Dialog communication area */
+
+    hab = WinInitialize (0);            /* Initialize PM */
+
+    if (!RegisterEntryFieldClasses (hab))  /* Register our classes */
+        exit (1);
+
+    hmqMsgQueue = WinCreateMsgQueue (hab, 0);  /* Create message queue */
+
+    WinDlgBox (HWND_DESKTOP, HWND_DESKTOP, TestDlgProc, 0,
+               IDLG_TEST, &wwtest);
+
+    WinDestroyMsgQueue (hmqMsgQueue);   /* Shutdown */
+    WinTerminate       (hab);
+}
+
+/***************************************************************************
+ *                                                                         *
+ *  TestDlgProc() -- A procedure to test our new control                   *
+ *                                                                         *
+ ***************************************************************************/
+
+static MRESULT EXPENTRY TestDlgProc (
+HWND    hwndDlg,
+USHORT  msg,
+MPARAM  mp1,
+MPARAM  mp2)
+{
+    PWWTEST     pwwtest;                /* --> dialog data area */
+
+    switch(msg)
+    {
+        case WM_INITDLG:                /* Save address of passed buffer */
+                                        /* So we can use it later */
+                                        /* (Dialog windows reserve 4 bytes */
+                                        /* at QWL_USER that we can use as */
+                                        /* we wish.  We usually use this as */
+                                        /* a pointer to data for the dialog */
+            WinSetWindowPtr (hwndDlg, QWL_USER, PVOIDFROMMP(mp2));
+                                        /* Don't allow more input than */
+                                        /* we can store */
+            WinSendDlgItemMsg (hwndDlg, IDEF_SUBCLASS_ENTRYFIELD,
+                               EM_SETTEXTLIMIT,
+                               MPFROMSHORT (sizeof (pwwtest->szTypedData)-1),
+                               0);
+            return 0;
+
+        case WM_COMMAND:
+            switch(SHORT1FROMMP(mp1))
+            {
+                                        /* Cancel (ESC) key pressed */
+                                        /* Tell caller dialog was cancelled */
+                case DID_CANCEL:
+                    WinDismissDlg(hwndDlg, FALSE);
+                    return 0;
+
+                                        /* OK button (ENTER key) was pressed */
+                case DID_OK:            /* Get address of caller's data area */
+                    pwwtest = WinQueryWindowPtr (hwndDlg, QWL_USER);
+                                        /* Read current contents of entry */
+                                        /* field into data area */
+                    WinQueryDlgItemText (hwndDlg, IDEF_SUBCLASS_ENTRYFIELD,
+                                         sizeof (pwwtest->szTypedData),
+                                         pwwtest->szTypedData);
+                                        /* Tell user all data is input */
+                    WinDismissDlg(hwndDlg, TRUE);
+                    return 0;
+            }
+            return 0;
+                               
+        default:
+            return(WinDefDlgProc(hwndDlg, msg, mp1, mp2));
+    }
+    return FALSE;
+}
+
+
+
+=======================================================================
+LISTING 2: ENTRYFLD.C
+
+/* entryfld.c -- Upper case conversion subclass procedure */
+
+#define INCL_PM
+#define INCL_BASE
+#include <OS2.H>
+
+#include <ctype.h>
+
+#include "entryfld.h"
+
+/***************************************************************************
+ *                                                                         *
+ *  Pointer to window procedure for WC_ENTRYFIELD window class.  We        *
+ *  use this to subclass the entry field.  This field is initialized       *
+ *  in RegisterEntryFieldClasses().                                        *
+ *                                                                         *
+ ***************************************************************************/
+
+static PFNWP pfnEditWndProc;
+
+/***************************************************************************
+ *                                                                         *
+ *  UDUpperWndProc                                                         *
+ *                                                                         *
+ *  Subclass edit fields for all uppercase, printable input                *
+ *  NOTE: this example control is not double-byte character set (DBCS)     *
+ *        aware.  If DBCS and National Language Support is required,       *
+ *        changes will be required to the processing of the WM_CHAR        *
+ *        message.  The _toupper() function is not ANSI and may not be     *
+ *        present in all C compiler libraries; use toupper() instead.      *
+ *                                                                         *
+ ***************************************************************************/
+
+static MRESULT EXPENTRY UDUpperWndProc (
+HWND    hwnd,
+USHORT  msg,
+MPARAM  mp1,
+MPARAM  mp2)
+{
+    CHRMSG    *p;                      /* --> entire character msg */
+
+    if (msg == WM_CHAR)
+    {                  /* Upper case conversion code taken from */
+                       /* Cheatham, Reich, Robinson -- */
+                       /* "OS/2 Presentation Manager Programming" */
+        p = CHARMSG (&msg);     /* Get char msg */
+        if (((p->fs & (KC_KEYUP|KC_CHAR)) == KC_CHAR)  /* Only want */
+            && (! (p->fs & KC_VIRTUALKEY) ) ) /* key downstroke message */
+        {
+            if (isalpha (p->chr) && islower (p->chr))  /* Lower case? */
+                p->chr = (USHORT) _toupper ((UCHAR)p->chr);  /* Up it */
+                       /* end of extract from "OS/2 PM Programming" */
+
+            if (!isprint (p->chr))   /* Eliminate non-printables */
+            {
+                WinAlarm (HWND_DESKTOP, WA_ERROR);  /* Warn the user */
+                return ((MRESULT) TRUE);  /* Say we processed the msg */
+            }
+
+        }
+    } 
+
+    return (pfnEditWndProc(hwnd, msg, mp1, mp2));
+}
+
+
+
+/***************************************************************************
+ *                                                                         *
+ *  Register the entry field classes.  Return TRUE if successfull, FALSE   *
+ *  if not successful.  We register the class and save the entry point     *
+ *  to the original entry field procedure for later use.                   *
+ *                                                                         *
+ ***************************************************************************/
+
+USHORT  RegisterEntryFieldClasses (     /* Register entry field classes */
+HAB     hab)                            /* I - Handle to anchor block */
+{
+    CLASSINFO   ci;                     /* Window class information */
+
+                                        /* Get window class data */
+    WinQueryClassInfo (hab, WC_ENTRYFIELD, &ci);
+
+                                        /* Save WC_ENTRYFIELD procedure */
+    pfnEditWndProc = ci.pfnWindowProc;
+
+                                        /* Register our new class */
+    return (WinRegisterClass(hab, WC_UDUPPER, UDUpperWndProc, CS_SIZEREDRAW,
+                            ci.cbWindowData));
+
+}
+
+/* entryfld.c */
+
+
+=======================================================================
+LISTING 3: ENTRYFLD.H
+
+#define WC_UDUPPER  "UpperCase"
+
+#define IDLG_TEST                                100
+#define IDEF_SUBCLASS_ENTRYFIELD        1000
+
+USHORT  RegisterEntryFieldClasses (     /* Register entry field classes */
+HAB     hab);                           /* I - Handle to anchor block */
+
+
+
+=======================================================================
+LISTING 4: SUBCLASS.RC
+
+#define INCL_WIN
+#include "os2.h"
+#include "entryfld.h"
+
+DLGTEMPLATE IDLG_TEST LOADONCALL MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "Test Custom Entry Field", IDLG_TEST, 12, 25, 140, 48, WS_VISIBLE,
+            FCF_SYSMENU | FCF_TITLEBAR
+    BEGIN
+        CONTROL         "",     IDEF_SUBCLASS_ENTRYFIELD,
+                                        13,  25, 113,  10, WC_UDUPPER,
+                        ES_LEFT | ES_MARGIN | WS_TABSTOP | WS_VISIBLE
+     DEFPUSHBUTTON      "OK",   DID_OK, 50,   5,  40,  13, WS_TABSTOP
+    END
+END
+
+
+=======================================================================
+LISTING 5: SUBCLASS.MAK
+
+all: subclass.exe
+
+SUBCLASS.obj : SUBCLASS.C
+    cl /c /W4 /AL /Zpi /G2s /Od subclass.c
+
+ENTRYFLD.obj : ENTRYFLD.C
+    cl /c /W4 /AL /Zpi /G2s /Od ENTRYFLD.c
+
+SUBCLASS.res : SUBCLASS.RC
+    rc -r SUBCLASS.rc SUBCLASS.res
+
+subclass.exe : subclass.res entryfld.obj subclass.obj
+    link /co subclass.obj+entryfld.obj,subclass.exe,NUL,LLIBCEP+OS2,subclass.def
+    rc SUBCLASS.res subclass.exe
+
+
+=======================================================================
+LISTING 6: SUBCLASS.DEF
+
+NAME Subclass WINDOWAPI
+
+DESCRIPTION 'Example of Private Window Class in Dialog'
+
+STUB    'OS2STUB.EXE'
+
+CODE    MOVEABLE
+DATA    MOVEABLE MULTIPLE
+
+HEAPSIZE  1024
+STACKSIZE 4096
+
+EXPORTS
+
+### END ###

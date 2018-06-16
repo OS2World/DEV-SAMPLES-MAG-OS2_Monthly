@@ -1,0 +1,52 @@
+DLGINCLUDE 1 "dialog.h"
+
+DLGTEMPLATE IDD_TARGETTING PRELOAD MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "Targetting", IDD_TARGETTING, 33, 28, 95, 38, NOT FS_DLGBORDER | 
+            FS_BORDER | FS_SCREENALIGN | WS_VISIBLE, FCF_TITLEBAR
+    BEGIN
+        LTEXT           "Range:", -1, 4, 28, 32, 8, NOT WS_GROUP
+        LTEXT           "", IDD_RANGE, 40, 28, 43, 8, NOT WS_GROUP
+        LTEXT           "Angle:", -1, 4, 17, 28, 8
+        LTEXT           "", IDD_ANGLE, 36, 17, 43, 8, NOT WS_GROUP
+        LTEXT           "Visibility:", -1, 4, 5, 40, 8
+        LTEXT           "", IDD_VISIBILITY, 48, 5, 43, 8, NOT WS_GROUP
+    END
+END
+
+DLGTEMPLATE IDD_ABOUT PRELOAD MOVEABLE DISCARDABLE
+BEGIN
+    DIALOG  "The Ultimate OS/2 Game", IDD_ABOUT, -22, -13, 263, 162, 
+            FS_MOUSEALIGN | WS_VISIBLE, FCF_TITLEBAR
+    BEGIN
+        DEFPUSHBUTTON   "OK", DID_OK, 6, 4, 40, 14
+        ICON            DID_OK, -1, 20, 127, 21, 16
+        CTEXT           "Copyright (C) 1992 Timur Tabi", -1, 125, 95, 128, 8, 
+                        NOT WS_GROUP
+        CTEXT           "Copyright (C) 1992 Fasa Corporation", -1, 97, 86, 
+                        156, 8, NOT WS_GROUP
+        CTEXT           "An OS/2 implementation of the BattleTech and MechWa"
+                        "rrior games, as chronicled in ""OS/2 Monthly""", -1, 
+                        113, 117, 130, 32, DT_WORDBREAK | NOT WS_GROUP
+        CONTROL         "", -1, 103, 113, 150, 41, WC_STATIC, SS_FGNDFRAME | 
+                        WS_VISIBLE
+        LTEXT           "Written by Timur Tabi", -1, 5, 61, 35, 36, 
+                        DT_WORDBREAK | NOT WS_GROUP
+        RTEXT           "The following trademarks are the property of Fasa C"
+                        "orporation:", -1, 105, 58, 148, 19, DT_WORDBREAK | 
+                        NOT WS_GROUP
+        RTEXT           "BattleTech, CityTech, AeroTech, MechWarrior, Battle"
+                        "Mech, and 'Mech", -1, 142, 26, 111, 28, 
+                        DT_WORDBREAK | NOT WS_GROUP
+        RTEXT           "To order a subscription to ", -1, 139, 14, 114, 10, 
+                        DT_WORDBREAK | NOT WS_GROUP
+        LTEXT           """OS/2 Monthly,"" call 800-365-2642", -1, 105, 7, 
+                        148, 8, NOT WS_GROUP
+        LTEXT           "11811 Federalist Way #2", -1, 5, 44, 108, 10, 
+                        DT_WORDBREAK | NOT WS_GROUP
+        LTEXT           "Fairfax, VA 22030", -1, 5, 36, 108, 10, 
+                        DT_WORDBREAK | NOT WS_GROUP
+        LTEXT           "Fidonet: 1:109/347", -1, 5, 25, 108, 10, 
+                        DT_WORDBREAK | NOT WS_GROUP
+    END
+END

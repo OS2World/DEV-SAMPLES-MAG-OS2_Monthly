@@ -1,0 +1,239 @@
+Show me the way
+
+Before I begin this month's expected discussion, let me 
+present: (drum roll, please) 
+
+Timur's Top Five Vacation Ideas in Redmond, WA
+
+5. Roast marshmallows over the bonfire you started in Steve 
+Ballmer's office.
+4. Join a scavenger hunt looking for Bill Gates' barber.
+3. Go trick-or-treating as Philippe Kahn.
+2. Enter your child in the UAE Spelling Contest (no one at 
+Microsoft won last year).
+
+And the number one vacation idea:
+
+1. Spend a week at Club Med for Windows getting absolutely 
+nothing done.
+
+Anyone who doesn't find these funny is reading the wrong 
+magazine.  Actually, I started with a list of ten, but I lost 
+my notes, and I could only remember half.  Oh well.....
+
+Starting this month, the changes to the program are described 
+on a module-by-module basis.  This new format will make 
+following the progress of the game much easier.  At the end 
+of this article there is an expanded list of definitions.  
+Most of the new terms are concerned with the enhancements to 
+the targeting features.
+
+Module ABOUT:
+
+This file has been merged into a new module, MENU (see 
+below).  The "About..." dialog box has been expanded to 
+include the toll-free number for subscription information.
+
+Module FILES:
+
+This month presents a new feature in OS/2 2.0 - the file 
+dialog box.  The WinFileDlg() function creates and controls a 
+CUA-compliant file selection dialog box.  The operating 
+system handles all the file and directory manipulations and 
+returns the selected filename.  As you might remember from 
+the September issue, there is a lot of work involved in 
+interpreting user input.  This function should have been 
+included long ago.
+
+Module GAME:
+
+The main source file for this project has some of the fat 
+trimmed from it.  The bulk of the code for the WM_PAINT, 
+WM_MOUSEMOVE, and WM_COMMAND messages in WinProc() has been 
+moved to other modules, where they belong.
+
+Function main() loads and positions the info box, which is a 
+small window that displays useful information during 
+targeting.  See the discussion of module TARGET below.
+
+I recently received a letter from one of the technical 
+editors of this magazine, informing me that the presentation 
+space handles returned by WinGetPS() should not be kept open 
+in global variables.  This function creates a cached-micro 
+presentation space, designed for fast, short-term drawing on 
+the screen only.  Although I have yet to witness any of the 
+drawing errors that were described to me (such as drawing 
+onto an overlapping window), an improved technique will 
+nevertheless be incorporated.  Look for it in next month's 
+issue.
+
+Module HEXES:
+
+Figure 1 shows a hexagon labelled with various measurements.  
+These values are currently constants, but they will be 
+redefined as variables when the code for sizing and scaling 
+the hex map is written.  This enhancement won't be included 
+until sometime next year.
+
+Function HexLocate() is used to determine the hexagonal 
+location of the mouse pointer when the mouse button is 
+depressed.  Instead of scanning the entire hexagonal grid 
+until a match is made, the new version of this function makes 
+an estimate of the pointer's location.  It then tests the 
+nearby hexagons by calling the improved HexInPoint(), which 
+now checks the side triangles as well as the inner rectangle.
+
+The computer calculates the targeting path and displays it on 
+the screen as you are targeting.  Several new functions in 
+this module are used to calculate the sequence of hexagons 
+that compose this path.  For each hexagon in the path, the 
+targeting line enters at one side and exits at another.  The 
+targeting path is determined by finding these sides, one 
+hexagon at a time.
+
+Figure 2 shows the ordering of the quadrants and the inner 
+geometry of a hexagon.  Note that a vertex angle does not lie 
+on any quadrant.  The quadrant number is the same as the 
+value returned by HexFirstSide() and HexNextSide().
+
+Field 'hiStart' in structure 'target' is the hex index of the 
+source hexagon.  Function HexFirstSide() calculates the side 
+of the source hexagon from which the targeting line emerges.  
+This gives you the second member of the targeting path.  The 
+computer knows the entry side for this hexagon.  The 
+targeting line must exit at one of the other five sides.  
+Function HexPointFromSide() returns the x and y coordinates 
+of the endpoints for a given side and hexagon.  This is used 
+to determine whether a particular side intersects the 
+targeting line.  Once the exit side is known, function 
+HexFromSide() can tell you the index of the next hexagon.  
+This sequence continues until the target hexagon 
+(target.hiEnd) is reached.  The other targeting path 
+functions are contained in module TARGET, which is discussed 
+later in this article.
+
+Function HexDrawMap() draws the playing field.  This function 
+was originally contained within the WM_PAINT 
+message-processing routine in module GAME.  Note that 
+GpiBox() is used instead of WinFillRect() to paint the client 
+window, since WinFillRect() doesn't support patterns.  The 
+window is painted with the same color and pattern of the 
+default terrain.  Only the hexagons that are not the default 
+terrain are drawn, resulting in a significant speed increase.
+
+The performance can be further enhanced by drawing the black 
+hexagonal grid in one shot, instead of one hexagon at a time.  
+You might recall that GpiPolyLine() is used to draw all six 
+sides of one hexagon.  Instead of drawing each hex 
+individually (which results in many overlapping line 
+segments), the entire grid will be drawn with one call to 
+GpiPolyLine().  This enhancement will be shown next month.
+
+Module MENU:
+
+This module is primarily used to house the MainCommand() 
+function, which processes all the pull-down menu commands.  
+The menus have changed slightly, but the code is mostly 
+identical to that contained in the last article.  Instead of 
+toggling edit mode (where "off" means that targeting mode is 
+on), the user simply selects the desired mode.  Additional 
+modes will be available as the game develops.
+
+Module TARGET:
+
+There are two new features in the targeting module.  The 
+first is a status window (called the "info box") that shows 
+the angle, range, and visibility of the target.  The second 
+is a visual representation of the targeting path.
+
+The info box is actually a standard dialog box created with 
+the Dialog Editor and displayed in main() with a call to 
+WinLoadDlg(), which loads a modeless dialog box.  This 
+technique has the following advantages.
+
+1. You can use the dialog editor to design the window.
+
+2. A window procedure is not required!  OS/2's default window 
+procedure does all the work.
+
+3. Only one function call is used to load and display the 
+dialog box.  Use another to position it on the screen, and no 
+other maintenance is required.
+
+4. The text can be changed simply by sending messages.  Just 
+be sure you assign identifiers to blank text controls in the 
+dialog box.  Use these identifiers in the parameters for 
+WinSetDlgItemText().  See function TgtMove() in module 
+TARGET.
+
+Functions GetAngle() and GetRange() calculate the targeting 
+angle and the range.  Note that the Pythagorean theorem is 
+not used to determine the range.  The distance between two 
+hexagons is defined as the length of the shortest path 
+between them.  A careful inspection of a hexagonal map 
+reveals some interesting properties.
+
+First, calculate dx and dy, the horizontal and vertical 
+differences in the hex indices, respectively.  Note that dy 
+is always even, since the row indices for a given column are 
+either all odd or all even.  If abs(dy) is less than or equal 
+to abs(dx) (i.e., the vertical component of the distance is 
+not greater than the horizontal), then the range is always 
+equal to just dx.  Otherwise, the range is one-half the 
+difference between abs(dy) and abs(dx), added to dx.
+
+For each movement of the targeting line, the path must be 
+traversed three times - once for drawing the line, once for 
+erasing it, and once for calculating the visibility.  To save 
+time, the slope and y-intercept of the targeting line are 
+pre-calculated in function TgtInitPath().  These two 
+variables are used by function Intercept() to determine 
+whether a particular side of a particular hexagon intersects 
+the targeting line.  Function NextHexSide() uses Intercept() 
+to locate where the targeting line exits a hexagon.  With 
+that information, function HexFromSide() in module HEXES can 
+locate the next hexagon in the path.
+
+There is one small problem with this approach.  Experienced 
+BattleTech players would probably claim that the algorithm is 
+too accurate.  It includes hexagons that the targeting line 
+only skims.  Technically speaking, these hexagons are part of 
+the targeting path, since the line does pass through them.  
+But in reality, a hexagon should only be included if it makes 
+a significant contribution to the total visibility.  A line 
+of sight which touches only the edge of a hexagon should not 
+include that hexagon in the targeting calculations.
+
+How can this problem be solved?  By determining whether the 
+targeting line crosses near a vertex.  If it does, then it is 
+likely that the next hexagon will be crossed along the edges, 
+resulting in the inclusion of an unwanted hexagon.  Because 
+of error propagation, the targetting path can include up to 
+25% too many hexagons.
+
+First, the program should locate the nearby vertex.  Then it 
+should test the two sides of the hexagon that join at that 
+vertex.  One of these two sides is the correct choice.  Draw 
+a line from the midpoint of the hexagon to the midpoint of 
+each side.  These two radii are sixty degrees apart.  The 
+radius that has a slope nearest to the slope of the targeting 
+line is the one that connects to the correct side.  This 
+algorithm will be implemented next month.
+
+Functions TgtShowPath() and GetVisibilty() both traverse the 
+targeting path, provided that the targeting line is not at a 
+vertex angle.  Why?  Because a vertex angle implies that the 
+targeting line passes straight between two adjacent hexagons.  
+The targeting path then happens to be the same as the 
+targeting line, so there is no point in drawing it.  The 
+visibility calculations, however, are more complicated.  When 
+a line of sight passes between two hexagons, then the total 
+visibility is calculated as one-half the visibility of one 
+hexagon plus one-half the visibility of the other.  Support 
+for this special case will be included in a future issue.  In 
+the meantime, GetVisibility() returns negative one.
+
+That wraps up this month.  Thanks to all those who 
+contributed both ideas and source code.  With the next 
+installment, you will be able to move a 'Mech and target from 
+it.

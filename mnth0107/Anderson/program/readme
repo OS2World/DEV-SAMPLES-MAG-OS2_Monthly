@@ -1,0 +1,11 @@
+An OS/2-PM Editor Using MLE           by Brian R. Anderson
+
+This directory contains the following files:
+
+   EDIT.EXE    -- the OS/2 executable program
+   EDIT.HLP    -- the compiled help file
+   INSTALL.CMD -- the OS/2 installation batch file
+   INSTALL.BAT -- the DOS installation batch file
+
+NOTE: the batch files put EDIT.EXE into C:\OS2
+                      and EDIT.HLP into C:\OS2\HELP

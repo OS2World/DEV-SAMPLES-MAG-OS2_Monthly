@@ -1,0 +1,119 @@
+BattleTech/2 - The Ultimate OS/2 Game
+Written by Timur Tabi
+
+Volume 1, Number 11 - Objects of Desire
+
+Copyright (c) 1994 Timur Tabi
+Copyright (c) 1994 Fasa Corporation
+
+The following trademarks are the property of Fasa Corporation:
+BattleTech, CityTech, AeroTech, MechWarrior, BattleMech, and 'Mech.
+The use of these trademarks should not be construed as a challenge
+to these marks.
+
+The final and all interim code, in whole or in part, may only be for
+personal use and may not be used as a basis for any shareware or
+commercial software.
+
+Volume 1 #10
+------------
+
+o   The tentative official title of this game is BattleTech/2.  The
+    main executable has been renamed to BTECH2.EXE.  GAME.C is now
+    BTECH2.CPP (not MAIN.CPP as the article states). GAME.RC is now
+    MAIN.RC.
+
+o   Converted to C++.  Hexagons, 'Mechs, Maps, and Targetting are classes.
+    All source files now have .cpp extensions.
+
+o   Removed the hex grid.  All hexagons on the map now touch each other.
+
+o   Removed the background hex-highlighting.  Since there's no map grid,
+    there's no place to draw the hexagon's outline.
+
+o   Maps can now be opened and closed for real.  The program starts out
+    with no map.  Select "New" or "Open" to get one.
+
+o   The project files have been altered such that all versions of the
+    code, from now on, are in the same directory.  Previously, each month's
+    code was in a different directory under C:\GAME.  Now, the source code
+    belongs in C:\BTECH2, and all references to different versions are
+    gone.  This means that you will have to remove all files from C:\BTECH2
+    before you install this archive.
+
+Volume 1 #9
+-----------
+
+o   Not mentioned in the article is that the program has been compiled
+    with IBM's C Set/2 C/C++ compiler.
+
+o   Single-threaded library is used, since only one thread calls
+    the runtime library.
+
+o   Vertex Redirection is used to determine the targeting path.  This
+    method is only about 90% effective.
+
+o   Added an error handler for centralized error processing.  Note that
+    the handler doesn't detect errors.
+
+o   Most modules, especially HEXES and BITMAP, have been cleaned up.
+
+o   FILES now opens/saves any files, not just terrain maps.  The map
+    read and write functions are in TERRAIN, which calls FILES for the
+    actual file I/O.
+
+o   Minimizing the main window now hides the info box
+
+o   Moving and targeting have been combined into Move/Target mode.  Left
+    button moves, right button targets.
+
+o   Targetting-specific functions moved to TARGET.
+
+o   The drawing functions in HEXES all take presentation space handles
+    as parameters.  In addition, most presentation spaces are opened and
+    closed within one message.  The exception is the targeting line.
+
+o   A new function, HexOutline(), outlines a hexagon.  It's used by the
+    targeting thread.
+
+o   The 'Mech's current position is shown in the Info Box.
+
+o   Maps are now "opened" and "closed", not "loaded" and "saved".
+    However, the close option is disable.
+
+o   Improved performance of source hexagon highlighting on 256-color
+    displays.
+
+o   The title bar now shows the name of the current map.
+
+o   Release/Debug version of make files are available.  A composite
+    project, with two base projects, is provided.
+
+Volume 1 #8
+-----------
+
+o   (to be completed)
+
+
+Volume 1 #7
+-----------
+
+o   (to be completed)
+
+
+Volume 1 #6
+-----------
+
+o   (to be completed)
+
+
+Volume 1 #5
+-----------
+
+o   (to be completed)
+
+
+Volume 1 #4
+-----------
+
+o   Initial release

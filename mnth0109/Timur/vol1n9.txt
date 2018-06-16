@@ -1,0 +1,359 @@
+A Turn for the Better
+
+This issue marks the seventh installment of my column - it's 
+the perfect time to get some perspective on how far we've 
+come.
+
+This column has two purposes.  The first is to teach OS/2 2.x 
+PM programming, mainly by example.  The second is to develop 
+the ultimate game for OS/2.  All of the OS/2 games I have 
+seen so far are rather simple - they barely take advantage of 
+any of the features that OS/2 has over DOS.
+
+The Ultimate OS/2 Game is a variation of the BattleTech and 
+MechWarrior from Fasa.  BattleTech is a board game based upon 
+combat among large humanoid tanks called BattleMechs, and 
+MechWarrior is its role-playing counterpart.  I have 
+permission from Fasa to use their trademarks with two 
+provisos: the copyright must be shared between Fasa and 
+myself, and the game must be distributed free of charge.
+
+Although this game has been in development for over a year, 
+it is still in its infancy.  Construction of a functional 
+combat system is the first goal.  The combat system is 
+composed of four subsystems: terrain editing, movement, 
+weapons control, and damage control.  At this point, the 
+first three are partially completed.
+
+The terrain editor allows the player to create or alter a 
+combat field which is organized into a hexagonal grid.  Each 
+hexagon represents an area thirty meters in diameter.  The 
+current implementation allows the player to select from 
+eleven different terrain types.
+
+The movement subsytem controls the navigation of all the 
+'Mechs on the playing field, whether they are piloted by the 
+player or by the computer.  It keeps track of game time, it 
+determines initiative (a role-playing term that describes who 
+goes first in a given turn), and it regulates movement 
+points.
+
+The weapons control subsytem handles all the details of 
+firing a weapon.  It decides what targets are visible, which 
+weapons are available, and whether the shot was successful.  
+It knows all the stats of each weapon and attack type.
+
+The damage subsystem determines the effect of any attack, and 
+it keeps track of each BattleMech's condition.  It knows what 
+is damaged, how long it will take to repair the damage, and 
+how much the repair will cost.
+
+Once these four are fully implemented, then the first half of 
+this project will be completed.  A discussion of the second 
+half, the role-playing MechWarrior, will be saved for a later 
+date.
+
+The text from the first installment of this column (volume 1, 
+number 3) is now available electronically, for those of you 
+who are interested in getting a better picture of what this 
+game is all about.  Look for it wherever "OS/2 Monthly" 
+archives are available.
+
+The compiler options have been changed to use the 
+single-threaded library.  It is possible for a multi-threaded 
+program to function correctly with this library.  The trick 
+is to ensure that only one thread calls the run-time library 
+at any given time.  The function which handles hexagon 
+highlighting during targeting, Highlight() in module TARGET, 
+does not contain any library calls.  Therefore, the 
+multi-threaded library is not necessary.
+
+ERRORS
+------
+
+As the complexity of a piece of software increases, so will 
+its error handling capabilities.  Unfortunately, most 
+languages have poor syntactical support for error handling, 
+and C is no exception.  I am not going to present a detailed 
+analysis of error handling, since that topic deserves far 
+more attention than I can give it.
+
+There are two errors handled by this program.  API errors, 
+such as the failure to create a presentation space via 
+GpiCreatePS(), are unrecoverable and force the program to 
+terminate immediately, sometimes with a message box 
+appearing.  I have never experienced such an error, and I 
+doubt that I ever will.  Nevertheless, they are almost 
+exclusively caused by invalid parameters and need to be 
+checked.
+
+The other condition is a user error, such as attempting to 
+load a map that does not exists.  For these errors, a message 
+box always appears, informing the user of his mistake.  The 
+operation is usually cancelled automatically, and the program 
+continues without a hitch.
+
+Error messages are of type ERROR, an unsigned 32-bit integer 
+that uniquely describes the location where the error occured.  
+Function ErrorBox() takes an error code and displays a 
+message box that shows the module name, the function name, 
+and the error message.  The names and messages and stored in 
+file ERRORMSG.H in look-up array amsg[].
+
+Function ErrorBox() displays an error message box.  Using the 
+information in the error code, it knows to which module and 
+function the error belongs.
+
+For example, take the error code ERR_BITMAP_LOAD_HBM 
+(0x01020300).  This error occurs when the bitmap ID passed to 
+function BitmapLoad() is invalid.  A bitwise-AND with 
+0xFF000000 results in ERR_BITMAP (0x01000000), and another 
+AND with 0xFFFF00000 gives ERR_BITMAP_LOAD (0x01020000).  The 
+look-up array translates these values to "BITMAP" and 
+"BitmapLoad", respectively.  This is how ErrorBox() knows the 
+module and function names.
+
+At this point, you might be wondering why the error messages 
+are not stored as string resources.  The reason is quite 
+simple: the resource compiler that comes with the OS/2 2.0 
+toolkit does not accept ERRORS.H because it contains 
+arithmetic expressions for some of its definitions.  Until an 
+improved resource compiler can be found, the error messages 
+stay where they are.
+
+BITMAP
+------
+
+The first thing you will notice is that BitmapShutdown() will 
+only perform a shutdown if needed.  Then it resets all the 
+handles (hdcMemory, etc.) so that the module can be 
+reinitialized.  This feature is not used, but it is good 
+programming practice.  If the shutdown procedure fails, then 
+the appropriate error code is returned.
+
+All of the bitmaps are stored in a single memory presentation 
+space.  When a particular bitmap needs to be drawn, it must 
+first be selected, and then copied from that PS to the screen 
+PS.  GpiSetBitmap() is used to select the bitmap, and 
+GpiBitBlt() then draws it on the screen.
+
+For reasons unknown to me, GpiSetBitmap() returns an error if 
+the desired bitmap is already selected.  Just to make sure 
+that this "error condition" does not cause any problems, the 
+variable hbmCurrent has been added to keep track of the 
+currently selected bitmap.
+
+FILES
+-----
+
+This module now focuses on the file dialog boxes only.  
+Previously, the functions in the module would not only prompt 
+the user for a filename, but they would also read or write 
+the data.  To keep things modular, the responsibility of file 
+I/O (and file I/O errors) has been placed on the function 
+which calls this module.  
+
+Currently, the only module which performs any file I/O is 
+TERRAIN, and the routines for opening and saving maps are 
+there.
+
+GAME
+----
+
+Thanks to the WM_MINMAXFRAME message, the info box is now 
+hidden/shown when the main window is minimized/restored.  For 
+this message, the 'mp1' parameter is a pointer to a SWP 
+structure, which contains quite a bit of information about 
+the window's new size and position.
+
+The Move and Target modes have been combined.  The left mouse 
+button moves the 'Mech as before, but now the right button is 
+used to target.  Edit mode works the same as always.
+
+HEXES
+-----
+
+All of the targetting-specific functions have been moved out 
+of this module and placed in TARGET, where they belong.  The 
+list includes function HexHighlight() and HexFirstSide().
+
+In a previous issue, I mentioned that the presentation space 
+handles created with WinGetPS() are cached-micro spaces, and 
+therefore should only be used for a short-term drawing.  To 
+ensure this restriction, all functions in this module that 
+perform any drawing now take an HPS parameter.  OS/2 
+allocates a limited number of these presentation spaces in a 
+cache (hence the name).  If the cache is fully allocated, 
+then WinGetPS() will return a NULLHANDLE.
+
+The new function HexOutline() is used to highlight a hexagon 
+by drawing its outline.  All hexagons have a one-pixel border 
+between them.  The thickness of the border is determined by 
+the XLAG and YLAG constants defined in HEXES.H.
+
+In the next installment, however, the hexagonal grid will be 
+removed.  This is easily accomplished by setting XLAG and 
+YLAG to one, instead of the current value of two.  It seems 
+that the hexagon borders are screwing up the targeting path 
+algorithm.  Sometimes the targeting line squeezes between two 
+or three hexagons, and the routines which determine the path 
+get confused.  
+
+Unfortunately, without a grid, the player will not be able to 
+distunguish individual hexagons.  As a remedy, the info box 
+will be expanded to always show the hex index under the mouse 
+pointer, and a ruler will be drawn around the combat map.
+
+MECH
+----
+
+The only addition is function ShowPosition(), which shows the 
+BattleMech's current position.
+
+MENU
+----
+
+The changes in this module reflect the changes in module 
+FILES.  The funtions that actually load and save maps are in 
+module TERRAIN.  The "File" menu now has the option to save 
+the current map and to quit the program.  The "close" option 
+is also present but has not yet been implemented.
+
+TARGET
+------
+
+This month introduces yet another attempt at the targetting 
+path algorithm.  In most situations, the path is correctly 
+outlined, but there are still cases where breakdown occurs.  
+Strangely enough, the targeting path is not symmetric about a 
+column.  For example, the targeting path from (7,7) to 
+(13,11) is not the same shape is the path from (7,7) to 
+(1,11).  One possible cause for this aberration is that the 
+coordinate returned by HexMidpoint() may not be the exact 
+center of the hexagon. 
+
+The low-level functions for the targeting path have been 
+placed in submodule TARGET0.  This module contains the hex 
+highlighting routines (formerly in HEXES) and all the 
+functions which calculate the targeting path.
+
+The problem with the previous algorithm was explained in 
+issue seven: it's too accurate.  Hexagons which were only 
+touched or briefly entered were being included, even though 
+they had no significant impact on the visibility.  These 
+hexagons are called insignificant.  Remember, the whole point 
+behind the targeting path is to determine the visibility of 
+the target.
+
+To explain a solution to this problem, three new definitions 
+are introduced:
+
+True exit side - the exact side through with the targeting 
+line exits.
+
+Redirection - the act of selecting an alternate hexagon for a 
+better targeting path.  The normal procedure would be to use 
+the true exit side.  However, in certain cases, a neighboring 
+side might produce a better targeting path that more 
+accurately represents the true visibility of the target.  If 
+a different exit side is chosen, then redirection is said to 
+have occured.
+
+Vertex redirection - a redirection technique based on whether 
+the targeting line exits near a vertex of the hexagon.  If it 
+does, then the slope of the targeting line is compared to the 
+slopes of the radii of the exit side and its neighbor.  The 
+closest match determines which exit side is actually chosen.
+
+Figure 1 shows a condition where this technique works.  
+Normally, the targeting path would jump from (0,2) to (1,1) 
+to (1,3) to (2,2).  With vertex redirection, hexagon (1,1) is 
+skipped, and the resultant path is smoother.
+
+Figure 2 shows a condition where this technique does not 
+work.  The slope is so shallow that the targeting line never 
+enters hexagon (1,3).  Once the algorithm jumps to that hex, 
+it no longer knows where to go.  So it just gives up and 
+terminates, leaving the targeting path incompletely drawn on 
+the screen.
+
+The only solution would be to backtrack and try a different 
+path.  However, I will put the targeting path algorithm to 
+rest for now.  Perhaps a more adventurous soul would want to 
+pursue this further?
+
+I had the opportunity to test the game on an XGA-2 system.  
+Drawing the combat map is certainly much quicker than on my 
+VGA system.  However, the background highlighting of the 
+source hexagon during targeting does not work properly.  
+Function Highlight(), which uses a color-cycling technique if 
+the screen supports more than sixteen colors, is too CPU 
+intensive.  
+
+The targeting path could not respond to mouse movements 
+quickly enough.  Adding another DosSleep() call in function 
+DoHighlight() alleviated the problem.  A better solution 
+would be to temporarily disable this thread while the main 
+thread is redrawing the targeting path.  This enhancement can 
+be accomplished by using semaphores.  Look for it in a future 
+issue.
+
+TERRAIN
+-------
+
+This module now handles all combat map functions.  
+Previously, module HEXES handled map drawing, and module 
+FILES handled the file I/O.
+
+All the functions in this module are self-sufficient.  They 
+obtain the file name, if necessary.  If an error occurs, they 
+display the proper error messages.  After a successful "open" 
+or "save as" operation, the window title is automatically 
+changed.  There is no need to return any error condition.
+
+WINDOW
+------
+
+Function WindowSetTitle() sets the title that is displayed in 
+the title bar window.  The parameter that is passed is the 
+name of the current map.  A null string is used to represent 
+an unnamed map.
+
+/* FLAME ON */
+
+I am reserving the last few inches of my column for an open 
+discussion of OS/2 issues.  Here is an opportunity for users 
+and developers alike to have their voices heard.
+
+This past December, I noticed a bug in OS/2's keyboard 
+driver.  IBM has a CompuServe E-mail address for reporting 
+bugs.  The procedure is to obtain the bug-report form, fill 
+it out completely, and send it to the proper address.  Since 
+I don't have a CompuServe account, I sent the form via 
+Internet.  So far, so good.
+
+The response I got was that IBM no longer supported Internet 
+customers, and that I should use other means to report the 
+bug.  In effect, I was being forced to pay money to tell IBM 
+about a bug in their software.
+
+Things are back to normal now.  Apparently, there was enough 
+commotion, both inside and outside IBM, to reverse that 
+decision and allow Internet users to report bugs.  About four 
+weeks after I initially reported the problem, a diskette with 
+the new keyboard driver arrived in my mailbox.  My computer 
+is much happier now.  And so am I.
+
+The moral of this story is: users who are reporting bugs are 
+doing you a favor, so make it easy for them.  Do not force 
+them to communicate with normal technical support channels, 
+since they are not asking for technical support.  
+Fortunately, IBM's support department is the best I have ever 
+seen, but there are plenty of other companies out there which 
+could use some improvement.
+
+Next Month
+----------
+
+New window design, a cool opening screen, and maybe some 
+experimentation with IBM's new C++ compiler.

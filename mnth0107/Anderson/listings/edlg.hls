@@ -1,0 +1,15 @@
+            Listing for edlg.h                                          Page 20
+
+          916|   /* dialog boxes for OS/2 Programmer's Editor */
+          917|   
+          918|   #include <os2.h>
+          919|   
+          920|   MRESULT EXPENTRY AboutDlgProc (HWND, USHORT, MPARAM, MPARAM);
+          921|   MRESULT EXPENTRY OpenDlgProc   (HWND, USHORT, MPARAM, MPARAM);
+          922|   MRESULT EXPENTRY SaveasDlgProc (HWND, USHORT, MPARAM, MPARAM);
+          923|   MRESULT EXPENTRY FindDlgProc (HWND, USHORT, MPARAM, MPARAM);
+          924|   MRESULT EXPENTRY ReplaceDlgProc (HWND, USHORT, MPARAM, MPARAM);
+          925|   MRESULT EXPENTRY GoLnDlgProc (HWND, USHORT, MPARAM, MPARAM);
+          926|   SHORT ParseFileName (CHAR*, CHAR*);
+          927|   
+

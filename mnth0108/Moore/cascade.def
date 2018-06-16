@@ -1,0 +1,10 @@
+NAME    cascade WINDOWAPI
+
+DESCRIPTION 'Cascade Menu sample application'
+
+DATA    MULTIPLE
+
+STACKSIZE   8192
+
+PROTMODE
+

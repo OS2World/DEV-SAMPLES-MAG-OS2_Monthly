@@ -1,0 +1,13 @@
+An OS/2-PM Editor Using MLE           by Brian R. Anderson
+
+This directory contains the following (numbered listing) files:
+
+   MAKEFILE.LS -- builds the program
+   EDIT.HLS    -- base header (includes resource & ipf constants)
+   EDIT.CLS    -- main(), ClientWndProc(), & subclassing
+   EDLG.HLS    -- prototypes, etc. used by dialog box procedures
+   EDLG.CLS    -- dialog box procedures and supporting code
+   EFILE.HLS   -- prototypes, etc. used by file I/O procedures
+   EFILE.CLS   -- file I/O procedures
+   EDIT.DLS    -- linker control (module definition file)
+   EDIT.ILS    -- help text

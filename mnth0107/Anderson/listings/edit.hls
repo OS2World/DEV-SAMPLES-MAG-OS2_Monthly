@@ -1,0 +1,65 @@
+            Listing for edit.h                                          Page 3
+
+           42|   #include <os2.h>
+           43|   
+           44|   /* resource types */
+           45|   #define ID_EDIT             10
+           46|   
+           47|   #define IDM_FILE           100
+           48|   #define IDM_NEW            101
+           49|   #define IDM_OPEN           102
+           50|   #define IDM_SAVE           103
+           51|   #define IDM_SAVEAS         104
+           52|   #define IDM_EXIT           105
+           53|   
+           54|   #define IDM_EDIT           200
+           55|   #define IDM_UNDO           201
+           56|   #define IDM_CUT            202
+           57|   #define IDM_COPY           203
+           58|   #define IDM_PASTE          204
+           59|   #define IDM_DELETE         205
+           60|   #define IDM_FIND           206
+           61|   #define IDM_REPLACE        207
+           62|   #define IDM_GO             208
+           63|   
+           64|   #define IDM_HELP           300
+           65|   #define IDM_HELPFORHELP    301
+           66|   #define IDM_EXTENDEDHELP   302
+           67|   #define IDM_KEYSHELP       303
+           68|   #define IDM_HELPINDEX      304
+           69|   #define IDM_ABOUT          305
+           70|   #define IDH_KEYSHELP       310
+           71|   
+           72|   #define IDD_ABOUT          400
+           73|   
+           74|   #define IDD_OPEN           500
+           75|   #define DID_PATH           501
+           76|   #define DID_DIRLIST        502
+           77|   #define DID_FILELIST       503
+           78|   #define DID_FILEEDIT       504
+           79|   
+           80|   #define IDD_SAVEAS         600
+           81|   
+           82|   #define IDD_FIND           700
+           83|   #define DID_FINDTEXT       701
+           84|   
+           85|   #define IDD_REPLACE        800
+           86|   #define DID_OLDTEXT        801
+           87|   #define DID_NEWTEXT        802
+           88|   #define DID_DOREPLACE      803
+           89|   #define DID_REPLACEALL     804
+           90|   #define DID_REPLACEMSG     805
+           91|   
+           92|   #define IDD_GOLINE         900
+           93|   #define DID_LINENBR        901
+           94|   
+           95|   
+           96|   /* global variables -- program scope */
+edit.h                                                                  Page 4
+
+           97|   extern char szFileName[80];   /* current filename */
+           98|   extern char szFind[60];   /* target string for search */
+           99|   extern char szReplace[60];   /* replacement for search/replace */
+          100|   extern char szLine[20];   /* line number to go to */
+          101|   
+

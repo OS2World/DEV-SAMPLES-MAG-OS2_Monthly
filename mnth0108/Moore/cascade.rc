@@ -1,0 +1,22 @@
+
+/************\
+* CASCADE.RC *
+\************/
+
+#include <os2.h>
+#include "cascade.h"
+
+MENU ID_WINDOW  PRELOAD
+BEGIN
+    SUBMENU "~Strings", ID_STRINGS
+    BEGIN
+         SUBMENU "~Display    ", ID_DISPLAY
+         BEGIN
+              MENUITEM "String ~1", ID_STRING_1
+              MENUITEM "String ~2", ID_STRING_2
+              MENUITEM "String ~3", ID_STRING_3
+         END
+    END
+    MENUITEM "E~xit", ID_EXIT
+END
+
